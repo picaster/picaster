@@ -19,3 +19,7 @@ stamp-h1
 src/picaster
 *.o
 .dirstamp
+parts/
+picaster_0.3-git_amd64.snap
+prime/
+stage/
