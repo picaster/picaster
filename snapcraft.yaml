@@ -19,9 +19,8 @@ parts:
   picaster:
     after: [desktop-gtk3]
     plugin: autotools
-    #source-type: git
-    #source: https://github.com/picaster/picaster.git
-    source: .
+    source-type: git
+    source: https://github.com/picaster/picaster.git
     build-packages:
       - build-essential
       - libgtk-3-dev
