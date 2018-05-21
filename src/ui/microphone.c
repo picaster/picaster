@@ -19,17 +19,24 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "context.h"
+#include "microphone.h"
 
-#include <string.h>
+#include <gtk/gtk.h>
 
-Context context;
+#include "../context.h"
 
 void
-p_context_init()
+on_microphone_toggle_button_toggled(GtkToggleButton* toggle_button, gpointer user_data)
 {
-    memset(&context, 0, sizeof(Context));
-    context.dj_volume = 1.0f;
-    context.master_volume = 1.0f;
-    context.effects_volume = 1.0f;
+    context.microphone_opened = gtk_toggle_button_get_active(toggle_button);
+}
+
+void
+on_dj_volume_adjustment_value_changed(GtkAdjustment* adjustment, gpointer user_data)
+{
+    // volume = pow(linear_volume / 100.0f, 3) * 100.0
+    // https://www.dr-lex.be/info-stuff/volumecontrols.html
+
+    gdouble linear_volume = 100.0 - gtk_adjustment_get_value(adjustment);
+    context.dj_volume = linear_volume * linear_volume * linear_volume / 100.0f / 100.0f / 100.0f;
 }

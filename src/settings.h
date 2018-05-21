@@ -19,17 +19,14 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "context.h"
+#ifndef __SETTINGS_H_INCLUDED
+#define __SETTINGS_H_INCLUDED
 
-#include <string.h>
+#include <gtk/gtk.h>
 
-Context context;
+gchar*
+p_settings_get_string(const gchar* section, const gchar* key, const gchar* default_value);
 
 void
-p_context_init()
-{
-    memset(&context, 0, sizeof(Context));
-    context.dj_volume = 1.0f;
-    context.master_volume = 1.0f;
-    context.effects_volume = 1.0f;
-}
+p_settings_save_string(const gchar* section, const gchar* key, const gchar* value);
+#endif

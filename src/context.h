@@ -23,11 +23,23 @@
 #define __CONTEXT_H_INCLUDED
 
 #include <gtk/gtk.h>
+#include <jack/jack.h>
 
 typedef struct {
-    GtkBuilder* builder;
+    GtkBuilder*    builder;
+    jack_client_t* jack_client;
+    gboolean       jack_initialized;
+    pid_t          jackd_pid;
+    GApplication*  app;
+    gboolean       microphone_opened;
+    gdouble        dj_volume;
+    gdouble        master_volume;
+    gdouble        effects_volume;
 } Context;
 
 extern Context context;
+
+void
+p_context_init();
 
 #endif

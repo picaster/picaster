@@ -19,17 +19,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "context.h"
+#ifndef __MICROPHONE_H_INCLUDED
+#define __MICROPHONE_H_INCLUDED
 
-#include <string.h>
 
-Context context;
 
-void
-p_context_init()
-{
-    memset(&context, 0, sizeof(Context));
-    context.dj_volume = 1.0f;
-    context.master_volume = 1.0f;
-    context.effects_volume = 1.0f;
-}
+#endif

@@ -19,17 +19,20 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "context.h"
+#include "device_lists.h"
 
-#include <string.h>
-
-Context context;
+#include "../settings.h"
 
 void
-p_context_init()
+on_input_device_combo_box_text_changed(GtkComboBox* combo_box, gpointer user_data)
 {
-    memset(&context, 0, sizeof(Context));
-    context.dj_volume = 1.0f;
-    context.master_volume = 1.0f;
-    context.effects_volume = 1.0f;
+    gchar* active_text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo_box));
+    p_settings_save_string("jack", "input_device", active_text);
+}
+
+void
+on_output_device_combo_box_text_changed(GtkComboBox* combo_box, gpointer user_data)
+{
+    gchar* active_text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo_box));
+    p_settings_save_string("jack", "output_device", active_text);
 }

@@ -19,17 +19,30 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "context.h"
+#include "log.h"
 
-#include <string.h>
+#include <syslog.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <stdarg.h>
 
-Context context;
+void p_log_init()
+{
+    openlog("picaster", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
+}
 
 void
-p_context_init()
+p_log(const char* format, ...)
 {
-    memset(&context, 0, sizeof(Context));
-    context.dj_volume = 1.0f;
-    context.master_volume = 1.0f;
-    context.effects_volume = 1.0f;
+
+    va_list argptr;
+    va_start(argptr, format);
+    syslog(LOG_NOTICE, format, argptr);
+    va_end(argptr);
+}
+
+void
+p_log_close()
+{
+    closelog();
 }

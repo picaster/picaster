@@ -22,11 +22,25 @@
 #include "picaster.h"
 
 #include "ui/ui.h"
+#include "log.h"
+#include "context.h"
+#include "audio/gstreamer.h"
 
 int
 main(int argc, char** argv)
 {
+    p_log_init();
+    p_log("Starting picaster");
+
+    p_context_init();
+
+    p_gstreamer_init(&argc, &argv);
+
     GApplication* application = p_gtk_init(&argc, &argv);
     int status = g_application_run(application, argc, argv);
+
+    p_log("Stoping picaster");
+    p_log_close();
+
     return status;
 }

@@ -27,14 +27,29 @@
 #include <alsa/asoundlib.h>
 
 #include "../context.h"
+#include "../settings.h"
+#include "mumble.h"
+#include "log.h"
 
 static void
 p_gtk_load_gui()
 {
     const char* snap = getenv("SNAP");
     gchar* datadir = g_strdup_printf("%s%s", snap == NULL ? "" : snap, DATADIR);
+
+    /* Load GUI */
     gchar* gui_file = g_strdup_printf("%s/%s", datadir, "desktop.glade");
     GtkBuilder* gtk_builder = gtk_builder_new_from_file(gui_file);
+
+    /* Add CSS provider */
+    GdkScreen* screen = gdk_screen_get_default();
+    GtkCssProvider* provider = gtk_css_provider_new();
+    gchar* css_file = g_strdup_printf("%s/%s", datadir, "desktop.css");
+    p_log("Loading CSS from %s\n", css_file);
+    gtk_css_provider_load_from_path(provider, css_file, NULL);
+    gtk_style_context_add_provider_for_screen(screen, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+    g_free(css_file);
     g_free(gui_file);
     g_free(datadir);
 
@@ -45,6 +60,9 @@ static void
 p_gtk_show_main_window(GtkApplication *app)
 {
     GtkWidget* window = GTK_WIDGET(gtk_builder_get_object(context.builder, "mainwindow"));
+    gtk_widget_set_size_request(GTK_WIDGET(window), 1000, 576);
+    gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+
     gtk_window_set_application(GTK_WINDOW(window), app);
     gtk_widget_show_all(window);
 }
@@ -55,6 +73,9 @@ p_gtk_init_device_lists()
     GtkComboBoxText* input_device_combo_box = GTK_COMBO_BOX_TEXT(gtk_builder_get_object(context.builder, "input_device_combo_box_text"));
     GtkComboBoxText* output_device_combo_box = GTK_COMBO_BOX_TEXT(gtk_builder_get_object(context.builder, "output_device_combo_box_text"));
 
+    gchar* input_device = p_settings_get_string("jack", "input_device", NULL);
+    gchar* output_device = p_settings_get_string("jack", "output_device", NULL);
+    
     int cardNum = -1;
     int err;
     for (;;) {
@@ -91,7 +112,7 @@ p_gtk_init_device_lists()
                 const char* card_id = snd_ctl_card_info_get_id(cardInfo);
                 gtk_combo_box_text_append(input_device_combo_box, card_id, card_name);
                 gtk_combo_box_text_append(output_device_combo_box, card_id, card_name);
-/*
+
                 if ((input_device != NULL) && (strcmp(card_name, input_device) == 0))
                 {
                     gtk_combo_box_set_active(GTK_COMBO_BOX(input_device_combo_box), cardNum);
@@ -100,13 +121,22 @@ p_gtk_init_device_lists()
                 {
                     gtk_combo_box_set_active(GTK_COMBO_BOX(output_device_combo_box), cardNum);
                 }
-*/
             }
         }
         snd_ctl_close(cardHandle);
     }
 
     snd_config_update_free_global();
+    g_free(input_device);
+    g_free(output_device);
+}
+
+static void
+p_gtk_init_jack_settings()
+{
+    p_gtk_init_device_lists();
+    gchar* jackd_path = p_settings_get_string("jack", "jackd_path_entry", "/usr/bin/jackd");
+    gtk_entry_set_text(GTK_ENTRY(gtk_builder_get_object(context.builder, "jackd_path_entry")), jackd_path);
 }
 
 static void
@@ -114,6 +144,9 @@ activate(GtkApplication *app, gpointer user_data)
 {
     p_gtk_load_gui();
     p_gtk_init_device_lists();
+    p_gtk_init_jack_settings();
+    p_gtk_init_mumble_settings();
+    gtk_builder_connect_signals(context.builder, NULL);
     p_gtk_show_main_window(app);
 }
 
@@ -125,6 +158,13 @@ p_gtk_init(int* p_argc, char*** p_argv)
     /* Create application */
     GtkApplication* app = gtk_application_new("ch.frenchguy.picaster", G_APPLICATION_FLAGS_NONE);
     g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
+    context.app = G_APPLICATION(app);
 
     return G_APPLICATION(app);
+}
+
+void
+on_mainwindow_destroy(GtkWidget* widget)
+{
+    
 }

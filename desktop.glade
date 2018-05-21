@@ -22,30 +22,20 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <!-- interface-license-type gplv3 -->
-  <object class="GtkAdjustment" id="fx_volume_adjustment">
+  <object class="GtkAdjustment" id="dj_volume_adjustment">
+    <property name="lower">-30</property>
     <property name="upper">100</property>
-    <property name="value">70</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
-  </object>
-  <object class="GtkAdjustment" id="master_volume_adjustment">
-    <property name="upper">100</property>
-    <property name="value">30</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
-  <object class="GtkAction" id="start_stop_jack_action">
-    <property name="label" translatable="yes">Start jack</property>
-    <property name="short_label" translatable="yes">Start jack</property>
-    <property name="tooltip" translatable="yes">Start jack</property>
-    <property name="stock_id">gtk-media-play</property>
+    <signal name="value-changed" handler="on_dj_volume_adjustment_value_changed" swapped="no"/>
   </object>
   <object class="GtkWindow" id="mainwindow">
     <property name="name">mainwindow</property>
-    <property name="width_request">640</property>
-    <property name="height_request">480</property>
+    <property name="width_request">840</property>
+    <property name="height_request">420</property>
     <property name="can_focus">False</property>
     <property name="border_width">4</property>
+    <signal name="destroy" handler="on_mainwindow_destroy" swapped="no"/>
     <child>
       <object class="GtkBox" id="main_box">
         <property name="visible">True</property>
@@ -71,6 +61,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="clicked" handler="on_trk_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -319,6 +310,39 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 <property name="position">4</property>
               </packing>
             </child>
+            <child>
+              <object class="GtkBox" id="microphone_box">
+                <property name="name">microphone_box</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkToggleButton" id="microphone_toggle_button">
+                    <property name="label" translatable="yes">Mic</property>
+                    <property name="name">microphone_toggle_button</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="xalign">0.4699999988079071</property>
+                    <property name="yalign">0.54000002145767212</property>
+                    <signal name="toggled" handler="on_microphone_toggle_button_toggled" swapped="no"/>
+                    <style>
+                      <class name="redchecked"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">5</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -339,21 +363,21 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="box2">
+          <object class="GtkBox" id="dj_volume_box">
+            <property name="name">dj_volume_box</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
             <property name="spacing">4</property>
             <child>
-              <object class="GtkScale" id="master_volume_scale">
-                <property name="name">master_volume_scale</property>
+              <object class="GtkScale" id="dj_volume_scale">
+                <property name="name">dj_volume_scale</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Master volume</property>
+                <property name="tooltip_text" translatable="yes">DJ volume</property>
                 <property name="orientation">vertical</property>
-                <property name="adjustment">master_volume_adjustment</property>
+                <property name="adjustment">dj_volume_adjustment</property>
                 <property name="show_fill_level">True</property>
-                <property name="round_digits">1</property>
                 <property name="draw_value">False</property>
               </object>
               <packing>
@@ -363,11 +387,11 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label1">
+              <object class="GtkLabel" id="label4">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="tooltip_text" translatable="yes">Master volume</property>
-                <property name="label" translatable="yes">M</property>
+                <property name="tooltip_text" translatable="yes">Effects volume</property>
+                <property name="label" translatable="yes">DJ</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -383,7 +407,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
           </packing>
         </child>
         <child>
-          <object class="GtkSeparator" id="separator2">
+          <object class="GtkSeparator" id="separator7">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
@@ -395,7 +419,8 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="box3">
+          <object class="GtkBox" id="fx_volume_box">
+            <property name="name">fx_volume_box</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
@@ -409,7 +434,6 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 <property name="orientation">vertical</property>
                 <property name="adjustment">fx_volume_adjustment</property>
                 <property name="show_fill_level">True</property>
-                <property name="round_digits">1</property>
                 <property name="draw_value">False</property>
               </object>
               <packing>
@@ -439,7 +463,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
           </packing>
         </child>
         <child>
-          <object class="GtkSeparator" id="separator3">
+          <object class="GtkSeparator" id="separator2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
@@ -451,11 +475,69 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="box1">
+          <object class="GtkBox" id="master_volume_box">
+            <property name="name">master_volume_box</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
             <property name="spacing">4</property>
+            <child>
+              <object class="GtkScale" id="master_volume_scale">
+                <property name="name">master_volume_scale</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Master volume</property>
+                <property name="orientation">vertical</property>
+                <property name="adjustment">master_volume_adjustment</property>
+                <property name="show_fill_level">True</property>
+                <property name="draw_value">False</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Master volume</property>
+                <property name="label" translatable="yes">M</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator" id="separator3">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">7</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="jack_box">
+            <property name="name">jack_box</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">4</property>
+            <property name="homogeneous">True</property>
             <child>
               <object class="GtkFrame" id="jack_frame">
                 <property name="name">jack_frame</property>
@@ -468,10 +550,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                     <property name="name">jack_frame_box</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_left">4</property>
-                    <property name="margin_right">4</property>
-                    <property name="margin_top">4</property>
-                    <property name="margin_bottom">4</property>
+                    <property name="resize_mode">immediate</property>
                     <property name="orientation">vertical</property>
                     <property name="spacing">4</property>
                     <child>
@@ -479,21 +558,19 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                         <property name="name">input_device_frame</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="margin_left">4</property>
+                        <property name="margin_right">4</property>
+                        <property name="margin_top">4</property>
+                        <property name="margin_bottom">2</property>
                         <property name="label_xalign">0</property>
                         <property name="shadow_type">none</property>
                         <child>
-                          <object class="GtkAlignment" id="alignment1">
+                          <object class="GtkComboBoxText" id="input_device_combo_box_text">
+                            <property name="name">input_device_combo_box_text</property>
+                            <property name="width_request">160</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="left_padding">12</property>
-                            <child>
-                              <object class="GtkComboBoxText" id="input_device_combo_box_text">
-                                <property name="name">input_device_combo_box_text</property>
-                                <property name="width_request">160</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                              </object>
-                            </child>
+                            <signal name="changed" handler="on_input_device_combo_box_text_changed" swapped="no"/>
                           </object>
                         </child>
                         <child type="label">
@@ -515,22 +592,20 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                       <object class="GtkFrame" id="output_device_frame">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="margin_left">4</property>
+                        <property name="margin_right">4</property>
+                        <property name="margin_top">2</property>
+                        <property name="margin_bottom">2</property>
                         <property name="label_xalign">0</property>
                         <property name="shadow_type">none</property>
                         <child>
-                          <object class="GtkAlignment" id="alignment2">
+                          <object class="GtkComboBoxText" id="output_device_combo_box_text">
+                            <property name="name">output_device_combo_box_text</property>
+                            <property name="width_request">160</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="left_padding">12</property>
-                            <child>
-                              <object class="GtkComboBoxText" id="output_device_combo_box_text">
-                                <property name="name">output_device_combo_box_text</property>
-                                <property name="width_request">160</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="opacity">0.95999999999999996</property>
-                              </object>
-                            </child>
+                            <property name="opacity">0.96078431372549022</property>
+                            <signal name="changed" handler="on_output_device_combo_box_text_changed" swapped="no"/>
                           </object>
                         </child>
                         <child type="label">
@@ -553,25 +628,18 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                         <property name="name">jack_switch_frame</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="margin_left">4</property>
+                        <property name="margin_right">4</property>
+                        <property name="margin_top">2</property>
+                        <property name="margin_bottom">2</property>
                         <property name="label_xalign">0</property>
                         <property name="shadow_type">none</property>
                         <child>
-                          <object class="GtkAlignment" id="alignment3">
+                          <object class="GtkEntry" id="jackd_path_entry">
+                            <property name="name">jackd_path_entry</property>
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="left_padding">12</property>
-                            <child>
-                              <object class="GtkToggleButton" id="start_jack_toggle_button">
-                                <property name="label" translatable="yes">Start jack</property>
-                                <property name="use_action_appearance">True</property>
-                                <property name="related_action">start_stop_jack_action</property>
-                                <property name="name">start_jack_toggle_button</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="yalign">0.4699999988079071</property>
-                              </object>
-                            </child>
+                            <property name="can_focus">True</property>
+                            <signal name="changed" handler="on_jackd_path_entry_changed" swapped="no"/>
                           </object>
                         </child>
                         <child type="label">
@@ -587,6 +655,46 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                         <property name="expand">False</property>
                         <property name="fill">True</property>
                         <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkFrame" id="jack_control_frame">
+                        <property name="name">jack_control_frame</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="margin_left">4</property>
+                        <property name="margin_right">4</property>
+                        <property name="margin_top">2</property>
+                        <property name="margin_bottom">2</property>
+                        <property name="label_xalign">0</property>
+                        <property name="shadow_type">none</property>
+                        <child>
+                          <object class="GtkToggleButton" id="start_jack_toggle_button">
+                            <property name="label" translatable="yes">Start jack</property>
+                            <property name="name">start_jack_toggle_button</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="use_underline">True</property>
+                            <property name="yalign">0.4699999988079071</property>
+                            <signal name="toggled" handler="on_start_jack_toggle_button_toggled" swapped="no"/>
+                            <style>
+                              <class name="greenchecked"/>
+                            </style>
+                          </object>
+                        </child>
+                        <child type="label">
+                          <object class="GtkLabel" id="label3">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Control jack</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">3</property>
                       </packing>
                     </child>
                   </object>
@@ -609,20 +717,194 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 <property name="position">0</property>
               </packing>
             </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">8</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator" id="separator4">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">9</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="mumble_box">
+            <property name="name">mumble_box</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">4</property>
+            <property name="homogeneous">True</property>
             <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
+              <object class="GtkFrame" id="mumble_frame">
+                <property name="name">mumble_frame</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label_xalign">0</property>
+                <property name="shadow_type">in</property>
+                <child>
+                  <object class="GtkBox" id="mumble_frame_box">
+                    <property name="name">mumble_frame_box</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_left">4</property>
+                    <property name="margin_right">4</property>
+                    <property name="margin_top">4</property>
+                    <property name="margin_bottom">4</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">4</property>
+                    <child>
+                      <object class="GtkFrame" id="mumble_server_frame">
+                        <property name="name">mumble_server_frame</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label_xalign">0</property>
+                        <property name="shadow_type">none</property>
+                        <child>
+                          <object class="GtkComboBoxText" id="mumble_server_combo_box_text">
+                            <property name="name">mumble_server_combo_box_text</property>
+                            <property name="width_request">160</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <items>
+                              <item id="otherside" translatable="yes">otherside.network</item>
+                              <item id="euterpiaradio" translatable="yes">Euterpia Radio</item>
+                            </items>
+                            <signal name="changed" handler="on_mumble_server_combo_box_text_changed" swapped="no"/>
+                          </object>
+                        </child>
+                        <child type="label">
+                          <object class="GtkLabel" id="mumble_server_label">
+                            <property name="name">mumble_server_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Server</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkFrame" id="mumble_username_frame">
+                        <property name="name">mumble_username_frame</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label_xalign">0</property>
+                        <property name="shadow_type">none</property>
+                        <child>
+                          <object class="GtkEntry" id="mumble_username_entry">
+                            <property name="name">mumble_username_entry</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <signal name="changed" handler="on_mumble_username_entry_changed" swapped="no"/>
+                          </object>
+                        </child>
+                        <child type="label">
+                          <object class="GtkLabel" id="mumble_username_label">
+                            <property name="name">mumble_username_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Username</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkSeparator" id="separator5">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToggleButton" id="togglebutton1">
+                        <property name="label" translatable="yes">Connect</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="yalign">0.49000000953674316</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkSeparator" id="separator6">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">4</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+                <child type="label">
+                  <object class="GtkLabel" id="mumble_label">
+                    <property name="name">mumble_label</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Mumble</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">6</property>
+            <property name="position">10</property>
           </packing>
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkAdjustment" id="fx_volume_adjustment">
+    <property name="lower">-30</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <signal name="value-changed" handler="on_fx_volume_adjustment_value_changed" swapped="no"/>
+  </object>
+  <object class="GtkAdjustment" id="master_volume_adjustment">
+    <property name="lower">-30</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <signal name="value-changed" handler="on_master_volume_adjustment_value_changed" swapped="no"/>
   </object>
 </interface>

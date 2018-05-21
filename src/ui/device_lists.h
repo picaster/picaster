@@ -19,17 +19,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "context.h"
+#ifndef __DEVICE_LISTS_H_INCLUDED
+#define __DEVICE_LISTS_H_INCLUDED
 
-#include <string.h>
-
-Context context;
+#include <gtk/gtk.h>
 
 void
-p_context_init()
-{
-    memset(&context, 0, sizeof(Context));
-    context.dj_volume = 1.0f;
-    context.master_volume = 1.0f;
-    context.effects_volume = 1.0f;
-}
+on_input_device_combo_box_text_changed(GtkComboBox* combo_box, gpointer user_data);
+
+void
+on_output_device_combo_box_text_changed(GtkComboBox* combo_box, gpointer user_data);
+
+#endif

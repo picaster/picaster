@@ -19,17 +19,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "context.h"
+#ifndef __JACK_H_INCLUDED
+#define __JACK_H_INCLUDED
 
-#include <string.h>
-
-Context context;
+#include <gtk/gtk.h>
 
 void
-p_context_init()
-{
-    memset(&context, 0, sizeof(Context));
-    context.dj_volume = 1.0f;
-    context.master_volume = 1.0f;
-    context.effects_volume = 1.0f;
-}
+on_jackd_path_entry_editing_done(GtkEntry* entry, gpointer user_data);
+
+void
+on_start_jack_toggle_button_toggled(GtkToggleButton* entry, gpointer user_data);
+
+#endif

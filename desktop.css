@@ -1,0 +1,10 @@
+.greenchecked:checked {
+    background: darkgreen;
+    color: white;
+}
+
+.redchecked:checked {
+    background: darkred;
+    color: white;
+}
+

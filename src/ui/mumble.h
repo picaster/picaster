@@ -19,17 +19,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "context.h"
-
-#include <string.h>
-
-Context context;
+#ifndef __MUMBLE_H_INCLUDED
+#define __MUMBLE_H_INCLUDED
 
 void
-p_context_init()
-{
-    memset(&context, 0, sizeof(Context));
-    context.dj_volume = 1.0f;
-    context.master_volume = 1.0f;
-    context.effects_volume = 1.0f;
-}
+p_gtk_init_mumble_settings();
+
+#endif
