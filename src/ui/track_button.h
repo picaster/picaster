@@ -19,18 +19,20 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __AUDIO__GSTREAMER_H_INCLUDED
-#define __AUDIO__GSTREAMER_H_INCLUDED
+#ifndef __UI__TRACK_BUTTON_INCLUDED
+#define __UI__TRACK_BUTTON_INCLUDED
 
-#include <gst/gst.h>
+#include <gtk/gtk.h>
+
+typedef struct {
+
+    gchar*   file_path;
+    gchar*   button_name;
+    gpointer audio_context;
+
+} TrackButtonData;
 
 void
-p_gstreamer_init(int* argc, char*** argv);
-
-GstElement*
-p_gstreamer_play_track(gchar* file_path);
-
-void
-p_gstreamer_stop_track(gpointer audio_context);
+p_gtk_init_track_buttons();
 
 #endif

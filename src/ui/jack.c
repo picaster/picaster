@@ -40,21 +40,6 @@ on_jackd_path_entry_changed(GtkEntry* entry, gpointer user_data)
     p_settings_save_string("jack", "jackd_path_entry", text);
 }
 
-/*
-static void
-p_start_jack()
-{
-    p_launch_jackd();
-    p_jack_init_client();
-
-    signal(SIGQUIT, p_jack_signal_handler);
-    signal(SIGTERM, p_jack_signal_handler);
-    signal(SIGHUP, p_jack_signal_handler);
-    signal(SIGINT, p_jack_signal_handler);
-
-    context.jack_initialized = TRUE;
-}
-*/
 void
 on_start_jack_toggle_button_toggled(GtkToggleButton* toggle_button, gpointer user_data)
 {
@@ -62,18 +47,16 @@ on_start_jack_toggle_button_toggled(GtkToggleButton* toggle_button, gpointer use
     gtk_button_set_label(GTK_BUTTON(toggle_button), is_active ? "Stop jackd" : "Start jackd");
     if (is_active)
     {
-        /*
-        p_generate_jackdrc();
-        p_start_jack();
-        */
         p_jack_start_server();
         p_jack_init_client();
 
         context.jack_initialized = TRUE;
+        p_context_notify(NOTIFICATION_JACK_STARTED);
     }
     else
     {
         p_stop_jack_server();
+        p_context_notify(NOTIFICATION_JACK_STOPPED);
     }
 }
 
@@ -95,11 +78,4 @@ on_fx_volume_adjustment_value_changed(GtkAdjustment* adjustment, gpointer user_d
 
     gdouble linear_volume = 100.0 - gtk_adjustment_get_value(adjustment);
     context.effects_volume = linear_volume * linear_volume * linear_volume / 100.0f / 100.0f / 100.0f;
-}
-
-void
-on_trk_clicked(GtkButton* button, gpointer user_data)
-{
-    g_print("on_trk_clicked\n");
-    p_gstreamer_play_track();
 }

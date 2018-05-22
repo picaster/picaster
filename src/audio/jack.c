@@ -257,5 +257,4 @@ p_jack_init_client()
     signal(SIGTERM, p_jack_signal_handler);
     signal(SIGHUP, p_jack_signal_handler);
     signal(SIGINT, p_jack_signal_handler);
-
 }

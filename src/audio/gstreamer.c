@@ -21,13 +21,13 @@
 
 #include "gstreamer.h"
 
-#include <gst/gst.h>
+#include <string.h>
 
 #include "../context.h"
 
 static GstElement* bins[4];
-//static gboolean player_a_active = FALSE;
-//static gboolean player_b_active = FALSE;
+static gboolean player_a_active = FALSE;
+static gboolean player_b_active = FALSE;
 
 /* playbin flags */
 typedef enum
@@ -103,17 +103,46 @@ p_gstreamer_init(int* argc, char*** argv)
     }
 }
 
-void
-p_gstreamer_play_track()
+GstElement*
+p_gstreamer_play_track(gchar* file_path)
 {
-    GstElement* bin = bins[0];
-    gchar* file_path = "/data/Musique/CCJam/Moonshiners_-_Bienvenue_Chez_Nous.flac";
+    if (player_a_active && player_b_active)
+    {
+        return NULL;
+    }
+    GstElement* bin;
+    if (player_a_active)
+    {
+        bin = bins[1];
+        player_b_active = TRUE;
+    }
+    else
+    {
+        bin = bins[0];
+        player_a_active = TRUE;
+    }
     gchar* uri = g_strdup_printf("file://%s", file_path);
-    g_print("uri = %s\n", uri);
     gst_element_set_state(bin, GST_STATE_READY);
     g_object_set(bin, "uri", uri, NULL);
     g_object_set_data(G_OBJECT(bin), "file_path", file_path);
     g_free(uri);
-    g_print("playing...\n");
     gst_element_set_state(bin, GST_STATE_PLAYING);
+    return bin;
+}
+
+void
+p_gstreamer_stop_track(gpointer audio_context)
+{
+    GstElement* bin = GST_ELEMENT(audio_context);
+    gst_element_set_state(bin, GST_STATE_READY);
+    gchar* name = gst_element_get_name(bin);
+    if (!strcmp(name, "track_player_a"))
+    {
+        player_a_active = FALSE;
+    }
+    else
+    {
+        player_b_active = FALSE;
+    }
+    g_free(name);
 }

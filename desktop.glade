@@ -29,6 +29,20 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
     <property name="page_increment">10</property>
     <signal name="value-changed" handler="on_dj_volume_adjustment_value_changed" swapped="no"/>
   </object>
+  <object class="GtkAdjustment" id="fx_volume_adjustment">
+    <property name="lower">-30</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <signal name="value-changed" handler="on_fx_volume_adjustment_value_changed" swapped="no"/>
+  </object>
+  <object class="GtkAdjustment" id="master_volume_adjustment">
+    <property name="lower">-30</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <signal name="value-changed" handler="on_master_volume_adjustment_value_changed" swapped="no"/>
+  </object>
   <object class="GtkWindow" id="mainwindow">
     <property name="name">mainwindow</property>
     <property name="width_request">840</property>
@@ -43,7 +57,9 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
         <property name="spacing">4</property>
         <child>
           <object class="GtkBox" id="buttons_box">
+            <property name="name">buttons_box</property>
             <property name="visible">True</property>
+            <property name="sensitive">False</property>
             <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
             <property name="spacing">4</property>
@@ -55,13 +71,15 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 <property name="spacing">4</property>
                 <property name="homogeneous">True</property>
                 <child>
-                  <object class="GtkButton" id="trk1">
+                  <object class="GtkButton" id="trk1_button">
                     <property name="label" translatable="yes">TRK1</property>
-                    <property name="name">trk1</property>
+                    <property name="name">trk1_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <signal name="clicked" handler="on_trk_clicked" swapped="no"/>
+                    <property name="yalign">0.49000000953674316</property>
+                    <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
+                    <signal name="clicked" handler="on_trk_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -70,12 +88,14 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="trk2">
+                  <object class="GtkButton" id="trk2_button">
                     <property name="label" translatable="yes">TRK2</property>
-                    <property name="name">trk2</property>
+                    <property name="name">trk2_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
+                    <signal name="clicked" handler="on_trk_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -97,12 +117,14 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 <property name="spacing">4</property>
                 <property name="homogeneous">True</property>
                 <child>
-                  <object class="GtkButton" id="trk3">
+                  <object class="GtkButton" id="trk3_button">
                     <property name="label" translatable="yes">TRK3</property>
-                    <property name="name">trk3</property>
+                    <property name="name">trk3_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
+                    <signal name="clicked" handler="on_trk_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -111,12 +133,14 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="trk4">
+                  <object class="GtkButton" id="trk4_button">
                     <property name="label" translatable="yes">TRK4</property>
-                    <property name="name">trk4</property>
+                    <property name="name">trk4_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
+                    <signal name="clicked" handler="on_trk_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -138,12 +162,14 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 <property name="spacing">4</property>
                 <property name="homogeneous">True</property>
                 <child>
-                  <object class="GtkButton" id="trk5">
+                  <object class="GtkButton" id="trk5_button">
                     <property name="label" translatable="yes">TRK5</property>
-                    <property name="name">trk5</property>
+                    <property name="name">trk5_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
+                    <signal name="clicked" handler="on_trk_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -152,12 +178,14 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="trk6">
+                  <object class="GtkButton" id="trk6_button">
                     <property name="label" translatable="yes">TRK6</property>
-                    <property name="name">trk6</property>
+                    <property name="name">trk6_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
+                    <signal name="clicked" handler="on_trk_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -179,12 +207,14 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 <property name="spacing">4</property>
                 <property name="homogeneous">True</property>
                 <child>
-                  <object class="GtkButton" id="trk7">
+                  <object class="GtkButton" id="trk7_button">
                     <property name="label" translatable="yes">TRK7</property>
-                    <property name="name">trk7</property>
+                    <property name="name">trk7_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
+                    <signal name="clicked" handler="on_trk_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -193,12 +223,14 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="trk8">
+                  <object class="GtkButton" id="trk8_button">
                     <property name="label" translatable="yes">TRK8</property>
-                    <property name="name">trk8</property>
+                    <property name="name">trk8_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
+                    <signal name="clicked" handler="on_trk_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -220,12 +252,14 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 <property name="spacing">4</property>
                 <property name="homogeneous">True</property>
                 <child>
-                  <object class="GtkButton" id="fx1">
+                  <object class="GtkButton" id="fx1_button">
                     <property name="label" translatable="yes">FX1</property>
-                    <property name="name">fx1</property>
+                    <property name="name">fx1_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
+                    <signal name="clicked" handler="on_fx_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -234,12 +268,14 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="fx2">
+                  <object class="GtkButton" id="fx2_button">
                     <property name="label" translatable="yes">FX2</property>
-                    <property name="name">fx2</property>
+                    <property name="name">fx2_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
+                    <signal name="clicked" handler="on_fx_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -248,12 +284,14 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="fx3">
+                  <object class="GtkButton" id="fx3_button">
                     <property name="label" translatable="yes">FX3</property>
-                    <property name="name">fx3</property>
+                    <property name="name">fx3_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
+                    <signal name="clicked" handler="on_fx_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -262,12 +300,14 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="fx4">
+                  <object class="GtkButton" id="fx4_button">
                     <property name="label" translatable="yes">FX4</property>
-                    <property name="name">fx4</property>
+                    <property name="name">fx4_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
+                    <signal name="clicked" handler="on_fx_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -276,12 +316,14 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="fx5">
+                  <object class="GtkButton" id="fx5_button">
                     <property name="label" translatable="yes">FX5</property>
-                    <property name="name">fx5</property>
+                    <property name="name">fx5_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
+                    <signal name="clicked" handler="on_fx_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -290,12 +332,14 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="fx6">
+                  <object class="GtkButton" id="fx6_button">
                     <property name="label" translatable="yes">FX6</property>
-                    <property name="name">fx6</property>
+                    <property name="name">fx6_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
+                    <signal name="clicked" handler="on_fx_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -748,6 +792,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
               <object class="GtkFrame" id="mumble_frame">
                 <property name="name">mumble_frame</property>
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can_focus">False</property>
                 <property name="label_xalign">0</property>
                 <property name="shadow_type">in</property>
@@ -892,19 +937,5 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkAdjustment" id="fx_volume_adjustment">
-    <property name="lower">-30</property>
-    <property name="upper">100</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-    <signal name="value-changed" handler="on_fx_volume_adjustment_value_changed" swapped="no"/>
-  </object>
-  <object class="GtkAdjustment" id="master_volume_adjustment">
-    <property name="lower">-30</property>
-    <property name="upper">100</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-    <signal name="value-changed" handler="on_master_volume_adjustment_value_changed" swapped="no"/>
   </object>
 </interface>

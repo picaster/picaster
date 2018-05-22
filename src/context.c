@@ -25,6 +25,8 @@
 
 Context context;
 
+static GHashTable* notifications = NULL;
+
 void
 p_context_init()
 {
@@ -32,4 +34,35 @@ p_context_init()
     context.dj_volume = 1.0f;
     context.master_volume = 1.0f;
     context.effects_volume = 1.0f;
+    notifications = g_hash_table_new(g_str_hash, g_str_equal);
+}
+
+void
+p_context_notify(const gchar* notification)
+{
+    GList* callbacks = (GList*)g_hash_table_lookup(notifications, notification);
+    if (callbacks != NULL)
+    {
+        for (GList* l = callbacks; l != NULL; l = l->next)
+        {
+            void(*callback)() = (void(*)())l->data;
+            callback();
+        }
+    }
+}
+
+void
+p_context_subscribe(gchar* notification, void(*callback)())
+{
+    GList* callbacks = (GList*)g_hash_table_lookup(notifications, notification);
+    if (callbacks == NULL)
+    {
+        callbacks = g_list_prepend(callbacks, callback);
+        g_hash_table_insert(notifications, notification, callbacks);
+    }
+    else
+    {
+        callbacks = g_list_prepend(callbacks, callback);
+        g_hash_table_replace(notifications, notification, callbacks);
+    }
 }

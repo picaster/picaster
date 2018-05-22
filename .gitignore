@@ -23,3 +23,6 @@ parts/
 picaster_0.3-git_amd64.snap
 prime/
 stage/
+\#*\#
+picaster*.tar.gz
+picaster-*/

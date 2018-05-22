@@ -39,7 +39,22 @@ typedef struct {
 
 extern Context context;
 
+#define lambda(return_type, function_body) \
+({ \
+      return_type __fn__ function_body \
+          __fn__; \
+})
+
 void
 p_context_init();
+
+#define NOTIFICATION_JACK_STARTED "jack_started"
+#define NOTIFICATION_JACK_STOPPED "jack_stopped"
+
+void
+p_context_notify(const gchar* notification);
+
+void
+p_context_subscribe(gchar* notification, void(*callback)());
 
 #endif
