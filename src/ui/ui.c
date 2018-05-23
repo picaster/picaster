@@ -39,13 +39,13 @@ p_gtk_load_gui()
     gchar* datadir = g_strdup_printf("%s%s", snap == NULL ? "" : snap, DATADIR);
 
     /* Load GUI */
-    gchar* gui_file = g_strdup_printf("%s/%s", datadir, "desktop.glade");
+    gchar* gui_file = g_strdup_printf("%s/%s", datadir, "picaster/desktop.glade");
     GtkBuilder* gtk_builder = gtk_builder_new_from_file(gui_file);
 
     /* Add CSS provider */
     GdkScreen* screen = gdk_screen_get_default();
     GtkCssProvider* provider = gtk_css_provider_new();
-    gchar* css_file = g_strdup_printf("%s/%s", datadir, "desktop.css");
+    gchar* css_file = g_strdup_printf("%s/%s", datadir, "picaster/desktop.css");
     p_log("Loading CSS from %s\n", css_file);
     gtk_css_provider_load_from_path(provider, css_file, NULL);
     gtk_style_context_add_provider_for_screen(screen, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
