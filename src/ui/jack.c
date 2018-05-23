@@ -79,3 +79,24 @@ on_fx_volume_adjustment_value_changed(GtkAdjustment* adjustment, gpointer user_d
     gdouble linear_volume = 100.0 - gtk_adjustment_get_value(adjustment);
     context.effects_volume = linear_volume * linear_volume * linear_volume / 100.0f / 100.0f / 100.0f;
 }
+
+gboolean
+on_volume_label_button_press_event(GtkLabel* label, GdkEvent *event, gpointer user_data)
+{
+    GtkAdjustment* adjustment = GTK_ADJUSTMENT(user_data);
+    GdkEventButton* event_button = (GdkEventButton*)event;
+    if (event_button->type != GDK_2BUTTON_PRESS)
+    {
+        return FALSE;
+    }
+    if (event_button->button == 1)
+    {
+        gtk_adjustment_set_value(adjustment, 100.0);
+    }
+    else if (event_button->button == 3)
+    {
+        gtk_adjustment_set_value(adjustment, 0.0);
+    }
+    
+    return FALSE;
+}

@@ -22,6 +22,8 @@
 #include "track_button.h"
 
 #include <stdlib.h>
+#include <string.h>
+#include <taglib/tag_c.h>
 
 #include "../audio/gstreamer.h"
 #include "../context.h"
@@ -76,6 +78,22 @@ p_gtk_init_track_buttons()
     }
 }
 
+static gchar*
+ellipsize(const gchar* source)
+{
+    if (strlen(source) <= 24)
+    {
+        return g_strdup(source);
+    }
+    else
+    {
+        gchar* target = (gchar*)calloc(28, sizeof(gchar));
+        memcpy(target, source, 24 * sizeof(gchar));
+        memcpy(target + 24, "...", 3);
+        return target;
+    }
+}
+
 gboolean
 on_trk_button_button_release_event(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
@@ -92,7 +110,45 @@ on_trk_button_button_release_event(GtkWidget *widget, GdkEvent *event, gpointer 
             {
                 GtkFileChooser* chooser = GTK_FILE_CHOOSER(file_chooser_dialog);
                 track_button_data->file_path = gtk_file_chooser_get_filename(chooser);
-                gtk_button_set_label(GTK_BUTTON(widget), track_button_data->file_path);
+                TagLib_File* taglib_file = taglib_file_new(track_button_data->file_path);
+                if (taglib_file == NULL)
+                {
+                    g_printerr("Error : %s could not be opened\n", track_button_data->file_path);
+                }
+                else
+                {
+                    if (!taglib_file_is_valid(taglib_file))
+                    {
+                        g_printerr("Error : %s is invalid or has no information\n", track_button_data->file_path);
+                    }
+                    else
+                    {
+                        const TagLib_AudioProperties* audioproperties = taglib_file_audioproperties(taglib_file);
+                        int length = taglib_audioproperties_length(audioproperties);
+                        int seconds = length % 60;
+                        int minutes = (length - seconds) / 60;
+                        gchar* duration = g_strdup_printf("%02d:%02d", minutes, seconds);
+
+                        TagLib_Tag* tag = taglib_file_tag(taglib_file);
+                        char* title = taglib_tag_title(tag);
+                        char* artist = taglib_tag_artist(tag);
+                        gchar* track_info = g_strdup_printf("%s - %s", artist, title);
+
+                        gchar* short_label = ellipsize(title);
+                        gtk_button_set_label(GTK_BUTTON(widget), short_label);
+                        g_free(short_label);
+
+                        g_free(duration);
+                        g_free(track_info);
+                    }
+                    taglib_tag_free_strings();
+                    taglib_file_free(taglib_file);
+                }
+                /*
+                gchar* short_label = ellipsize(track_button_data->file_path);
+                gtk_button_set_label(GTK_BUTTON(widget), short_label);
+                g_free(short_label);
+                */
             }
             gtk_widget_destroy(file_chooser_dialog);
         }

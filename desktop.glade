@@ -431,11 +431,21 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label4">
+              <object class="GtkEventBox" id="dj_volune_label_eventbox">
+                <property name="name">dj_volune_label_eventbox</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="tooltip_text" translatable="yes">Effects volume</property>
-                <property name="label" translatable="yes">DJ</property>
+                <signal name="button-press-event" handler="on_volume_label_button_press_event" object="dj_volume_adjustment" swapped="no"/>
+                <child>
+                  <object class="GtkLabel" id="dj_volune_label">
+                    <property name="name">dj_volune_label</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="tooltip_text" translatable="yes">Effects volume</property>
+                    <property name="label" translatable="yes">DJ</property>
+                    <signal name="button-release-event" handler="on_volume_label_button_release_event" object="dj_volume_adjustment" swapped="no"/>
+                  </object>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -487,11 +497,20 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label2">
+              <object class="GtkEventBox" id="fx_volume_label_eventbox">
+                <property name="name">fx_volume_label_eventbox</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="tooltip_text" translatable="yes">Effects volume</property>
-                <property name="label" translatable="yes">FX</property>
+                <signal name="button-press-event" handler="on_volume_label_button_press_event" object="fx_volume_adjustment" swapped="no"/>
+                <child>
+                  <object class="GtkLabel" id="fx_volume_label">
+                    <property name="name">fx_volume_label</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="tooltip_text" translatable="yes">Effects volume</property>
+                    <property name="label" translatable="yes">FX</property>
+                  </object>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -543,11 +562,20 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label1">
+              <object class="GtkEventBox" id="master_volume_label_eventbox">
+                <property name="name">master_volume_label_eventbox</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="tooltip_text" translatable="yes">Master volume</property>
-                <property name="label" translatable="yes">M</property>
+                <signal name="button-press-event" handler="on_volume_label_button_press_event" object="master_volume_adjustment" swapped="no"/>
+                <child>
+                  <object class="GtkLabel" id="master_volume_label">
+                    <property name="name">master_volume_label</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="tooltip_text" translatable="yes">Master volume</property>
+                    <property name="label" translatable="yes">M</property>
+                  </object>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -820,6 +848,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                             <property name="width_request">160</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="resize_mode">immediate</property>
                             <items>
                               <item id="otherside" translatable="yes">otherside.network</item>
                               <item id="euterpiaradio" translatable="yes">Euterpia Radio</item>
