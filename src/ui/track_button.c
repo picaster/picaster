@@ -31,7 +31,6 @@
 void
 on_trk_button_clicked(GtkButton* button, gpointer user_data)
 {
-    g_print("on_trk_button_clicked\n");
     TrackButtonData* track_button_data = (TrackButtonData*)g_object_get_data(G_OBJECT(button), "button_data");
     if (track_button_data->file_path == NULL)
     {
@@ -39,16 +38,20 @@ on_trk_button_clicked(GtkButton* button, gpointer user_data)
     }
     else
     {
+        GtkStyleContext *context;
+        context = gtk_widget_get_style_context(GTK_WIDGET(button));
+
         if (track_button_data->audio_context == NULL)
         {
-            g_print("->p_gstreamer_play_track\n");
             track_button_data->audio_context = p_gstreamer_play_track(track_button_data->file_path);
+            gtk_style_context_add_class(context,"button_playing");
         }
         else
         {
             g_print("->p_gstreamer_stop_track\n");
             p_gstreamer_stop_track(track_button_data->audio_context);
             track_button_data->audio_context = NULL;
+            gtk_style_context_remove_class(context,"button_playing");
         }
     }
 }
@@ -58,39 +61,31 @@ p_gtk_init_track_buttons()
 {
     for (int i = 1; i <= 8; i++)
     {
-        gchar* button_name = g_strdup_printf("trk%d_button", i);
-        GtkButton* button = GTK_BUTTON(gtk_builder_get_object(context.builder, button_name));
         TrackButtonData* track_button_data = (TrackButtonData*)calloc(1, sizeof(TrackButtonData));
+        gchar* button_name = g_strdup_printf("trk%d_button", i);
         track_button_data->button_name = g_strdup_printf("TRK%d", i);
+        gchar* label_name = g_strdup_printf("%s_label", button_name);
+        track_button_data->label = GTK_LABEL(gtk_builder_get_object(context.builder, label_name));
+        g_free(label_name);
+        gchar* progress_bar_name = g_strdup_printf("%s_progressbar", button_name);
+        track_button_data->progress_bar = GTK_PROGRESS_BAR(gtk_builder_get_object(context.builder, progress_bar_name));
+        g_free(progress_bar_name);
+
+        GtkButton* button = GTK_BUTTON(gtk_builder_get_object(context.builder, button_name));
         g_object_set_data(G_OBJECT(button), "button_data", track_button_data);
-        GtkLabel* label = GTK_LABEL(gtk_bin_get_child(GTK_BIN(button)));
-        g_print("%s\n", gtk_label_get_text(label));
-        gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_END);
-        gtk_label_set_max_width_chars(label, 24);
     }
 
     for (int i = 1; i <= 6; i++)
     {
         TrackButtonData* track_button_data = (TrackButtonData*)calloc(1, sizeof(TrackButtonData));
         gchar* button_name = g_strdup_printf("fx%d_button", i);
+        track_button_data->button_name = g_strdup_printf("FX%d", i);
+        gchar* label_name = g_strdup_printf("%s_label", button_name);
+        track_button_data->label = GTK_LABEL(gtk_builder_get_object(context.builder, label_name));
+        g_free(label_name);
+
         GtkButton* button = GTK_BUTTON(gtk_builder_get_object(context.builder, button_name));
         g_object_set_data(G_OBJECT(button), "button_data", track_button_data);
-    }
-}
-
-static gchar*
-ellipsize(const gchar* source)
-{
-    if (strlen(source) <= 24)
-    {
-        return g_strdup(source);
-    }
-    else
-    {
-        gchar* target = (gchar*)calloc(28, sizeof(gchar));
-        memcpy(target, source, 24 * sizeof(gchar));
-        memcpy(target + 24, "...", 3);
-        return target;
     }
 }
 
@@ -103,7 +98,6 @@ on_trk_button_button_release_event(GtkWidget *widget, GdkEvent *event, gpointer 
         TrackButtonData* track_button_data = (TrackButtonData*)g_object_get_data(G_OBJECT(widget), "button_data");
         if (track_button_data->file_path == NULL)
         {
-            g_print("Loading file\n");
             GtkWidget* file_chooser_dialog = gtk_file_chooser_dialog_new("Open file", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, "Cancel", GTK_RESPONSE_CANCEL, "Open", GTK_RESPONSE_ACCEPT, NULL);
             gint res = gtk_dialog_run(GTK_DIALOG(file_chooser_dialog));
             if (res == GTK_RESPONSE_ACCEPT)
@@ -134,9 +128,9 @@ on_trk_button_button_release_event(GtkWidget *widget, GdkEvent *event, gpointer 
                         char* artist = taglib_tag_artist(tag);
                         gchar* track_info = g_strdup_printf("%s - %s", artist, title);
 
-                        gchar* short_label = ellipsize(title);
-                        gtk_button_set_label(GTK_BUTTON(widget), short_label);
-                        g_free(short_label);
+                        gtk_label_set_text(track_button_data->label, title);
+                        gtk_progress_bar_set_text(track_button_data->progress_bar, duration);
+                        gtk_progress_bar_set_fraction(track_button_data->progress_bar, 0);
 
                         g_free(duration);
                         g_free(track_info);
@@ -144,11 +138,6 @@ on_trk_button_button_release_event(GtkWidget *widget, GdkEvent *event, gpointer 
                     taglib_tag_free_strings();
                     taglib_file_free(taglib_file);
                 }
-                /*
-                gchar* short_label = ellipsize(track_button_data->file_path);
-                gtk_button_set_label(GTK_BUTTON(widget), short_label);
-                g_free(short_label);
-                */
             }
             gtk_widget_destroy(file_chooser_dialog);
         }
@@ -156,7 +145,9 @@ on_trk_button_button_release_event(GtkWidget *widget, GdkEvent *event, gpointer 
         {
             g_free(track_button_data->file_path);
             track_button_data->file_path = NULL;
-            gtk_button_set_label(GTK_BUTTON(widget), track_button_data->button_name);
+            gtk_label_set_text(track_button_data->label, track_button_data->button_name);
+            gtk_progress_bar_set_text(track_button_data->progress_bar, "00:00");
+            gtk_progress_bar_set_fraction(track_button_data->progress_bar, 0);
         }
     }
     return FALSE;

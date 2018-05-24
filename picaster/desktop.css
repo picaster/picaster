@@ -3,7 +3,8 @@
     color: white;
 }
 
-.redchecked:checked {
+.redchecked:checked,
+.button_playing {
     background: darkred;
     color: white;
 }

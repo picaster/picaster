@@ -26,9 +26,11 @@
 
 typedef struct {
 
-    gchar*   file_path;
-    gchar*   button_name;
-    gpointer audio_context;
+    gchar*          file_path;
+    gchar*          button_name;
+    GtkLabel*       label;
+    GtkProgressBar* progress_bar;
+    gpointer        audio_context;
 
 } TrackButtonData;
 

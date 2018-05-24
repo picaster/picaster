@@ -72,7 +72,6 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkButton" id="trk1_button">
-                    <property name="label" translatable="yes">TRK1</property>
                     <property name="name">trk1_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -80,6 +79,43 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                     <property name="yalign">0.49000000953674316</property>
                     <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
                     <signal name="clicked" handler="on_trk_button_clicked" swapped="no"/>
+                    <child>
+                      <object class="GtkBox" id="trk1_button_box">
+                        <property name="name">trk1_button_box</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel" id="trk1_button_label">
+                            <property name="name">trk1_button_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">TRK1</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkProgressBar" id="trk1_button_progressbar">
+                            <property name="name">trk1_button_progressbar</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="text" translatable="yes">00:00</property>
+                            <property name="show_text">True</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -89,13 +125,49 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 </child>
                 <child>
                   <object class="GtkButton" id="trk2_button">
-                    <property name="label" translatable="yes">TRK2</property>
                     <property name="name">trk2_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
                     <signal name="clicked" handler="on_trk_button_clicked" swapped="no"/>
+                    <child>
+                      <object class="GtkBox" id="trk2_button_box">
+                        <property name="name">trk2_button_box</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel" id="trk2_button_label">
+                            <property name="name">trk2_button_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">TRK2</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkProgressBar" id="trk2_button_progressbar">
+                            <property name="name">trk2_button_progressbar</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="text" translatable="yes">00:00</property>
+                            <property name="show_text">True</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -118,13 +190,49 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkButton" id="trk3_button">
-                    <property name="label" translatable="yes">TRK3</property>
                     <property name="name">trk3_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
                     <signal name="clicked" handler="on_trk_button_clicked" swapped="no"/>
+                    <child>
+                      <object class="GtkBox" id="trk3_button_box">
+                        <property name="name">trk3_button_box</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel" id="trk3_button_label">
+                            <property name="name">trk3_button_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">TRK3</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkProgressBar" id="trk3_button_progressbar">
+                            <property name="name">trk3_button_progressbar</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="text" translatable="yes">00:00</property>
+                            <property name="show_text">True</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -134,13 +242,49 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 </child>
                 <child>
                   <object class="GtkButton" id="trk4_button">
-                    <property name="label" translatable="yes">TRK4</property>
                     <property name="name">trk4_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
                     <signal name="clicked" handler="on_trk_button_clicked" swapped="no"/>
+                    <child>
+                      <object class="GtkBox" id="trk4_button_box">
+                        <property name="name">trk4_button_box</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel" id="trk4_button_label">
+                            <property name="name">trk4_button_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">TRK4</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkProgressBar" id="trk4_button_progressbar">
+                            <property name="name">trk4_button_progressbar</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="text" translatable="yes">00:00</property>
+                            <property name="show_text">True</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -163,13 +307,49 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkButton" id="trk5_button">
-                    <property name="label" translatable="yes">TRK5</property>
                     <property name="name">trk5_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
                     <signal name="clicked" handler="on_trk_button_clicked" swapped="no"/>
+                    <child>
+                      <object class="GtkBox" id="trk5_button_box">
+                        <property name="name">trk5_button_box</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel" id="trk5_button_label">
+                            <property name="name">trk5_button_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">TRK5</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkProgressBar" id="trk5_button_progressbar">
+                            <property name="name">trk5_button_progressbar</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="text" translatable="yes">00:00</property>
+                            <property name="show_text">True</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -179,13 +359,49 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 </child>
                 <child>
                   <object class="GtkButton" id="trk6_button">
-                    <property name="label" translatable="yes">TRK6</property>
                     <property name="name">trk6_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
                     <signal name="clicked" handler="on_trk_button_clicked" swapped="no"/>
+                    <child>
+                      <object class="GtkBox" id="trk6_button_box">
+                        <property name="name">trk6_button_box</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel" id="trk6_button_label">
+                            <property name="name">trk6_button_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">TRK6</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkProgressBar" id="trk6_button_progressbar">
+                            <property name="name">trk6_button_progressbar</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="text" translatable="yes">00:00</property>
+                            <property name="show_text">True</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -208,13 +424,49 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkButton" id="trk7_button">
-                    <property name="label" translatable="yes">TRK7</property>
                     <property name="name">trk7_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
                     <signal name="clicked" handler="on_trk_button_clicked" swapped="no"/>
+                    <child>
+                      <object class="GtkBox" id="trk7_button_box">
+                        <property name="name">trk7_button_box</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel" id="trk7_button_label">
+                            <property name="name">trk7_button_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">TRK7</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkProgressBar" id="trk7_button_progressbar">
+                            <property name="name">trk7_button_progressbar</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="text" translatable="yes">00:00</property>
+                            <property name="show_text">True</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -224,13 +476,49 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 </child>
                 <child>
                   <object class="GtkButton" id="trk8_button">
-                    <property name="label" translatable="yes">TRK8</property>
                     <property name="name">trk8_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
                     <signal name="clicked" handler="on_trk_button_clicked" swapped="no"/>
+                    <child>
+                      <object class="GtkBox" id="trk8_button_box">
+                        <property name="name">trk8_button_box</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel" id="trk8_button_label">
+                            <property name="name">trk8_button_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">TRK8</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkProgressBar" id="trk8_button_progressbar">
+                            <property name="name">trk8_button_progressbar</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="text" translatable="yes">00:00</property>
+                            <property name="show_text">True</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -253,13 +541,49 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkButton" id="fx1_button">
-                    <property name="label" translatable="yes">FX1</property>
                     <property name="name">fx1_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
                     <signal name="clicked" handler="on_fx_button_clicked" swapped="no"/>
+                    <child>
+                      <object class="GtkBox" id="fx1_button_box">
+                        <property name="name">fx1_button_box</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel" id="fx1_button_label">
+                            <property name="name">fx1_button_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">FX1</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="fx1_button_duration_label">
+                            <property name="name">fx1_button_duration_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">00:00</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -269,13 +593,49 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 </child>
                 <child>
                   <object class="GtkButton" id="fx2_button">
-                    <property name="label" translatable="yes">FX2</property>
                     <property name="name">fx2_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
                     <signal name="clicked" handler="on_fx_button_clicked" swapped="no"/>
+                    <child>
+                      <object class="GtkBox" id="fx2_button_box">
+                        <property name="name">fx2_button_box</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel" id="fx2_button_label">
+                            <property name="name">fx2_button_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">FX2</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="fx2_button_duration_label">
+                            <property name="name">fx1_button_duration_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">00:00</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -285,13 +645,49 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 </child>
                 <child>
                   <object class="GtkButton" id="fx3_button">
-                    <property name="label" translatable="yes">FX3</property>
                     <property name="name">fx3_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
                     <signal name="clicked" handler="on_fx_button_clicked" swapped="no"/>
+                    <child>
+                      <object class="GtkBox" id="fx3_button_box">
+                        <property name="name">fx3_button_box</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel" id="fx3_button_label">
+                            <property name="name">fx3_button_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">FX3</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="fx3_button_duration_label">
+                            <property name="name">fx3_button_duration_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">00:00</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -301,13 +697,49 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 </child>
                 <child>
                   <object class="GtkButton" id="fx4_button">
-                    <property name="label" translatable="yes">FX4</property>
                     <property name="name">fx4_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
                     <signal name="clicked" handler="on_fx_button_clicked" swapped="no"/>
+                    <child>
+                      <object class="GtkBox" id="fx4_button_box">
+                        <property name="name">fx4_button_box</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel" id="fx4_button_label">
+                            <property name="name">fx4_button_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">FX4</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="fx4_button_duration_label">
+                            <property name="name">fx4_button_duration_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">00:00</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -317,13 +749,49 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 </child>
                 <child>
                   <object class="GtkButton" id="fx5_button">
-                    <property name="label" translatable="yes">FX5</property>
                     <property name="name">fx5_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
                     <signal name="clicked" handler="on_fx_button_clicked" swapped="no"/>
+                    <child>
+                      <object class="GtkBox" id="fx5_button_box">
+                        <property name="name">fx5_button_box</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel" id="fx5_button_label">
+                            <property name="name">fx4_button_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">FX5</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="fx5_button_duration_label">
+                            <property name="name">fx5_button_duration_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">00:00</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -333,13 +801,49 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 </child>
                 <child>
                   <object class="GtkButton" id="fx6_button">
-                    <property name="label" translatable="yes">FX6</property>
                     <property name="name">fx6_button</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <signal name="button-release-event" handler="on_trk_button_button_release_event" swapped="no"/>
                     <signal name="clicked" handler="on_fx_button_clicked" swapped="no"/>
+                    <child>
+                      <object class="GtkBox" id="fx6_button_box">
+                        <property name="name">fx6_button_box</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel" id="fx6_button_label">
+                            <property name="name">fx6_button_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">FX6</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="fx6_button_duration_label">
+                            <property name="name">fx6_button_duration_label</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">00:00</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
