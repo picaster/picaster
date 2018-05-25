@@ -163,9 +163,9 @@ cb_print_position (GstElement *pipeline)
 
     if (gst_element_query_position (pipeline, GST_FORMAT_TIME, &pos) && gst_element_query_duration (pipeline, GST_FORMAT_TIME, &len)) {
         gint64 rem = (len - pos) / 1000000000;
-        gint64 seconds = rem % 60;
-        gint64 minutes = (rem - seconds) / 60;
-        g_print ("Time remaining : %02ld:%02ld\n", minutes, seconds);
+        gint seconds = rem % 60;
+        gint minutes = (rem - seconds) / 60;
+        g_print ("Time remaining : %02d:%02d\n", minutes, seconds);
     }
 
     /* call me again */
