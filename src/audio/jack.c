@@ -31,6 +31,7 @@
 #include <jack/statistics.h>
 
 #include "../context.h"
+#include <config.h>
 
 static jack_port_t* master_fader_input_ports[2];
 static jack_port_t* master_fader_output_ports[2];
@@ -53,8 +54,11 @@ p_generate_jackdrc()
     //GtkSpinButton* priority_spin_button = GTK_SPIN_BUTTON(gtk_builder_get_object(context.builder, "priority_spin_button"));
     //gint priority = 99; //(gint)gtk_spin_button_get_value(priority_spin_button);
 
-    //GtkComboBoxText* sample_rate_combo_box = GTK_COMBO_BOX_TEXT(gtk_builder_get_object(context.builder, "sample_rate_combo_box"));
-    const gchar* sample_rate = "44100"; //gtk_combo_box_get_active_id(GTK_COMBO_BOX(sample_rate_combo_box));
+#ifdef USE_DUMMY_DRIVER
+    gchar* command = g_strdup_printf("%s -ddummy", jackd_path);
+#else
+    GtkComboBoxText* sample_rate_combo_box = GTK_COMBO_BOX_TEXT(gtk_builder_get_object(context.builder, "jack_samplerate_combobox_text"));
+    const gchar* sample_rate = gtk_combo_box_get_active_id(GTK_COMBO_BOX(sample_rate_combo_box));
 
     //GtkComboBoxText* samples_per_period_combo_box = GTK_COMBO_BOX_TEXT(gtk_builder_get_object(context.builder, "samples_per_period_combo_box"));
     const gchar* samples_per_period = "128"; //gtk_combo_box_get_active_id(GTK_COMBO_BOX(samples_per_period_combo_box));
@@ -65,8 +69,8 @@ p_generate_jackdrc()
     GtkComboBoxText* output_device_combo_box_text = GTK_COMBO_BOX_TEXT(gtk_builder_get_object(context.builder, "output_device_combo_box_text"));
     const gchar* output_device = gtk_combo_box_get_active_id(GTK_COMBO_BOX(output_device_combo_box_text));
 
-    //gchar* command = g_strdup_printf("%s -P%d -dalsa -r%s -p%s -n2 -D -Chw:%s -Phw:%s", jackd_path, priority, sample_rate, samples_per_period, input_device, output_device);
     gchar* command = g_strdup_printf("%s -dalsa -r%s -p%s -n4 -D -Chw:%s -Phw:%s", jackd_path, sample_rate, samples_per_period, input_device, output_device);
+#endif
     gchar* jackdrc = g_strdup_printf("%s/.jackdrc", getenv("HOME"));
     FILE* fp = fopen(jackdrc, "w");
     fputs(command, fp);
@@ -80,7 +84,6 @@ p_generate_jackdrc()
 void
 p_jack_start_server()
 {
-    p_generate_jackdrc();
     pid_t pid = fork();
     if (pid > 0) {
         context.jackd_pid = pid;
@@ -88,14 +91,19 @@ p_jack_start_server()
     else if (pid == 0)
     {
         // We are the child
-        //umask(0);
-        setsid();
+        gchar* command_line = p_generate_jackdrc();
+        gchar** tokens = g_strsplit(command_line, " ", -1);
+        g_free(command_line);
 
-        execl("/usr/bin/jackd", "/usr/bin/jackd", "-dalsa", "-r44100", "-p128", "-n4", "-D", "-Chw:CODEC", "-Phw:CODEC", NULL);
+        //execl("/usr/bin/jackd", "/usr/bin/jackd", "-dalsa", "-r44100", "-p128", "-n4", "-D", "-Chw:CODEC", "-Phw:CODEC", NULL);
+        execv(tokens[0], tokens);
+
+        // just in case, but we're gone at this point.
+        g_strfreev(tokens);
     }
     else
     {
-        // We are f....d
+        // We shall never get here... right ?
     }
 }
 
@@ -219,7 +227,7 @@ void
 p_jack_init_client()
 {
     jack_status_t jack_status = 0;
-    jack_options_t options = JackNullOption;
+    jack_options_t options = JackNoStartServer;
     jack_client_t* client = jack_client_open("PiCaster", options, &jack_status, NULL);
     if (client == NULL)
     {

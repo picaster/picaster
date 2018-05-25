@@ -41,6 +41,22 @@ on_jackd_path_entry_changed(GtkEntry* entry, gpointer user_data)
 }
 
 void
+on_jack_samplerate_combobox_text_changed(GtkComboBox* sample_rate_combo_box, gpointer user_data)
+{
+    const gchar* sample_rate = gtk_combo_box_get_active_id(sample_rate_combo_box);
+    p_settings_save_string("jack", "sample_rate", sample_rate);
+}
+
+static gboolean
+p_jack_client_timeout(gpointer user_data)
+{
+    p_jack_init_client();
+    context.jack_initialized = TRUE;
+    p_context_notify(NOTIFICATION_JACK_STARTED);
+    return FALSE;
+}
+
+void
 on_start_jack_toggle_button_toggled(GtkToggleButton* toggle_button, gpointer user_data)
 {
     gboolean is_active = gtk_toggle_button_get_active(toggle_button);
@@ -48,10 +64,7 @@ on_start_jack_toggle_button_toggled(GtkToggleButton* toggle_button, gpointer use
     if (is_active)
     {
         p_jack_start_server();
-        p_jack_init_client();
-
-        context.jack_initialized = TRUE;
-        p_context_notify(NOTIFICATION_JACK_STARTED);
+        g_timeout_add(500, p_jack_client_timeout, NULL);
     }
     else
     {

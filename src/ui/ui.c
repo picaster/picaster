@@ -136,8 +136,12 @@ static void
 p_gtk_init_jack_settings()
 {
     p_gtk_init_device_lists();
+
     gchar* jackd_path = p_settings_get_string("jack", "jackd_path_entry", "/usr/bin/jackd");
     gtk_entry_set_text(GTK_ENTRY(gtk_builder_get_object(context.builder, "jackd_path_entry")), jackd_path);
+
+    gchar* sample_rate = p_settings_get_string("jack", "sample_rate", "44100");
+    gtk_combo_box_set_active_id(GTK_COMBO_BOX(gtk_builder_get_object(context.builder, "jack_samplerate_combobox_text")), sample_rate);
 }
 
 static void
