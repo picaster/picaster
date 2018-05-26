@@ -26,3 +26,8 @@ stage/
 \#*\#
 picaster*.tar.gz
 picaster-*/
+ar-lib
+config.guess
+config.sub
+ltmain.sh
+m4/

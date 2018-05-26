@@ -26,9 +26,15 @@
 #include "context.h"
 #include "audio/gstreamer.h"
 
+#include "dummy-jack.h"
+#include "dummy-mumble.h"
+
 int
 main(int argc, char** argv)
 {
+    dummy_jack();
+    dummy_mumble();
+
     p_log_init();
     p_log("Starting picaster");
 
