@@ -19,20 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __AUDIO__GSTREAMER_H_INCLUDED
-#define __AUDIO__GSTREAMER_H_INCLUDED
-
-#include <gst/gst.h>
-
-typedef void(*P_CALLBACK)(gint64 pos, gint64 len, gpointer user_data);
-
-void
-p_gstreamer_init(int* argc, char*** argv);
-
-GstElement*
-p_gstreamer_play_track(gchar* file_path, P_CALLBACK callback, gpointer callback_user_data);
-
-void
-p_gstreamer_stop_track(gpointer audio_context);
+#ifndef __UI__YES_NO_DIALOG_H_INCLUDED
+#define __UI__YES_NO_DIALOG_H_INCLUDED
 
 #endif

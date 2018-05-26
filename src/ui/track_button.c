@@ -24,31 +24,42 @@
 #include <stdlib.h>
 #include <string.h>
 #include <taglib/tag_c.h>
+#include <gtk/gtk.h>
 
 #include "../audio/gstreamer.h"
 #include "../context.h"
 
+static void
+cb_print_position(gint64 pos, gint64 len, gpointer user_data)
+{
+    GtkButton* button = (GtkButton*)user_data;
+    TrackButtonData* track_button_data = (TrackButtonData*)g_object_get_data(G_OBJECT(button), "button_data");
+    gtk_progress_bar_set_fraction(track_button_data->progress_bar, (gdouble)pos / (gdouble)len);
+    gint64 rem = (len - pos) / 1000000000;
+    gint seconds = rem % 60;
+    gint minutes = (rem - seconds) / 60;
+    gchar* time_remaining = g_strdup_printf("%02d:%02d", minutes, seconds);
+    gtk_progress_bar_set_text(track_button_data->progress_bar, time_remaining);
+    g_free(time_remaining);
+}
+
 void
 on_trk_button_clicked(GtkButton* button, gpointer user_data)
 {
+    if (!context.jack_initialized) return;
     TrackButtonData* track_button_data = (TrackButtonData*)g_object_get_data(G_OBJECT(button), "button_data");
-    if (track_button_data->file_path == NULL)
-    {
-        g_print("nothing to play\n");
-    }
-    else
+    if (track_button_data->file_path != NULL)
     {
         GtkStyleContext *context;
         context = gtk_widget_get_style_context(GTK_WIDGET(button));
 
         if (track_button_data->audio_context == NULL)
         {
-            track_button_data->audio_context = p_gstreamer_play_track(track_button_data->file_path);
+            track_button_data->audio_context = p_gstreamer_play_track(track_button_data->file_path, cb_print_position, button);
             gtk_style_context_add_class(context,"button_playing");
         }
         else
         {
-            g_print("->p_gstreamer_stop_track\n");
             p_gstreamer_stop_track(track_button_data->audio_context);
             track_button_data->audio_context = NULL;
             gtk_style_context_remove_class(context,"button_playing");
@@ -143,11 +154,20 @@ on_trk_button_button_release_event(GtkWidget *widget, GdkEvent *event, gpointer 
         }
         else
         {
-            g_free(track_button_data->file_path);
-            track_button_data->file_path = NULL;
-            gtk_label_set_text(track_button_data->label, track_button_data->button_name);
-            gtk_progress_bar_set_text(track_button_data->progress_bar, "00:00");
-            gtk_progress_bar_set_fraction(track_button_data->progress_bar, 0);
+            GtkDialog* dialog = GTK_DIALOG(gtk_builder_get_object(context.builder, "yes_no_dialog"));
+            GtkLabel* label = GTK_LABEL(gtk_builder_get_object(context.builder, "yes_no_dialog_label"));
+            gtk_label_set_text(label, "Are you sure you want to clear this track ?");
+
+            gint response = gtk_dialog_run(dialog);
+            gtk_widget_hide(GTK_WIDGET(dialog));
+            if (response == GTK_RESPONSE_YES)
+            {
+                g_free(track_button_data->file_path);
+                track_button_data->file_path = NULL;
+                gtk_label_set_text(track_button_data->label, track_button_data->button_name);
+                gtk_progress_bar_set_text(track_button_data->progress_bar, "00:00");
+                gtk_progress_bar_set_fraction(track_button_data->progress_bar, 0);
+            }
         }
     }
     return FALSE;

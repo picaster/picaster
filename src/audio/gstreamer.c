@@ -157,23 +157,21 @@ p_gstreamer_init(int* argc, char*** argv)
 }
 
 static gboolean
-cb_print_position (GstElement *pipeline)
+cb_print_position(GstElement *pipeline)
 {
     gint64 pos, len;
 
     if (gst_element_query_position (pipeline, GST_FORMAT_TIME, &pos) && gst_element_query_duration (pipeline, GST_FORMAT_TIME, &len)) {
-        gint64 rem = (len - pos) / 1000000000;
-        gint seconds = rem % 60;
-        gint minutes = (rem - seconds) / 60;
-        g_print ("Time remaining : %02d:%02d\n", minutes, seconds);
+        P_CALLBACK callback = (P_CALLBACK)g_object_get_data(G_OBJECT(pipeline), "callback");
+        gpointer callback_user_data = g_object_get_data(G_OBJECT(pipeline), "callback_user_data");
+        callback(pos, len, callback_user_data);
     }
 
-    /* call me again */
     return TRUE;
 }
 
 GstElement*
-p_gstreamer_play_track(gchar* file_path)
+p_gstreamer_play_track(gchar* file_path, P_CALLBACK callback, gpointer callback_user_data)
 {
     if (player_a_active && player_b_active)
     {
@@ -195,7 +193,9 @@ p_gstreamer_play_track(gchar* file_path)
     g_object_set(bin, "uri", uri, NULL);
     g_object_set_data(G_OBJECT(bin), "file_path", file_path);
     g_free(uri);
-    g_timeout_add(500, (GSourceFunc) cb_print_position, bin);
+    g_object_set_data(G_OBJECT(bin), "callback", callback);
+    g_object_set_data(G_OBJECT(bin), "callback_user_data", callback_user_data);
+    g_timeout_add(500, (GSourceFunc)cb_print_position, bin);
     gst_element_set_state(bin, GST_STATE_PLAYING);
     return bin;
 }

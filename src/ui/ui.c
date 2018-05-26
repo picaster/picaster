@@ -157,11 +157,12 @@ activate(GtkApplication *app, gpointer user_data)
         GtkBox* buttons_box = GTK_BOX(gtk_builder_get_object(context.builder, "buttons_box"));
         gtk_widget_set_sensitive(GTK_WIDGET(buttons_box), TRUE);
     }));
+    /*
     p_context_subscribe(NOTIFICATION_JACK_STOPPED, lambda(void, () {
         GtkBox* buttons_box = GTK_BOX(gtk_builder_get_object(context.builder, "buttons_box"));
         gtk_widget_set_sensitive(GTK_WIDGET(buttons_box), FALSE);
     }));
-
+    */
     gtk_builder_connect_signals(context.builder, NULL);
 
     p_gtk_show_main_window(app);
