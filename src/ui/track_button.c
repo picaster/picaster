@@ -29,6 +29,14 @@
 #include "../audio/gstreamer.h"
 #include "../context.h"
 
+static gboolean
+cb_reset_button(gpointer user_data)
+{
+    GtkButton* button = (GtkButton*)user_data;
+    on_trk_button_clicked(button, NULL);
+    return FALSE;
+}
+
 static void
 cb_print_position(gint64 pos, gint64 len, gpointer user_data)
 {
@@ -41,6 +49,11 @@ cb_print_position(gint64 pos, gint64 len, gpointer user_data)
     gchar* time_remaining = g_strdup_printf("%02d:%02d", minutes, seconds);
     gtk_progress_bar_set_text(track_button_data->progress_bar, time_remaining);
     g_free(time_remaining);
+
+    if ((pos == -1) && (len == -1))
+    {
+        g_timeout_add(100, cb_reset_button, button);
+    }
 }
 
 void
@@ -48,11 +61,11 @@ on_trk_button_clicked(GtkButton* button, gpointer user_data)
 {
     if (!context.jack_initialized) return;
     TrackButtonData* track_button_data = (TrackButtonData*)g_object_get_data(G_OBJECT(button), "button_data");
+
     if (track_button_data->file_path != NULL)
     {
         GtkStyleContext *context;
         context = gtk_widget_get_style_context(GTK_WIDGET(button));
-
         if (track_button_data->audio_context == NULL)
         {
             track_button_data->audio_context = p_gstreamer_play_track(track_button_data->file_path, cb_print_position, button);
@@ -118,13 +131,11 @@ on_trk_button_button_release_event(GtkWidget *widget, GdkEvent *event, gpointer 
                 TagLib_File* taglib_file = taglib_file_new(track_button_data->file_path);
                 if (taglib_file == NULL)
                 {
-                    g_printerr("Error : %s could not be opened\n", track_button_data->file_path);
                 }
                 else
                 {
                     if (!taglib_file_is_valid(taglib_file))
                     {
-                        g_printerr("Error : %s is invalid or has no information\n", track_button_data->file_path);
                     }
                     else
                     {

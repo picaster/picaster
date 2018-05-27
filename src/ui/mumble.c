@@ -44,16 +44,12 @@ p_gtk_init_mumble_settings()
 
     p_context_subscribe(NOTIFICATION_JACK_STARTED, lambda(void, () {
         GtkFrame* mumble_frame = GTK_FRAME(gtk_builder_get_object(context.builder, "mumble_frame"));
-        g_print("jack started, sensitive : %d\n", gtk_widget_get_sensitive(GTK_WIDGET(mumble_frame)));
         gtk_widget_set_sensitive(GTK_WIDGET(mumble_frame), TRUE);
-        g_print("jack started, sensitive : %d\n", gtk_widget_get_sensitive(GTK_WIDGET(mumble_frame)));
     }));
 
     p_context_subscribe(NOTIFICATION_JACK_STOPPED, lambda(void, () {
         GtkFrame* mumble_frame = GTK_FRAME(gtk_builder_get_object(context.builder, "mumble_frame"));
-        g_print("jack stopped, sensitive : %d\n", gtk_widget_get_sensitive(GTK_WIDGET(mumble_frame)));
         gtk_widget_set_sensitive(GTK_WIDGET(mumble_frame), FALSE);
-        g_print("jack stopped, sensitive : %d\n", gtk_widget_get_sensitive(GTK_WIDGET(mumble_frame)));
     }));
 }
 

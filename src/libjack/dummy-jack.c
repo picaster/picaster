@@ -11,5 +11,5 @@
 void
 dummy_jack()
 {
-    fprintf(stderr, "Hello, dummy jack !");
+    fprintf(stderr, "Hello, dummy jack !\n");
 }

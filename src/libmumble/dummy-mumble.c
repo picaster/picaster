@@ -11,5 +11,5 @@
 void
 dummy_mumble()
 {
-    fprintf(stderr, "Hello, dummy mumble !");
+    fprintf(stderr, "Hello, dummy mumble !\n");
 }

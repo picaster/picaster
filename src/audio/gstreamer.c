@@ -40,7 +40,6 @@ typedef enum
 static gboolean
 p_gstreamer_handle_message(GstBus *bus, GstMessage *message)
 {
-    g_print("handle_message - message type : %s\n", gst_message_type_get_name(GST_MESSAGE_TYPE(message)));
     return TRUE;
 }
 
@@ -58,27 +57,20 @@ print_one_tag (const GstTagList * list, const gchar * tag, gpointer user_data)
      * we only use the GValue approach here because it is more generic * /
     val = gst_tag_list_get_value_index (list, tag, i);
     if (G_VALUE_HOLDS_STRING (val)) {
-      g_print ("\t%20s : %s\n", tag, g_value_get_string (val));
     } else if (G_VALUE_HOLDS_UINT (val)) {
-      g_print ("\t%20s : %u\n", tag, g_value_get_uint (val));
     } else if (G_VALUE_HOLDS_DOUBLE (val)) {
-      g_print ("\t%20s : %g\n", tag, g_value_get_double (val));
     } else if (G_VALUE_HOLDS_BOOLEAN (val)) {
-      g_print ("\t%20s : %s\n", tag,
           (g_value_get_boolean (val)) ? "true" : "false");
     } else if (GST_VALUE_HOLDS_BUFFER (val)) {
       GstBuffer *buf = gst_value_get_buffer (val);
       guint buffer_size = gst_buffer_get_size (buf);
 
-      g_print ("\t%20s : buffer of size %u\n", tag, buffer_size);
     } else if (GST_VALUE_HOLDS_DATE_TIME (val)) {
       GstDateTime *dt = g_value_get_boxed (val);
       gchar *dt_str = gst_date_time_to_iso8601_string (dt);
 
-      g_print ("\t%20s : %s\n", tag, dt_str);
       g_free (dt_str);
     } else {
-      g_print ("\t%20s : tag of type '%s'\n", tag, G_VALUE_TYPE_NAME (val));
     }
   }
 }
@@ -92,9 +84,7 @@ p_gstreamer_handle_message_sync(GstBus* bus,GstMessage* message, GstElement* bin
         /*
         GstTagList *tags = NULL;
         gst_message_parse_tag (message, &tags);
-        g_print ("Got tags from element %s:\n", GST_OBJECT_NAME (message->src));
         gst_tag_list_foreach (tags, print_one_tag, NULL);
-        g_print ("\n");
         gst_tag_list_unref (tags);
         */
     }
@@ -103,10 +93,15 @@ p_gstreamer_handle_message_sync(GstBus* bus,GstMessage* message, GstElement* bin
     if (message->type != GST_MESSAGE_TAG)
     */
     {
-        g_print("handle_message_sync - %s : message type : %s\n", gst_element_get_name(bin), gst_message_type_get_name(GST_MESSAGE_TYPE(message)));
     }
     if (message->type == GST_MESSAGE_EOS)
-    {/*
+    {
+        gint callback_id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(bin), "callback_id"));
+        g_source_remove(callback_id);
+        P_CALLBACK callback = (P_CALLBACK)g_object_get_data(G_OBJECT(bin), "callback");
+        gpointer callback_user_data = g_object_get_data(G_OBJECT(bin), "callback_user_data");
+        callback(-1, -1, callback_user_data);
+        /*
         GtkToggleButton* button = GTK_TOGGLE_BUTTON(g_object_get_data(G_OBJECT(bin), "button"));
         gtk_toggle_button_set_active(button, FALSE);*/
     }
@@ -157,13 +152,13 @@ p_gstreamer_init(int* argc, char*** argv)
 }
 
 static gboolean
-cb_print_position(GstElement *pipeline)
+cb_print_position(GstElement *bin)
 {
     gint64 pos, len;
 
-    if (gst_element_query_position (pipeline, GST_FORMAT_TIME, &pos) && gst_element_query_duration (pipeline, GST_FORMAT_TIME, &len)) {
-        P_CALLBACK callback = (P_CALLBACK)g_object_get_data(G_OBJECT(pipeline), "callback");
-        gpointer callback_user_data = g_object_get_data(G_OBJECT(pipeline), "callback_user_data");
+    if (gst_element_query_position (bin, GST_FORMAT_TIME, &pos) && gst_element_query_duration (bin, GST_FORMAT_TIME, &len)) {
+        P_CALLBACK callback = (P_CALLBACK)g_object_get_data(G_OBJECT(bin), "callback");
+        gpointer callback_user_data = g_object_get_data(G_OBJECT(bin), "callback_user_data");
         callback(pos, len, callback_user_data);
     }
 
@@ -195,7 +190,8 @@ p_gstreamer_play_track(gchar* file_path, P_CALLBACK callback, gpointer callback_
     g_free(uri);
     g_object_set_data(G_OBJECT(bin), "callback", callback);
     g_object_set_data(G_OBJECT(bin), "callback_user_data", callback_user_data);
-    g_timeout_add(500, (GSourceFunc)cb_print_position, bin);
+    gint callback_id = g_timeout_add(500, (GSourceFunc)cb_print_position, bin);
+    g_object_set_data(G_OBJECT(bin), "callback_id", GINT_TO_POINTER(callback_id));
     gst_element_set_state(bin, GST_STATE_PLAYING);
     return bin;
 }
@@ -204,7 +200,14 @@ void
 p_gstreamer_stop_track(gpointer audio_context)
 {
     GstElement* bin = GST_ELEMENT(audio_context);
-    gst_element_set_state(bin, GST_STATE_READY);
+    GstState state;
+    GstState pending;
+    gst_element_get_state(bin, &state, &pending, (GstClockType)NULL);
+    if (state == GST_STATE_PLAYING)
+    {
+        gst_element_set_state(bin, GST_STATE_PAUSED);
+        gst_element_set_state(bin, GST_STATE_READY);
+    }
     gchar* name = gst_element_get_name(bin);
     if (!strcmp(name, "track_player_a"))
     {

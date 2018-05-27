@@ -37,4 +37,9 @@ typedef struct {
 void
 p_gtk_init_track_buttons();
 
+// Usefull callbacks
+
+void
+on_trk_button_clicked(GtkButton* button, gpointer user_data);
+
 #endif
