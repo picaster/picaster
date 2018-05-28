@@ -31,3 +31,4 @@ config.guess
 config.sub
 ltmain.sh
 m4/
+*.swp

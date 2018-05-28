@@ -24,16 +24,6 @@
 
 #include <gtk/gtk.h>
 
-typedef struct {
-
-    gchar*          file_path;
-    gchar*          button_name;
-    GtkLabel*       label;
-    GtkProgressBar* progress_bar;
-    gpointer        audio_context;
-
-} TrackButtonData;
-
 void
 p_gtk_init_track_buttons();
 

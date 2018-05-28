@@ -1,6 +1,6 @@
-SUBDIRS = libjack libmumble .
+SUBDIRS = libaudio libmumble .
 
-AM_CPPFLAGS = -I$(top_srcdir)/src/libjack
+AM_CPPFLAGS = -I$(top_srcdir)/src/libaudio
 AM_CPPFLAGS += -I$(top_srcdir)/src/libmumble
 
 bin_PROGRAMS = picaster
@@ -11,7 +11,9 @@ picaster_SOURCES += picaster.c picaster.h
 picaster_SOURCES += settings.c settings.h
 picaster_SOURCES += audio/gstreamer.c audio/gstreamer.h
 picaster_SOURCES += audio/jack.c audio/jack.h
+picaster_SOURCES += ui/common_button.c ui/common_button.h
 picaster_SOURCES += ui/device_lists.c ui/device_lists.h
+picaster_SOURCES += ui/fx_button.c ui/fx_button.h
 picaster_SOURCES += ui/jack.c ui/jack.h
 picaster_SOURCES += ui/microphone.c ui/microphone.h
 picaster_SOURCES += ui/mumble.c ui/mumble.h
@@ -26,7 +28,7 @@ picaster_CFLAGS += @JACK2_CFLAGS@
 picaster_CFLAGS += @GSTREAMER_CFLAGS@
 picaster_CFLAGS += @TAGLIB_CFLAGS@
 
-picaster_LDADD  = libjack/libpicaster-jack.la
+picaster_LDADD  = libaudio/libpicaster-audio.la
 picaster_LDADD += libmumble/libpicaster-mumble.la
 picaster_LDADD += @GTK_LIBS@
 picaster_LDADD += @ALSA_LIBS@

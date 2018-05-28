@@ -19,20 +19,16 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __AUDIO__GSTREAMER_H_INCLUDED
-#define __AUDIO__GSTREAMER_H_INCLUDED
+#ifndef __UI__FX_BUTTON_H_INCLUDED
+#define __UI__FX_BUTTON_H_INCLUDED
 
-#include <gst/gst.h>
-
-typedef void(*P_CALLBACK)(gint64 pos, gint64 len, gpointer user_data);
+#include <gtk/gtk.h>
 
 void
-p_gstreamer_init(int* argc, char*** argv);
-
-GstElement*
-p_gstreamer_play_track(const gchar* file_path, P_CALLBACK callback, gpointer callback_user_data);
+on_fx_button_clicked(GtkButton *button, gpointer user_data);
 
 void
-p_gstreamer_stop_track(gpointer audio_context);
+p_gtk_init_fx_buttons();
 
 #endif
+

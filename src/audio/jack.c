@@ -143,10 +143,10 @@ p_jack_init_dj_fader()
 static void
 p_jack_init_effects_fader()
 {
-    effects_fader_input_ports[0] = jack_port_register(context.jack_client, "in_effects_1", JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
-    effects_fader_input_ports[1] = jack_port_register(context.jack_client, "in_effects_2", JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
-    effects_fader_output_ports[0] = jack_port_register(context.jack_client, "out_effects_1", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
-    effects_fader_output_ports[1] = jack_port_register(context.jack_client, "out_effects_2", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
+    effects_fader_input_ports[0] = jack_port_register(context.jack_client, "in_effects_fader_1", JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
+    effects_fader_input_ports[1] = jack_port_register(context.jack_client, "in_effects_fader_2", JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
+    effects_fader_output_ports[0] = jack_port_register(context.jack_client, "out_effects_fader_1", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
+    effects_fader_output_ports[1] = jack_port_register(context.jack_client, "out_effects_fader_2", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
 
     jack_connect(context.jack_client, jack_port_name(effects_fader_output_ports[0]), jack_port_name(master_fader_input_ports[0]));
     jack_connect(context.jack_client, jack_port_name(effects_fader_output_ports[1]), jack_port_name(master_fader_input_ports[1]));
@@ -155,10 +155,10 @@ p_jack_init_effects_fader()
 static void
 p_jack_init_bedding_music_fader()
 {
-    bedding_music_fader_input_ports[0] = jack_port_register(context.jack_client, "in_bedding_music_1", JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
-    bedding_music_fader_input_ports[1] = jack_port_register(context.jack_client, "in_bedding_music_2", JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
-    bedding_music_fader_output_ports[0] = jack_port_register(context.jack_client, "out_bedding_music_1", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
-    bedding_music_fader_output_ports[1] = jack_port_register(context.jack_client, "out_bedding_music_2", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
+    bedding_music_fader_input_ports[0] = jack_port_register(context.jack_client, "in_bedding_music_fader_1", JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
+    bedding_music_fader_input_ports[1] = jack_port_register(context.jack_client, "in_bedding_music_fader_2", JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
+    bedding_music_fader_output_ports[0] = jack_port_register(context.jack_client, "out_bedding_music_fader_1", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
+    bedding_music_fader_output_ports[1] = jack_port_register(context.jack_client, "out_bedding_music_fader_2", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
 
     jack_connect(context.jack_client, jack_port_name(bedding_music_fader_output_ports[0]), jack_port_name(master_fader_input_ports[0]));
     jack_connect(context.jack_client, jack_port_name(bedding_music_fader_output_ports[1]), jack_port_name(master_fader_input_ports[1]));

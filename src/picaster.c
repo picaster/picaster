@@ -26,13 +26,14 @@
 #include "context.h"
 #include "audio/gstreamer.h"
 
-#include "dummy-jack.h"
+#include "dummy-audio.h"
 #include "dummy-mumble.h"
+#include "libaudio/libpicaster_audio.h"
 
 int
 main(int argc, char** argv)
 {
-    dummy_jack();
+    dummy_audio();
     dummy_mumble();
 
     p_log_init();
@@ -41,6 +42,8 @@ main(int argc, char** argv)
     p_context_init();
 
     p_gstreamer_init(&argc, &argv);
+
+    libpicaster_audio_init(&argc, &argv);
 
     GApplication* application = p_gtk_init(&argc, &argv);
     int status = g_application_run(application, argc, argv);

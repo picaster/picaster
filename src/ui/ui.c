@@ -31,6 +31,7 @@
 #include "mumble.h"
 #include "log.h"
 #include "track_button.h"
+#include "fx_button.h"
 
 static void
 p_gtk_load_gui()
@@ -152,6 +153,7 @@ activate(GtkApplication *app, gpointer user_data)
     p_gtk_init_jack_settings();
     p_gtk_init_mumble_settings();
     p_gtk_init_track_buttons();
+    p_gtk_init_fx_buttons();
 
     p_context_subscribe(NOTIFICATION_JACK_STARTED, lambda(void, () {
         GtkBox* buttons_box = GTK_BOX(gtk_builder_get_object(context.builder, "buttons_box"));

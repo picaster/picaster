@@ -19,20 +19,18 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __AUDIO__GSTREAMER_H_INCLUDED
-#define __AUDIO__GSTREAMER_H_INCLUDED
+#include "dummy-audio.h"
 
-#include <gst/gst.h>
-
-typedef void(*P_CALLBACK)(gint64 pos, gint64 len, gpointer user_data);
-
-void
-p_gstreamer_init(int* argc, char*** argv);
-
-GstElement*
-p_gstreamer_play_track(const gchar* file_path, P_CALLBACK callback, gpointer callback_user_data);
-
-void
-p_gstreamer_stop_track(gpointer audio_context);
-
+#ifdef HAVE_CONFIG_H
+#include <config.h>
 #endif
+
+#ifdef HAVE_STDIO_H
+#include <stdio.h>
+#endif
+
+void
+dummy_audio()
+{
+    fprintf(stderr, "Hello, dummy audio !\n");
+}

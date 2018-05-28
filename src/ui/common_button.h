@@ -19,20 +19,36 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __AUDIO__GSTREAMER_H_INCLUDED
-#define __AUDIO__GSTREAMER_H_INCLUDED
+#ifndef __UI__COMMON_BUTTON_H_INCLUDED
+#define __UI__COMMON_BUTTON_H_INCLUDED
 
-#include <gst/gst.h>
+#include <gtk/gtk.h>
 
-typedef void(*P_CALLBACK)(gint64 pos, gint64 len, gpointer user_data);
+typedef gpointer (*PStartAudioCallback)(GtkButton* button, const char* file_path);
+typedef void (*PStopAudioCallback)(gpointer audio_context);
+
+typedef struct {
+
+    gchar*             file_path;
+    gchar*             button_name;
+    GtkLabel*          label;
+    GtkProgressBar*    progress_bar;
+    GtkLabel*          duration_label;
+    gpointer           audio_context;
+    PStopAudioCallback stop_audio_callback;
+
+} PGtkButtonData;
 
 void
-p_gstreamer_init(int* argc, char*** argv);
-
-GstElement*
-p_gstreamer_play_track(const gchar* file_path, P_CALLBACK callback, gpointer callback_user_data);
+p_gtk_init_common_button(const char* prefix, int index);
 
 void
-p_gstreamer_stop_track(gpointer audio_context);
+p_gtk_common_button_released(GtkWidget *widget, GdkEvent *event, gpointer user_data);
+
+void
+p_gtk_common_button_clicked(GtkButton* button, PStartAudioCallback start_audio_callback, PStopAudioCallback stop_audio_callback);
+
+void
+p_gtk_common_button_update(gint64 pos, gint64 len, gpointer user_data);
 
 #endif

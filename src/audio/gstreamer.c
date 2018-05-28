@@ -166,7 +166,7 @@ cb_print_position(GstElement *bin)
 }
 
 GstElement*
-p_gstreamer_play_track(gchar* file_path, P_CALLBACK callback, gpointer callback_user_data)
+p_gstreamer_play_track(const gchar* file_path, P_CALLBACK callback, gpointer callback_user_data)
 {
     if (player_a_active && player_b_active)
     {
@@ -186,7 +186,7 @@ p_gstreamer_play_track(gchar* file_path, P_CALLBACK callback, gpointer callback_
     gchar* uri = g_strdup_printf("file://%s", file_path);
     gst_element_set_state(bin, GST_STATE_READY);
     g_object_set(bin, "uri", uri, NULL);
-    g_object_set_data(G_OBJECT(bin), "file_path", file_path);
+    g_object_set_data(G_OBJECT(bin), "file_path", (gpointer)file_path);
     g_free(uri);
     g_object_set_data(G_OBJECT(bin), "callback", callback);
     g_object_set_data(G_OBJECT(bin), "callback_user_data", callback_user_data);
@@ -200,14 +200,7 @@ void
 p_gstreamer_stop_track(gpointer audio_context)
 {
     GstElement* bin = GST_ELEMENT(audio_context);
-    GstState state;
-    GstState pending;
-    gst_element_get_state(bin, &state, &pending, (GstClockType)NULL);
-    if (state == GST_STATE_PLAYING)
-    {
-        gst_element_set_state(bin, GST_STATE_PAUSED);
-        gst_element_set_state(bin, GST_STATE_READY);
-    }
+    gst_element_set_state(bin, GST_STATE_READY);
     gchar* name = gst_element_get_name(bin);
     if (!strcmp(name, "track_player_a"))
     {
