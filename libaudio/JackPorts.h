@@ -33,7 +33,8 @@ class JackPorts {
         jack_port_t*   port1;
         jack_port_t*   port2;
         JackPortType   type;
-
+        jack_default_audio_sample_t** buffers;
+        
     public:
         JackPorts(jack_client_t* client, jack_port_t* port1, jack_port_t* port2, JackPortType type);
         void connectTo(JackPorts* dest);

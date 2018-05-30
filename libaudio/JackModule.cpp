@@ -29,6 +29,11 @@ JackModuleFactory::newModule(char* name, JackPorts* input_ports, JackPorts* outp
     return new JackModule(name, input_ports, output_ports);
 }
 
+JackModuleFactory::~JackModuleFactory()
+{
+    ;;
+}
+
 JackModule::JackModule(char* name, JackPorts* input_ports, JackPorts* output_ports)
 {
     this->name = name;
@@ -78,14 +83,11 @@ JackModule::process(jack_nframes_t nframes)
     jack_default_audio_sample_t** input_buffers = getInputPortsBuffers(nframes);
     jack_default_audio_sample_t** output_buffers = getOutputPortsBuffers(nframes);
 
-    for (int frame = 0; frame < nframes; frame++)
+    for (jack_nframes_t frame = 0; frame < nframes; frame++)
     {
         output_buffers[0][frame] = input_buffers[0][frame];
         output_buffers[1][frame] = input_buffers[1][frame];
     }
-
-    free(input_buffers);
-    free(output_buffers);
 }
 
 bool

@@ -26,6 +26,7 @@ JackPorts::JackPorts(jack_client_t* client, jack_port_t* port1, jack_port_t* por
     this->port1 = port1;
     this->port2 = port2;
     this->type = type;
+    buffers = (jack_default_audio_sample_t**)malloc(2 * sizeof(jack_default_audio_sample_t*));
 }
 
 void
@@ -49,7 +50,6 @@ JackPorts::connectTo(JackModule* module)
 jack_default_audio_sample_t**
 JackPorts::getBuffers(jack_nframes_t nframes)
 {
-    jack_default_audio_sample_t** buffers = (jack_default_audio_sample_t**)malloc(2 * sizeof(jack_default_audio_sample_t*));
     buffers[0] = (jack_default_audio_sample_t*)jack_port_get_buffer(port1, nframes);
     buffers[1] = (jack_default_audio_sample_t*)jack_port_get_buffer(port2, nframes);
     return buffers;

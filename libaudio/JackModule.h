@@ -26,6 +26,7 @@ class JackModule;
 class JackModuleFactory {
     public:
         virtual JackModule* newModule(char* name, JackPorts* input_ports, JackPorts* output_ports);
+        virtual ~JackModuleFactory();
 };
 
 

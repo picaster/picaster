@@ -4,6 +4,6 @@ bin_PROGRAMS = picaster
 
 picaster_SOURCES = picaster.cpp
 
-picaster_CFLAGS = -DDATADIR=\"$(datadir)\" -rdynamic -std=gnu99 -Wall -Werror 
+picaster_CXXFLAGS = -DDATADIR=\"$(datadir)\" -rdynamic -std=gnu++11 -Wall -Werror 
 
 picaster_LDADD = ../libaudio/libaudio.la

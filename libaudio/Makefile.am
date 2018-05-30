@@ -6,10 +6,10 @@ libaudio_la_SOURCES += JackPorts.cpp JackPorts.h
 libaudio_la_SOURCES += JackModule.cpp JackModule.h
 libaudio_la_SOURCES += PiCasterJackClient.cpp PiCasterJackClient.h
 
-libaudio_la_CFLAGS  = -std=gnu99 -Wall -Werror
-libaudio_la_CFLAGS += @JACK2_CFLAGS@
-libaudio_la_CFLAGS += @SNDFILE_CFLAGS@
-libaudio_la_CFLAGS += @FLAC_CFLAGS@
+libaudio_la_CXXFLAGS  = -std=gnu++11 -Wall -Werror
+libaudio_la_CXXFLAGS += @JACK2_CFLAGS@
+libaudio_la_CXXFLAGS += @SNDFILE_CFLAGS@
+libaudio_la_CXXFLAGS += @FLAC_CFLAGS@
 
 libaudio_la_LIBADD  = @JACK2_LIBS@
 libaudio_la_LIBADD += @SNDFILE_LIBS@
