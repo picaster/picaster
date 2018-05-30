@@ -13,6 +13,8 @@ dnl PKG_CHECK_MODULES([ALSA], [alsa])
 PKG_CHECK_MODULES([JACK2], [jack > 1.9])
 dnl PKG_CHECK_MODULES([GSTREAMER], [gstreamer-1.0])
 dnl PKG_CHECK_MODULES([TAGLIB], [taglib_c])
+PKG_CHECK_MODULES([SNDFILE], [sndfile])
+PKG_CHECK_MODULES([FLAC], [flac])
 
 AC_ARG_WITH([dummy-driver],
   [AS_HELP_STRING([--with-dummy-driver],

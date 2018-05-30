@@ -20,7 +20,7 @@
 #include "JackClient.h"
 #include "JackModule.h"
 
-void
+JackClient*
 libaudio_init()
 {
     JackClient* jackClient = new JackClient();
@@ -46,4 +46,6 @@ libaudio_init()
     JackModule* fx_fader = jackClient->createModule("fx_fader");
     fx->connectTo(fx_fader);
     fx_fader->connectTo(master_fader);
+
+    return jackClient;
 }

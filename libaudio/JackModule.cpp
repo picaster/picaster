@@ -15,6 +15,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <stdlib.h>
+
 #include "JackModule.h"
 #include "JackPorts.h"
 
@@ -46,4 +48,20 @@ JackPorts*
 JackModule::getOutputPorts()
 {
     return outputPorts;
+}
+
+void
+JackModule::process(jack_nframes_t nframes)
+{
+    jack_default_audio_sample_t** input_buffers = inputPorts->getBuffers(nframes);
+    jack_default_audio_sample_t** output_buffers = outputPorts->getBuffers(nframes);
+
+    for (int frame = 0; frame < nframes; frame++)
+    {
+        output_buffers[0][frame] = input_buffers[0][frame];
+        output_buffers[1][frame] = input_buffers[1][frame];
+    }
+
+    free(input_buffers);
+    free(output_buffers);
 }

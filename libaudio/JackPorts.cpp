@@ -15,6 +15,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <stdlib.h>
+
 #include "JackPorts.h"
 #include "JackModule.h"
 
@@ -42,4 +44,13 @@ void
 JackPorts::connectTo(JackModule* module)
 {
     connectTo(module->getInputPorts());
+}
+
+jack_default_audio_sample_t**
+JackPorts::getBuffers(jack_nframes_t nframes)
+{
+    jack_default_audio_sample_t** buffers = (jack_default_audio_sample_t**)malloc(2 * sizeof(jack_default_audio_sample_t*));
+    buffers[0] = (jack_default_audio_sample_t*)jack_port_get_buffer(port1, nframes);
+    buffers[1] = (jack_default_audio_sample_t*)jack_port_get_buffer(port2, nframes);
+    return buffers;
 }

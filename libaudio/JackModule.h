@@ -18,6 +18,8 @@
 #ifndef __JACK_MODULE_H_INCLUDED
 #define __JACK_MODULE_H_INCLUDED
 
+#include <jack/jack.h>
+
 class JackPorts;
 
 class JackModule {
@@ -32,6 +34,9 @@ class JackModule {
         void connectTo(JackModule* module);
         JackPorts* getInputPorts();
         JackPorts* getOutputPorts();
+        void setNext(JackModule* next);
+        void process(jack_nframes_t nframes);
+        
 };
 
 #endif

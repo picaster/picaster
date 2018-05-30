@@ -7,5 +7,10 @@ libaudio_la_SOURCES += JackModule.cpp JackModule.h
 
 libaudio_la_CFLAGS  = -std=gnu99 -Wall -Werror
 libaudio_la_CFLAGS += @JACK2_CFLAGS@
+libaudio_la_CFLAGS += @SNDFILE_CFLAGS@
+libaudio_la_CFLAGS += @FLAC_CFLAGS@
 
 libaudio_la_LIBADD  = @JACK2_LIBS@
+libaudio_la_LIBADD += @SNDFILE_LIBS@
+libaudio_la_LIBADD += @FLAC_LIBS@
+libaudio_la_LIBADD += -lpthread

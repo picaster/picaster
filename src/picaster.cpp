@@ -18,15 +18,23 @@
 #include <libaudio.h>
 
 #include <unistd.h>
+#include <iostream>
 
 int
 main(int argc, char** argv)
 {
-    libaudio_init();
+    JackClient* jackClient = libaudio_init();
 
-    while (1)
+    jackClient->startRecording("/tmp/picaster.flac");
+
+    int bloc = 200;
+    while (--bloc > 0)
     {
         usleep(50000);
     }
+
+    jackClient->stopRecording();
+    jackClient->close();
+
     return 0;
 }

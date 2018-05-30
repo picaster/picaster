@@ -38,6 +38,7 @@ class JackPorts {
         JackPorts(jack_client_t* client, jack_port_t* port1, jack_port_t* port2, JackPortType type);
         void connectTo(JackPorts* dest);
         void connectTo(JackModule* module);
+        jack_default_audio_sample_t** getBuffers(jack_nframes_t nframes);
 };
 
 #endif
