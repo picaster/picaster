@@ -16,45 +16,67 @@
 */
 
 #include <stdlib.h>
+#include <iostream>
 
 #include "JackModule.h"
 #include "JackPorts.h"
 
-JackModule::JackModule(JackPorts* inputPorts, JackPorts* outputPorts)
+JackModuleFactory* JackModule::DEFAULT_FACTORY = new JackModuleFactory();
+
+JackModule*
+JackModuleFactory::newModule(char* name, JackPorts* input_ports, JackPorts* output_ports)
 {
-    this->inputPorts = inputPorts;
-    this->outputPorts = outputPorts;
+    return new JackModule(name, input_ports, output_ports);
+}
+
+JackModule::JackModule(char* name, JackPorts* input_ports, JackPorts* output_ports)
+{
+    this->name = name;
+    this->input_ports = input_ports;
+    this->output_ports = output_ports;
 }
 
 void
-JackModule::connectTo(JackPorts* inputPorts)
+JackModule::connectTo(JackPorts* input_ports)
 {
-    outputPorts->connectTo(inputPorts);
+    output_ports->connectTo(input_ports);
 }
 
 void
 JackModule::connectTo(JackModule* module)
 {
-    outputPorts->connectTo(module->getInputPorts());
+    output_ports->connectTo(module->getInputPorts());
 }
 
 JackPorts*
 JackModule::getInputPorts()
 {
-    return inputPorts;
+    return input_ports;
 }
 
 JackPorts*
 JackModule::getOutputPorts()
 {
-    return outputPorts;
+    return output_ports;
+}
+
+jack_default_audio_sample_t**
+JackModule::getInputPortsBuffers(jack_nframes_t nframes)
+{
+    return input_ports->getBuffers(nframes);
+}
+
+jack_default_audio_sample_t**
+JackModule::getOutputPortsBuffers(jack_nframes_t nframes)
+{
+    return output_ports->getBuffers(nframes);
 }
 
 void
 JackModule::process(jack_nframes_t nframes)
 {
-    jack_default_audio_sample_t** input_buffers = inputPorts->getBuffers(nframes);
-    jack_default_audio_sample_t** output_buffers = outputPorts->getBuffers(nframes);
+    jack_default_audio_sample_t** input_buffers = getInputPortsBuffers(nframes);
+    jack_default_audio_sample_t** output_buffers = getOutputPortsBuffers(nframes);
 
     for (int frame = 0; frame < nframes; frame++)
     {
@@ -64,4 +86,16 @@ JackModule::process(jack_nframes_t nframes)
 
     free(input_buffers);
     free(output_buffers);
+}
+
+bool
+JackModule::startRecording(jack_client_t* client, const char* filepath)
+{
+    return false;
+}
+
+bool
+JackModule::stopRecording(jack_client_t* client)
+{
+    return false;
 }

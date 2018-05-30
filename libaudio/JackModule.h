@@ -21,22 +21,38 @@
 #include <jack/jack.h>
 
 class JackPorts;
+class JackModule;
+
+class JackModuleFactory {
+    public:
+        virtual JackModule* newModule(char* name, JackPorts* input_ports, JackPorts* output_ports);
+};
+
 
 class JackModule {
 
     private:
-        JackPorts* inputPorts;
-        JackPorts* outputPorts;
+        JackPorts* input_ports;
+        JackPorts* output_ports;
+        char*      name;
 
     public:
-        JackModule(JackPorts* inputPorts, JackPorts* outputPorts);
-        void connectTo(JackPorts* inputPorts);
+        static JackModuleFactory* DEFAULT_FACTORY;
+
+    public:
+        JackModule(char* name, JackPorts* input_ports, JackPorts* output_ports);
+        void connectTo(JackPorts* input_ports);
         void connectTo(JackModule* module);
         JackPorts* getInputPorts();
         JackPorts* getOutputPorts();
-        void setNext(JackModule* next);
-        void process(jack_nframes_t nframes);
-        
+        jack_default_audio_sample_t** getInputPortsBuffers(jack_nframes_t nframes);
+        jack_default_audio_sample_t** getOutputPortsBuffers(jack_nframes_t nframes);
+
+    public:
+        virtual void process(jack_nframes_t nframes);
+        virtual bool startRecording(jack_client_t* client, const char* filepath);
+        virtual bool stopRecording(jack_client_t* client);
+
 };
 
 #endif

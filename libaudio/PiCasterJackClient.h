@@ -15,31 +15,20 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <libaudio.h>
+#ifndef __PI_CASTER_JACK_CLIENT_H_INCLUDED
+#define __PI_CASTER_JACK_CLIENT_H_INCLUDED
 
-#include <unistd.h>
-#include <iostream>
+#include "JackClient.h"
 
-int
-main(int argc, char** argv)
-{
-    JackClient* jackClient = libaudio_init();
+class PiCasterDiskRecorderModule;
 
-    int bloc = 1000;
-    while (--bloc > 0)
-    {
-        usleep(50000);
-        if (bloc == 750)
-        {
-            jackClient->startRecording("/tmp/picaster.flac");
-        }
-        else if (bloc == 250)
-        {
-            jackClient->stopRecording();
-        }
-    }
+class PiCasterJackClient : public JackClient {
 
-    jackClient->close();
+    private:
+        PiCasterDiskRecorderModule* disk_recorder_module;
 
-    return 0;
-}
+    public:
+        JackModule* createDiskRecorderModule();
+};
+
+#endif

@@ -25,6 +25,7 @@
 #include "JackPorts.h"
 
 class JackModule;
+class JackModuleFactory;
 
 class JackClient {
     private:
@@ -53,14 +54,16 @@ class JackClient {
         JackClient();
         void activate();
         JackModule* createModule(const char* name);
+        JackModule* createModule(const char* name, JackModuleFactory* factory);
+        JackModule* createModule(const char* name, JackModuleFactory* factory, bool has_outputs);
         JackPorts* createOutputPorts(const char* name);
         JackPorts* createInputPorts(const char* name);
         JackPorts* getCapturePorts();
         JackPorts* getPlaybackPorts();
+        void close();
         void startRecording(const char* filepath);
         void stopRecording();
-        void close();
-
+    
 };
 
 #endif

@@ -83,9 +83,21 @@ JackClient::createInputPorts(const char* name)
 JackModule*
 JackClient::createModule(const char* name)
 {
-    JackPorts* portsIn = createInputPorts(name);
-    JackPorts* portsOut = createOutputPorts(name);
-    JackModule* module = new JackModule(portsIn, portsOut);
+    return createModule(name, JackModule::DEFAULT_FACTORY);
+}
+
+JackModule*
+JackClient::createModule(const char* name, JackModuleFactory* factory)
+{
+    return createModule(name, factory, true);
+}
+
+JackModule*
+JackClient::createModule(const char* name, JackModuleFactory* factory, bool has_outputs)
+{
+    JackPorts* input_ports = createInputPorts(name);
+    JackPorts* output_ports = has_outputs ? createOutputPorts(name) : NULL;
+    JackModule* module = factory->newModule((char*)name, input_ports, output_ports);
     modules[nb_modules++] = module;
     if (nb_modules >= len_modules) {
         len_modules *= 2;
@@ -121,26 +133,25 @@ JackClient::close()
 void
 JackClient::startRecording(const char* filepath)
 {
-    SF_INFO sf_info;
-    sf_info.samplerate = jack_get_sample_rate(client);
-    sf_info.format = SF_FORMAT_FLAC | SF_FORMAT_PCM_24;
-    sf_info.channels = 2;
-
-    if ((capture_sf = sf_open(filepath, SFM_WRITE, &sf_info)) == NULL) {
-        char errstr[256];
-        sf_error_str(0, errstr, sizeof (errstr) - 1);
-        std::cerr << "Cannot open sndfile " << filepath << " for output : " << errstr << std::endl;
-        jack_client_close(client);
-        exit(1);
+    for (int i = 0; i < nb_modules; i++)
+    {
+        if (modules[i]->startRecording(client, filepath))
+        {
+            break;
+        }
     }
-    can_capture = false;
-    pthread_create(&capture_thread_id, NULL, JackClient::capture_thread_callback, this);
 }
 
 void
 JackClient::stopRecording()
 {
-
+    for (int i = 0; i < nb_modules; i++)
+    {
+        if (modules[i]->stopRecording(client))
+        {
+            break;
+        }
+    }
 }
 
 void*
@@ -151,25 +162,11 @@ JackClient::capture_thread()
     size_t bytes_per_frame = samples_per_frame * sample_size;
     void* framebuf = (void*)malloc(bytes_per_frame);
 
-    while (1)
-    {
+    //while (1)
+    //{
         /* Write the data one frame at a time.  This is
          * inefficient, but makes things simpler. */
-        while (can_capture && (jack_ringbuffer_read_space(capture_rb) >= bytes_per_frame)) {
-            jack_ringbuffer_read(capture_rb, (char*)framebuf, bytes_per_frame);
-            if (sf_writef_float (capture_sf, (float*)framebuf, 1) != 1) {
-                char errstr[256];
-                sf_error_str (0, errstr, sizeof (errstr) - 1);
-                std::cerr << "Cannot write sndfile : " << errstr << std::endl;
-                exit(1);
-                //info->status = EIO; /* write failed */
-                //goto done;
-            }
-
-            /* wait until process() signals more data */
-            pthread_cond_wait(&data_ready, &disk_thread_lock);            
-        }
-    }
+    //}
 
     return NULL;
 }

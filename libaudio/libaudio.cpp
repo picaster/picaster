@@ -17,35 +17,38 @@
 
 #include "libaudio.h"
 
-#include "JackClient.h"
+#include "PiCasterJackClient.h"
 #include "JackModule.h"
 
 JackClient*
 libaudio_init()
 {
-    JackClient* jackClient = new JackClient();
-    jackClient->activate();
+    PiCasterJackClient* jack_client = new PiCasterJackClient();
+    jack_client->activate();
 
-    JackModule* master_fader = jackClient->createModule("master_fader");
-    JackPorts* playback = jackClient->getPlaybackPorts();
+    JackModule* disk_recorder = jack_client->createDiskRecorderModule();
+
+    JackModule* master_fader = jack_client->createModule("master_fader");
+    JackPorts* playback = jack_client->getPlaybackPorts();
     master_fader->connectTo(playback);
+    master_fader->connectTo(disk_recorder);
 
-    JackPorts* capture = jackClient->getCapturePorts();
-    JackModule* dj_fader = jackClient->createModule("dj_fader");
+    JackPorts* capture = jack_client->getCapturePorts();
+    JackModule* dj_fader = jack_client->createModule("dj_fader");
     capture->connectTo(dj_fader);
     dj_fader->connectTo(master_fader);
 
-    JackPorts* deck_a = jackClient->createOutputPorts("deck_a");
-    JackPorts* deck_b = jackClient->createOutputPorts("deck_b");
-    JackModule* decks_fader = jackClient->createModule("decks_fader");
+    JackPorts* deck_a = jack_client->createOutputPorts("deck_a");
+    JackPorts* deck_b = jack_client->createOutputPorts("deck_b");
+    JackModule* decks_fader = jack_client->createModule("decks_fader");
     deck_a->connectTo(decks_fader);
     deck_b->connectTo(decks_fader);
     decks_fader->connectTo(master_fader);
 
-    JackPorts* fx = jackClient->createOutputPorts("fx");
-    JackModule* fx_fader = jackClient->createModule("fx_fader");
+    JackPorts* fx = jack_client->createOutputPorts("fx");
+    JackModule* fx_fader = jack_client->createModule("fx_fader");
     fx->connectTo(fx_fader);
     fx_fader->connectTo(master_fader);
 
-    return jackClient;
+    return jack_client;
 }
