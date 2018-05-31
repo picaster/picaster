@@ -23,6 +23,9 @@
 
 #include "JackClient.h"
 #include "JackModule.h"
+#include "JackRecorderModule.h"
+
+#include <jack/jack.h>
 
 // -- Static callbacks
 
@@ -73,24 +76,28 @@ JackClient::createInputPorts(const char* name)
     return createPorts(name, INPUT_PORT);
 }
 
+JackRecorderModule*
+JackClient::createRecorderModule(const char* name)
+{
+    return (JackRecorderModule*)createModule(name, [](char* name, JackPorts* input_ports, JackPorts* output_ports, JackClient* client) {
+        return new JackRecorderModule(name, input_ports, output_ports, client);
+    }, false);
+}
+
 JackModule*
 JackClient::createModule(const char* name)
 {
-    return createModule(name, JackModule::DEFAULT_FACTORY);
+    return createModule(name, [](char* name, JackPorts* input_ports, JackPorts* output_ports, JackClient* client) {
+        return new JackModule(name, input_ports, output_ports, client);
+    }, true);
 }
 
 JackModule*
-JackClient::createModule(const char* name, JackModuleFactory* factory)
-{
-    return createModule(name, factory, true);
-}
-
-JackModule*
-JackClient::createModule(const char* name, JackModuleFactory* factory, bool has_outputs)
+JackClient::createModule(const char* name, std::function<JackModule* (char*, JackPorts*, JackPorts*, JackClient*)> factory, bool has_outputs)
 {
     JackPorts* input_ports = createInputPorts(name);
     JackPorts* output_ports = has_outputs ? createOutputPorts(name) : NULL;
-    JackModule* module = factory->newModule((char*)name, input_ports, output_ports);
+    JackModule* module = factory((char*)name, input_ports, output_ports, this);
     modules[nb_modules++] = module;
     if (nb_modules >= len_modules) {
         len_modules *= 2;
@@ -123,28 +130,10 @@ JackClient::close()
     jack_client_close(client);
 }
 
-void
-JackClient::startRecording(const char* filepath)
+jack_client_t*
+JackClient::getClient()
 {
-    for (int i = 0; i < nb_modules; i++)
-    {
-        if (modules[i]->startRecording(client, filepath))
-        {
-            break;
-        }
-    }
-}
-
-void
-JackClient::stopRecording()
-{
-    for (int i = 0; i < nb_modules; i++)
-    {
-        if (modules[i]->stopRecording(client))
-        {
-            break;
-        }
-    }
+    return this->client;
 }
 
 // -- Private

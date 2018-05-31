@@ -1,10 +1,9 @@
 noinst_LTLIBRARIES = libaudio.la
 
-libaudio_la_SOURCES  = libaudio.cpp libaudio.h
-libaudio_la_SOURCES += JackClient.cpp JackClient.h
+libaudio_la_SOURCES  = JackClient.cpp JackClient.h
 libaudio_la_SOURCES += JackPorts.cpp JackPorts.h
 libaudio_la_SOURCES += JackModule.cpp JackModule.h
-libaudio_la_SOURCES += PiCasterJackClient.cpp PiCasterJackClient.h
+libaudio_la_SOURCES += JackRecorderModule.cpp JackRecorderModule.h
 
 libaudio_la_CXXFLAGS  = -std=gnu++11 -Wall -Werror
 libaudio_la_CXXFLAGS += @JACK2_CFLAGS@

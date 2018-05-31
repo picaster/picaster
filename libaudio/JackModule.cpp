@@ -20,25 +20,15 @@
 
 #include "JackModule.h"
 #include "JackPorts.h"
+#include "JackClient.h"
 
-JackModuleFactory* JackModule::DEFAULT_FACTORY = new JackModuleFactory();
-
-JackModule*
-JackModuleFactory::newModule(char* name, JackPorts* input_ports, JackPorts* output_ports)
-{
-    return new JackModule(name, input_ports, output_ports);
-}
-
-JackModuleFactory::~JackModuleFactory()
-{
-    ;;
-}
-
-JackModule::JackModule(char* name, JackPorts* input_ports, JackPorts* output_ports)
+JackModule::JackModule(char* name, JackPorts* input_ports, JackPorts* output_ports, JackClient* client)
 {
     this->name = name;
     this->input_ports = input_ports;
     this->output_ports = output_ports;
+    this->client = client;
+    this->activated = false;
 }
 
 void
@@ -80,24 +70,27 @@ JackModule::getOutputPortsBuffers(jack_nframes_t nframes)
 void
 JackModule::process(jack_nframes_t nframes)
 {
-    jack_default_audio_sample_t** input_buffers = getInputPortsBuffers(nframes);
-    jack_default_audio_sample_t** output_buffers = getOutputPortsBuffers(nframes);
-
-    for (jack_nframes_t frame = 0; frame < nframes; frame++)
+    if (activated)
     {
-        output_buffers[0][frame] = input_buffers[0][frame];
-        output_buffers[1][frame] = input_buffers[1][frame];
+        jack_default_audio_sample_t** input_buffers = getInputPortsBuffers(nframes);
+        jack_default_audio_sample_t** output_buffers = getOutputPortsBuffers(nframes);
+
+        for (jack_nframes_t frame = 0; frame < nframes; frame++)
+        {
+            output_buffers[0][frame] = input_buffers[0][frame];
+            output_buffers[1][frame] = input_buffers[1][frame];
+        }
     }
 }
 
-bool
-JackModule::startRecording(jack_client_t* client, const char* filepath)
+jack_client_t*
+JackModule::getJackClient()
 {
-    return false;
+    return client->getClient();
 }
 
-bool
-JackModule::stopRecording(jack_client_t* client)
+void
+JackModule::activate()
 {
-    return false;
+    activated = true;
 }

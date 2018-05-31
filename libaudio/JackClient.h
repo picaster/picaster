@@ -18,6 +18,7 @@
 #ifndef __JACK_CLIENT_H_INCLUDED
 #define __JACK_CLIENT_H_INCLUDED
 
+#include <functional>
 #include <jack/jack.h>
 #include <jack/ringbuffer.h>
 #include <sndfile.h>
@@ -25,6 +26,7 @@
 #include "JackPorts.h"
 
 class JackModule;
+class JackRecorderModule;
 class JackModuleFactory;
 
 class JackClient {
@@ -54,15 +56,14 @@ class JackClient {
         JackClient();
         void activate();
         JackModule* createModule(const char* name);
-        JackModule* createModule(const char* name, JackModuleFactory* factory);
-        JackModule* createModule(const char* name, JackModuleFactory* factory, bool has_outputs);
+        JackModule* createModule(const char* name, std::function<JackModule* (char*, JackPorts*, JackPorts*, JackClient*)> factory, bool has_outputs);
+        JackRecorderModule* createRecorderModule(const char* name);
         JackPorts* createOutputPorts(const char* name);
         JackPorts* createInputPorts(const char* name);
         JackPorts* getCapturePorts();
         JackPorts* getPlaybackPorts();
+        jack_client_t* getClient();
         void close();
-        void startRecording(const char* filepath);
-        void stopRecording();
     
 };
 

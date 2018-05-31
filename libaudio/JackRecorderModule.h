@@ -15,37 +15,37 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __JACK_MODULE_H_INCLUDED
-#define __JACK_MODULE_H_INCLUDED
+#ifndef __JACK_RECORDER_MODULE_H_INCLUDED
+#define __JACK_RECORDER_MODULE_H_INCLUDED
 
+#include <sndfile.h>
 #include <jack/jack.h>
+#include <jack/ringbuffer.h>
 
-class JackPorts;
-class JackClient;
+#include "JackModule.h"
 
-class JackModule {
+class JackRecorderModule : public JackModule
+{
+    private:
+        const size_t sample_size = sizeof(jack_default_audio_sample_t);
 
     private:
-        char*       name;
-        JackPorts*  input_ports;
-        JackPorts*  output_ports;
-        JackClient* client;
-        bool        activated;
+        bool               recording;
+        pthread_t          capture_thread_id;
+        SNDFILE*           capture_sf;
+        pthread_mutex_t    disk_thread_lock = PTHREAD_MUTEX_INITIALIZER;
+        pthread_cond_t     data_ready = PTHREAD_COND_INITIALIZER;
+        jack_ringbuffer_t* rb;
+
+    private:
+        static void* captureThreadCallback(void* arg);
 
     public:
-        JackModule(char* name, JackPorts* input_ports, JackPorts* output_ports, JackClient* client);
-        void connectTo(JackPorts* input_ports);
-        void connectTo(JackModule* module);
-        JackPorts* getInputPorts();
-        JackPorts* getOutputPorts();
-        jack_default_audio_sample_t** getInputPortsBuffers(jack_nframes_t nframes);
-        jack_default_audio_sample_t** getOutputPortsBuffers(jack_nframes_t nframes);
-        jack_client_t* getJackClient();
-        void activate();
-
-    public:
-        virtual void process(jack_nframes_t nframes);
-
+        JackRecorderModule(char* name, JackPorts* input_ports, JackPorts* output_ports, JackClient* client);
+        void process(jack_nframes_t nframes);
+        bool startRecording(const char* filepath);
+        void* captureThread();
+        bool stopRecording();
 };
 
 #endif
