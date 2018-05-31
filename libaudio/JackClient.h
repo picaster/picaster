@@ -55,9 +55,6 @@ class JackClient {
     public:
         JackClient();
         void activate();
-        JackModule* createModule(const char* name);
-        JackModule* createModule(const char* name, std::function<JackModule* (char*, JackPorts*, JackPorts*, JackClient*)> factory, bool has_outputs);
-        JackRecorderModule* createRecorderModule(const char* name);
         JackPorts* createOutputPorts(const char* name);
         JackPorts* createInputPorts(const char* name);
         JackPorts* getCapturePorts();
@@ -65,6 +62,8 @@ class JackClient {
         jack_client_t* getClient();
         void close();
     
+    public:
+        void registerModule(JackModule* module);
 };
 
 #endif

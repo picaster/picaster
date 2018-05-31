@@ -20,21 +20,25 @@
 
 #include <jack/jack.h>
 
+#include "JackClient.h"
+
 class JackPorts;
-class JackClient;
 
 class JackModule {
 
     private:
-        char*       name;
-        JackPorts*  input_ports;
-        JackPorts*  output_ports;
+        const char* name;
         JackClient* client;
         bool        activated;
 
     public:
-        JackModule(char* name, JackPorts* input_ports, JackPorts* output_ports, JackClient* client);
-        void connectTo(JackPorts* input_ports);
+        [[deprecated]]
+        JackPorts*  input_ports;
+        [[deprecated]]
+        JackPorts*  output_ports;
+
+    public:
+        JackModule(const char* name, JackClient* jack_client);
         void connectTo(JackModule* module);
         JackPorts* getInputPorts();
         JackPorts* getOutputPorts();
@@ -45,6 +49,10 @@ class JackModule {
 
     public:
         virtual void process(jack_nframes_t nframes);
+
+    /* Keep that */
+    public:
+        void connectTo(JackPorts* input_ports);
 
 };
 

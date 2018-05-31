@@ -76,36 +76,6 @@ JackClient::createInputPorts(const char* name)
     return createPorts(name, INPUT_PORT);
 }
 
-JackRecorderModule*
-JackClient::createRecorderModule(const char* name)
-{
-    return (JackRecorderModule*)createModule(name, [](char* name, JackPorts* input_ports, JackPorts* output_ports, JackClient* client) {
-        return new JackRecorderModule(name, input_ports, output_ports, client);
-    }, false);
-}
-
-JackModule*
-JackClient::createModule(const char* name)
-{
-    return createModule(name, [](char* name, JackPorts* input_ports, JackPorts* output_ports, JackClient* client) {
-        return new JackModule(name, input_ports, output_ports, client);
-    }, true);
-}
-
-JackModule*
-JackClient::createModule(const char* name, std::function<JackModule* (char*, JackPorts*, JackPorts*, JackClient*)> factory, bool has_outputs)
-{
-    JackPorts* input_ports = createInputPorts(name);
-    JackPorts* output_ports = has_outputs ? createOutputPorts(name) : NULL;
-    JackModule* module = factory((char*)name, input_ports, output_ports, this);
-    modules[nb_modules++] = module;
-    if (nb_modules >= len_modules) {
-        len_modules *= 2;
-        modules = (JackModule**)realloc(modules, len_modules * sizeof(JackModule*));
-    }
-    return module;
-}
-
 JackPorts*
 JackClient::getPlaybackPorts()
 {
@@ -134,6 +104,16 @@ jack_client_t*
 JackClient::getClient()
 {
     return this->client;
+}
+
+void
+JackClient::registerModule(JackModule* module)
+{
+    modules[nb_modules++] = module;
+    if (nb_modules >= len_modules) {
+        len_modules *= 2;
+        modules = (JackModule**)realloc(modules, len_modules * sizeof(JackModule*));
+    }    
 }
 
 // -- Private

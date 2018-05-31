@@ -20,6 +20,7 @@
 
 #include "JackClient.h"
 #include "JackRecorderModule.h"
+#include "JackFaderModule.h"
 
 int
 main(int argc, char** argv)
@@ -27,8 +28,10 @@ main(int argc, char** argv)
     JackClient* jack_client = new JackClient();
     jack_client->activate();
 
-    JackRecorderModule* recorder = jack_client->createRecorderModule("recorder");
-    JackModule* master_fader = jack_client->createModule("master_fader");
+    JackRecorderModule* recorder = new JackRecorderModule("recorder", jack_client);
+
+    JackFaderModule* master_fader = new JackFaderModule("master_fader", jack_client);
+
     JackPorts* playback_ports = jack_client->getPlaybackPorts();
     master_fader->connectTo(playback_ports);
     master_fader->connectTo(recorder);
@@ -36,27 +39,27 @@ main(int argc, char** argv)
     master_fader->activate();
 
     JackPorts* capture_ports = jack_client->getCapturePorts();
-    JackModule* dj_fader = jack_client->createModule("dj_fader");
+    JackModule* dj_fader = new JackFaderModule("dj_fader", jack_client);
     capture_ports->connectTo(dj_fader);
     dj_fader->connectTo(master_fader);
     dj_fader->activate();
 
     JackPorts* deck_a = jack_client->createOutputPorts("deck_a");
     JackPorts* deck_b = jack_client->createOutputPorts("deck_b");
-    JackModule* decks_fader = jack_client->createModule("decks_fader");
+    JackModule* decks_fader = new JackFaderModule("decks_fader", jack_client);
     deck_a->connectTo(decks_fader);
     deck_b->connectTo(decks_fader);
     decks_fader->connectTo(master_fader);
     decks_fader->activate();
 
     JackPorts* fx = jack_client->createOutputPorts("fx");
-    JackModule* fx_fader = jack_client->createModule("fx_fader");
+    JackModule* fx_fader = new JackFaderModule("fx_fader", jack_client);
     fx->connectTo(fx_fader);
     fx_fader->connectTo(master_fader);
     fx_fader->activate();
 
     recorder->startRecording("/tmp/picaster.flac");
-    int bloc = 100;
+    int bloc = 500;
     while (--bloc > 0)
     {
         usleep(50000);

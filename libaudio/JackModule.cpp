@@ -22,13 +22,10 @@
 #include "JackPorts.h"
 #include "JackClient.h"
 
-JackModule::JackModule(char* name, JackPorts* input_ports, JackPorts* output_ports, JackClient* client)
+JackModule::JackModule(const char* name, JackClient* client)
 {
     this->name = name;
-    this->input_ports = input_ports;
-    this->output_ports = output_ports;
     this->client = client;
-    this->activated = false;
 }
 
 void

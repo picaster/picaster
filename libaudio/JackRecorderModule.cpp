@@ -29,10 +29,12 @@ JackRecorderModule::captureThreadCallback(void* arg)
     return disk_recorder_module->captureThread();
 }
 
-JackRecorderModule::JackRecorderModule(char* name, JackPorts* input_ports, JackPorts* output_ports, JackClient* client) : JackModule(name, input_ports, output_ports, client) 
+JackRecorderModule::JackRecorderModule(const char* name, JackClient* client) : JackModule(name, client)
 {
+    input_ports = client->createInputPorts(name);
     recording = false;
     rb = jack_ringbuffer_create(2 * sample_size * 8192);
+    client->registerModule(this);
 }
 
 void

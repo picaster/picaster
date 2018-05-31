@@ -15,38 +15,16 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __JACK_RECORDER_MODULE_H_INCLUDED
-#define __JACK_RECORDER_MODULE_H_INCLUDED
-
-#include <sndfile.h>
-#include <jack/jack.h>
-#include <jack/ringbuffer.h>
+#ifndef __JACK_FADER_MODULE_H_INCLUDED
+#define __JACK_FADER_MODULE_H_INCLUDED
 
 #include "JackModule.h"
-#include "JackClient.h"
 
-class JackRecorderModule : public JackModule
-{
-    private:
-        const size_t sample_size = sizeof(jack_default_audio_sample_t);
-
-    private:
-        bool               recording;
-        pthread_t          capture_thread_id;
-        SNDFILE*           capture_sf;
-        pthread_mutex_t    disk_thread_lock = PTHREAD_MUTEX_INITIALIZER;
-        pthread_cond_t     data_ready = PTHREAD_COND_INITIALIZER;
-        jack_ringbuffer_t* rb;
-
-    private:
-        static void* captureThreadCallback(void* arg);
+class JackFaderModule : public JackModule {
 
     public:
-        JackRecorderModule(const char* name, JackClient* client);
-        void process(jack_nframes_t nframes);
-        bool startRecording(const char* filepath);
-        void* captureThread();
-        bool stopRecording();
+        JackFaderModule(const char* name, JackClient* client);
+
 };
 
 #endif
