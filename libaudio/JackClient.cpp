@@ -20,12 +20,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <unistd.h>
+#include <chrono>
+#include <thread>
+#include <sstream>
+#include <string>
 
 #include "JackClient.h"
 #include "JackModule.h"
 #include "JackRecorderModule.h"
 
 #include <jack/jack.h>
+
+// -- Static members
+
+JackClient* JackClient::instance;
 
 // -- Static callbacks
 
@@ -46,23 +55,35 @@ JackClient::shutdown_callback(void* arg)
 void
 JackClient::signal_handler(int sig)
 {
-    //jack_client_close(client);
-    std::cerr << "Signal received, exiting." << std::endl;
+    JackClient* client = JackClient::getInstance(NULL);
+    if (client->server_pid > 0)
+    {
+        kill(client->server_pid, SIGKILL);
+    }
     exit(0);
 }
 
-// -- Methods
-
-JackClient::JackClient()
+int
+JackClient::xrun_callback(void* arg)
 {
-    jack_options_t options = JackNoStartServer;
-    jack_status_t status;
-    client = jack_client_open("PiCaster", options, &status);
-    len_modules = 10;
-    nb_modules = 0;
-    modules = (JackModule**)malloc(len_modules * sizeof(JackModule*));
-    can_capture = false;
+    std::cout << "JACK xrun..." << std::endl;
+    //JackClient* client = (JackClient*)arg;
+    return 0;
 }
+
+// -- Static methods
+
+JackClient*
+JackClient::getInstance(const char* client_name)
+{
+    if (JackClient::instance == NULL)
+    {
+        JackClient::instance = new JackClient(client_name);
+    }
+    return JackClient::instance;
+}
+
+// -- Methods
 
 JackPorts*
 JackClient::createOutputPorts(const char* name)
@@ -95,9 +116,15 @@ JackClient::getCapturePorts()
 }
 
 void
-JackClient::close()
+JackClient::stopJack()
 {
+    if (client == NULL) return;
+    if (!detached)
+    {
+        kill(server_pid, SIGKILL);
+    }
     jack_client_close(client);
+    client = NULL;
 }
 
 jack_client_t*
@@ -116,7 +143,141 @@ JackClient::registerModule(JackModule* module)
     }    
 }
 
+void
+JackClient::startJack()
+{
+    if (client != NULL) return;
+    if (!startJackClient(client_name, true))
+    {
+        char const* params[20];
+        std::stringstream cmdline;
+        cmdline << jackd_path << " -d" << driver_name;
+        if (!strcmp(driver_name, "alsa"))
+        {
+            cmdline << " -n" << periods_per_buffer << " -Chw:" << input_device << " -Phw:" << output_device;
+        }
+        cmdline << " -p" << frames_per_period << " -r" << sample_rate;
+        char* c = strdup(cmdline.str().c_str());
+        char* b = c;
+        int p = 0;
+        params[p++] = b;
+        while (*b != 0)
+        {
+            if (*b == ' ')
+            {
+                *b = 0;
+                params[p++] = b + 1;
+            }
+            b += 1;
+        }
+        params[p++] = 0;
+        for (int i = 0; i < p; i++)
+        {
+            std::cout << params[i] << " ";
+        }
+        std::cout << std::endl;
+
+        // Fork jackd
+        server_pid = fork();
+        if (server_pid == 0)
+        {
+            // child
+            execv(params[0], (char* const*)params);
+            delete(c);
+        }
+        else
+        {
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+            startJackClient(client_name, false);
+        }
+    }
+}
+
+void
+JackClient::setJackdPath(char const* jackd_path)
+{
+    this->jackd_path = jackd_path;
+}
+
+void
+JackClient::setDriver(char const* driver_name)
+{
+    this->driver_name = driver_name;
+}
+
+void
+JackClient::setSampleRate(char const* sample_rate)
+{
+    this->sample_rate = sample_rate;
+}
+
+void
+JackClient::setFramesPerPeriod(char const* frames_per_period)
+{
+    this->frames_per_period = frames_per_period;
+}
+
+void
+JackClient::setPeriodsPerBuffer(char const* periods_per_buffer)
+{
+    this->periods_per_buffer = periods_per_buffer;
+}
+
+void
+JackClient::setInputDevice(char const* input_device)
+{
+    this->input_device = input_device;
+}
+
+void
+JackClient::setOutputDevice(char const* output_device)
+{
+    this->output_device = output_device;
+}
+
 // -- Private
+
+JackClient::JackClient(const char* client_name)
+{
+    this->client_name = client_name;
+    len_modules = 10;
+    nb_modules = 0;
+    modules = (JackModule**)malloc(len_modules * sizeof(JackModule*));
+    can_capture = false;
+    client = NULL;
+    startJackClient(client_name, true);
+}
+
+
+bool
+JackClient::startJackClient(const char* client_name, bool detached)
+{
+    jack_options_t options = JackNoStartServer;
+    jack_status_t status;
+    client = jack_client_open(client_name, options, &status);
+    if (client == NULL)
+    {
+        if (!detached)
+        {
+            /* TODO: handle error messages here */
+        }
+        return false;
+    }
+    jack_set_xrun_callback(client, JackClient::xrun_callback, this);
+    jack_on_shutdown(client, JackClient::shutdown_callback, this);
+
+    jack_set_process_callback(client, JackClient::process_callback, this);
+    signal(SIGQUIT, JackClient::signal_handler);
+    signal(SIGHUP, JackClient::signal_handler);
+    signal(SIGTERM, JackClient::signal_handler);
+    signal(SIGINT, JackClient::signal_handler);
+
+    jack_activate(client);
+
+    this->detached = detached;
+
+    return true;
+}
 
 JackPorts*
 JackClient::createPorts(const char* name, JackPortType type)
@@ -142,20 +303,4 @@ JackClient::process(jack_nframes_t nframes)
         modules[i]->process(nframes);
     }
     return 0;
-}
-
-void
-JackClient::activate()
-{
-    if (this->client != NULL)
-    {
-        jack_set_process_callback(client, JackClient::process_callback, this);
-        jack_on_shutdown(client, JackClient::shutdown_callback, NULL);
-        signal(SIGQUIT, JackClient::signal_handler);
-        signal(SIGHUP, JackClient::signal_handler);
-        signal(SIGTERM, JackClient::signal_handler);
-        signal(SIGINT, JackClient::signal_handler);
-
-        jack_activate(this->client);
-    }
 }

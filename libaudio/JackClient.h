@@ -31,6 +31,9 @@ class JackModuleFactory;
 
 class JackClient {
     private:
+        static JackClient* instance;
+
+    private:
         jack_client_t*     client;
         JackModule**       modules;
         int                nb_modules;
@@ -39,31 +42,52 @@ class JackClient {
         pthread_t          capture_thread_id;
         jack_ringbuffer_t* capture_rb;
         SNDFILE*           capture_sf;
+        bool               detached;
+        const char*        client_name;
+        pid_t              server_pid;
+        char const*        jackd_path;
+        char const*        driver_name;
+        char const*        sample_rate;
+        char const*        frames_per_period;
+        char const*        periods_per_buffer;
+        char const*        input_device;
+        char const*        output_device;
 
     private:
         static int process_callback(jack_nframes_t nframes, void* arg);
         static void shutdown_callback(void* arg);
+        static int xrun_callback(void* arg);
         static void signal_handler(int sig);
         static void* capture_thread_callback(void* arg);
 
     private:
+        JackClient(const char* client_name);
+        bool startJackClient(const char* client_name, bool detached);
         JackPorts* createPorts(const char* name, JackPortType type);
         int process(jack_nframes_t nframes);
         void setupDiskThread();
         void* capture_thread();
+        void initCallbacksAndSignals();
     
     public:
-        JackClient();
-        void activate();
+        void setJackdPath(char const* jackd_path);
+        void setDriver(char const* driver_name);
+        void setSampleRate(char const* sample_rate);
+        void setFramesPerPeriod(char const* frames_per_period);
+        void setPeriodsPerBuffer(char const* periods_per_buffer);
+        void setInputDevice(char const* input_device);
+        void setOutputDevice(char const* output_device);
+        void startJack();
         JackPorts* createOutputPorts(const char* name);
         JackPorts* createInputPorts(const char* name);
         JackPorts* getCapturePorts();
         JackPorts* getPlaybackPorts();
         jack_client_t* getClient();
-        void close();
-    
-    public:
+        void stopJack();
         void registerModule(JackModule* module);
+
+    public:
+        static JackClient* getInstance(const char* client_name);
 };
 
 #endif

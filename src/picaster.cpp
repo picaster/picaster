@@ -25,8 +25,17 @@
 int
 main(int argc, char** argv)
 {
-    JackClient* jack_client = new JackClient();
-    jack_client->activate();
+    JackClient* jack_client = JackClient::getInstance("PiCaster");
+
+    jack_client->setJackdPath("/usr/bin/jackd");
+    //jack_client->setDriver("alsa");
+    jack_client->setDriver("dummy");
+    jack_client->setSampleRate("48000");
+    jack_client->setFramesPerPeriod("512");
+    jack_client->setPeriodsPerBuffer("3");
+    jack_client->setInputDevice("I82801AAICH");
+    jack_client->setOutputDevice("I82801AAICH");
+    jack_client->startJack();
 
     JackRecorderModule* recorder = new JackRecorderModule("recorder", jack_client);
 
@@ -67,7 +76,7 @@ main(int argc, char** argv)
 
     recorder->stopRecording();
     
-    jack_client->close();
+    jack_client->stopJack();
 
     return 0;
 }
