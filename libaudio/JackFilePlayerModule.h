@@ -28,6 +28,8 @@ extern "C" {
 
 #include "JackModule.h"
 
+#include "Float32RingBuffer.h"
+
 class JackFilePlayerModule : public JackModule
 {
     private:
@@ -41,7 +43,8 @@ class JackFilePlayerModule : public JackModule
         pthread_t thread_id;
         pthread_mutex_t disk_thread_lock = PTHREAD_MUTEX_INITIALIZER;
         pthread_cond_t data_ready = PTHREAD_COND_INITIALIZER;
-        jack_ringbuffer_t *ringbuf;
+        //jack_ringbuffer_t *ringbuf;
+        Float32RingBuffer* ringbuf;
 
     private:
         static void* playerThreadCallback(void* arg);

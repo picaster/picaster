@@ -1,6 +1,7 @@
 noinst_LTLIBRARIES = libaudio.la
 
-libaudio_la_SOURCES  = JackClient.cpp JackClient.h
+libaudio_la_SOURCES  = Float32RingBuffer.cpp Float32RingBuffer.h
+libaudio_la_SOURCES += JackClient.cpp JackClient.h
 libaudio_la_SOURCES += JackFaderModule.cpp JackFaderModule.h
 libaudio_la_SOURCES += JackFilePlayerModule.cpp JackFilePlayerModule.h
 libaudio_la_SOURCES += JackModule.cpp JackModule.h
