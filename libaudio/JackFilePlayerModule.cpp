@@ -46,7 +46,6 @@ JackFilePlayerModule::JackFilePlayerModule(char const* name, JackClient* client)
     out_samples = 4096;
     max_buffer_size = out_channels * out_samples * sizeof(float);
     playing = false;
-    can_process = false;
     ringbuf = new Float32RingBuffer(RB_SIZE);
     loaded = false;
 
@@ -63,11 +62,6 @@ JackFilePlayerModule::JackFilePlayerModule(char const* name, JackClient* client)
 void
 JackFilePlayerModule::process(jack_nframes_t nframes)
 {
-    if (!can_process)
-    {
-        return;
-    }
-
     jack_default_audio_sample_t buf[2];
     
     jack_default_audio_sample_t** output_buffers = getOutputPortsBuffers(nframes);
@@ -162,6 +156,7 @@ JackFilePlayerModule::play(JackFilePlayerCallback callback, void* user_data)
 
     this->callback = callback;
     this->user_data = user_data;
+    playing = true;
     pthread_create(&thread_id, NULL, JackFilePlayerModule::playerThreadCallback, this);
 }
 
@@ -236,8 +231,6 @@ JackFilePlayerModule::playerThread()
     // allocate empty frame for decoding
     AVFrame* frame = av_frame_alloc();    
 
-    playing = true;
-    
     //uint8_t* buffer = (uint8_t*)av_malloc(max_buffer_size);
     float* buffer = (float*)calloc(max_buffer_size / sizeof(float), sizeof(float));
 
@@ -295,8 +288,6 @@ JackFilePlayerModule::playerThread()
         // free packet created by decoder
         av_free_packet(&packet);
 
-        can_process = true;
-
         position = AV_TIME_BASE * track_samples / this->sample_rate;
 
         if (this->callback)
@@ -319,4 +310,10 @@ JackFilePlayerModule::playerThread()
     avformat_close_input(&fmt_ctx);
 
     return NULL;   
+}
+
+bool
+JackFilePlayerModule::isPlaying()
+{
+    return this->playing;
 }

@@ -41,7 +41,6 @@ class JackFilePlayerModule : public JackModule
         int max_buffer_size;
         AVFormatContext* fmt_ctx;
         bool playing;
-        bool can_process;
         pthread_t thread_id;
         pthread_mutex_t disk_thread_lock = PTHREAD_MUTEX_INITIALIZER;
         pthread_cond_t data_ready = PTHREAD_COND_INITIALIZER;
@@ -64,6 +63,7 @@ class JackFilePlayerModule : public JackModule
         int64_t getDuration();
         int64_t getPosition();
         char* formatTime(int64_t position);
+        bool isPlaying();
 };
 
 #endif

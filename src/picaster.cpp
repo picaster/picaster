@@ -80,10 +80,11 @@ main(int argc, char** argv)
     fx_fader->connectTo(master_fader);
 
     recorder->startRecording("/tmp/picaster.flac");
-    //deck_a->playFile("/home/yannick/Téléchargements/Kwizat_Haterach_-_Le_bon_moment.flac");
+    //deck_a->load("/home/yannick/Téléchargements/Kwizat_Haterach_-_Le_bon_moment.flac");
+    deck_a->load("/data/Musique/349863__jtnewlin13__leather-jacket-wooshes.wav");
     //deck_a->playFile("/data/Musique/picaster/stereo_square_4hz_0.8.flac");
     //deck_a->playFile("/home/yannick/Musique/demo.flac");
-    deck_a->load("/home/yannick/Musique/JekK_-_Strong.mp3");
+    //deck_a->load("/home/yannick/Musique/JekK_-_Strong.mp3");
 
     int64_t duration = deck_a->getDuration();
     char* formated_duration = deck_a->formatTime(duration);
@@ -92,7 +93,7 @@ main(int argc, char** argv)
 
     deck_a->play(playerCallback, deck_a);
 
-    while (!finished)
+    while (deck_a->isPlaying())
     {
         usleep(500000);
         int64_t position = deck_a->getPosition();

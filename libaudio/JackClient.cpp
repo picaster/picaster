@@ -123,12 +123,12 @@ void
 JackClient::stopJack()
 {
     if (client == NULL) return;
+    jack_client_close(client);
+    client = NULL;
     if (!detached)
     {
         kill(server_pid, SIGKILL);
     }
-    jack_client_close(client);
-    client = NULL;
 }
 
 jack_client_t*
