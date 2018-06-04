@@ -28,45 +28,16 @@
 #include "JackFaderModule.h"
 #include "JackFilePlayerModule.h"
 
-/*
-int
-main(int argc, char** argv)
+bool finished = false;
+
+static void
+playerCallback(int64_t position, void* user_data)
 {
-    const int RB_SIZE = 14;
-    Float32RingBuffer* ringbuf = new Float32RingBuffer(RB_SIZE);
-    assert(ringbuf->r_buf_avail() == 0);
-    assert(ringbuf->w_buf_avail() == RB_SIZE);
-
-    float* w_testbuf = new float[12] { 0.0, 0.0, 0.1, 0.2, 0.2, 0.4, 0.3, 0.6, 0.4, 0.8, 0.5, 1.0 };
-    float* r_testbuf = new float[6];
-
-    ringbuf->write(w_testbuf, 12);
-    assert(ringbuf->r_buf_avail() == 12);
-    assert(ringbuf->w_buf_avail() == (RB_SIZE - 12));
-
-    memset(r_testbuf, 0, 6 * sizeof(float));
-    ringbuf->read(r_testbuf, 4);
-    assert(ringbuf->r_buf_avail() == 8);
-    assert(ringbuf->w_buf_avail() == (RB_SIZE - 8));
-    assert(r_testbuf[0] == 0.0f);
-    assert(r_testbuf[1] == 0.0f);
-    assert(r_testbuf[2] == 0.1f);
-    assert(r_testbuf[3] == 0.2f);
-
-    memset(r_testbuf, 0, 6 * sizeof(float));
-    ringbuf->read(r_testbuf, 6);
-    assert(ringbuf->r_buf_avail() == 2);
-    assert(ringbuf->w_buf_avail() == (RB_SIZE - 2));
-    assert(r_testbuf[0] == 0.2f);
-    assert(r_testbuf[1] == 0.4f);
-    assert(r_testbuf[2] == 0.3f);
-    assert(r_testbuf[3] == 0.6f);
-
-    ringbuf->write(w_testbuf, 12);
-    assert(ringbuf->r_buf_avail() == 14);
-    assert(ringbuf->w_buf_avail() == (RB_SIZE - 14));
+    JackFilePlayerModule* deck = (JackFilePlayerModule*)user_data;
+    char* formated_position = deck->formatTime(position);
+    std::cerr << "Tick : " << position << " (" << formated_position << ")" << std::endl;
+    delete formated_position;
 }
-*/
 
 int
 main(int argc, char** argv)
@@ -74,11 +45,7 @@ main(int argc, char** argv)
     JackClient* jack_client = JackClient::getInstance("PiCaster");
 
     jack_client->setJackdPath("/usr/bin/jackd");
-#ifdef USE_DUMMY_DRIVER
-    jack_client->setDriver("dummy");
-#else
     jack_client->setDriver("alsa");
-#endif
     jack_client->setSampleRate("48000");
     jack_client->setFramesPerPeriod("512");
     jack_client->setPeriodsPerBuffer("3");
@@ -89,9 +56,8 @@ main(int argc, char** argv)
     JackRecorderModule* recorder = new JackRecorderModule("recorder", jack_client);
     JackFaderModule* master_fader = new JackFaderModule("master_fader", jack_client);
     JackModule* dj_fader = new JackFaderModule("dj_fader", jack_client);
-    //JackPorts* deck_a = jack_client->createOutputPorts("deck_a");
     JackFilePlayerModule* deck_a = new JackFilePlayerModule("deck_a", jack_client);
-    JackPorts* deck_b = jack_client->createOutputPorts("deck_b");
+    JackFilePlayerModule* deck_b = new JackFilePlayerModule("deck_b", jack_client);
     JackModule* decks_fader = new JackFaderModule("decks_fader", jack_client);
     JackPorts* fx = jack_client->createOutputPorts("fx");
     JackModule* fx_fader = new JackFaderModule("fx_fader", jack_client);
@@ -117,13 +83,23 @@ main(int argc, char** argv)
     //deck_a->playFile("/home/yannick/Téléchargements/Kwizat_Haterach_-_Le_bon_moment.flac");
     //deck_a->playFile("/data/Musique/picaster/stereo_square_4hz_0.8.flac");
     //deck_a->playFile("/home/yannick/Musique/demo.flac");
-    deck_a->playFile("/home/yannick/Musique/JekK_-_Strong.mp3");
+    deck_a->load("/home/yannick/Musique/JekK_-_Strong.mp3");
 
-    int bloc = 500;
-    while (--bloc > 0)
+    int64_t duration = deck_a->getDuration();
+    char* formated_duration = deck_a->formatTime(duration);
+    std::cerr << "Duration : " << duration << " (" << formated_duration << ")" << std::endl;
+    delete formated_duration;
+
+    deck_a->play(playerCallback, deck_a);
+
+    while (!finished)
     {
-        usleep(50000);
-    }
+        usleep(500000);
+        int64_t position = deck_a->getPosition();
+        char* formated_position = deck_a->formatTime(position);
+        std::cerr << "Tick : " << position << " (" << formated_position << ")" << std::endl;
+        delete formated_position;
+   }
 
     recorder->stopRecording();
     

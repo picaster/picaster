@@ -44,13 +44,11 @@ JackFilePlayerModule::JackFilePlayerModule(char const* name, JackClient* client)
     sample_rate = jack_get_sample_rate(client->getClient());
     out_channels = 2;
     out_samples = 4096;
-    //max_buffer_size = av_samples_get_buffer_size(NULL, out_channels, out_samples, AV_SAMPLE_FMT_FLT, 1);
     max_buffer_size = out_channels * out_samples * sizeof(float);
     playing = false;
-    //ringbuf = jack_ringbuffer_create(sizeof(jack_default_audio_sample_t) * RB_SIZE);
     can_process = false;
-    //memset (ringbuf->buf, 0, ringbuf->size) ;
     ringbuf = new Float32RingBuffer(RB_SIZE);
+    loaded = false;
 
     // register supported formats and codecs
     av_register_all();
@@ -67,7 +65,6 @@ JackFilePlayerModule::process(jack_nframes_t nframes)
 {
     if (!can_process)
     {
-        std::cerr << "[process] can't process" << std::endl;
         return;
     }
 
@@ -87,7 +84,8 @@ JackFilePlayerModule::process(jack_nframes_t nframes)
 
         if (r_avail < 2)
         {
-            std::cerr << "[process] PANIC : not enougth data available in ring buffer" << std::endl;
+            output_buffers[0][i] = 0;
+            output_buffers[1][i] = 0;
         }
         else
         {
@@ -97,22 +95,16 @@ JackFilePlayerModule::process(jack_nframes_t nframes)
             output_buffers[1][i] = buf[1];
         }
     }
-    //jack_ringbuffer_read_advance(ringbuf, total_read_count);
-
-    std::cerr << "[process] total_read_count: " << total_read_count << std::endl;
 
     /* Wake up the disk thread to read more data. */
-    std::cerr << "[process] get mutex " << std::endl;
     if (pthread_mutex_trylock(&disk_thread_lock) == 0) {
-        std::cerr << "[process] waking up disk thread" << std::endl;
         pthread_cond_signal(&data_ready);
-        std::cerr << "[process] unlocking mutex" << std::endl;
         pthread_mutex_unlock(&disk_thread_lock);
     }
 }
 
 void
-JackFilePlayerModule::playFile(char const* file_path)
+JackFilePlayerModule::load(char const* file_path)
 {
     // determine input file type and initialize format context
     if (avformat_open_input(&fmt_ctx, file_path, NULL, NULL) != 0) {
@@ -127,22 +119,55 @@ JackFilePlayerModule::playFile(char const* file_path)
         exit(1);
     }
 
+    this->duration = fmt_ctx->duration;
+
     av_dump_format(fmt_ctx, 0, file_path, false);
 
+    this->loaded = true;
+}
+
+int64_t
+JackFilePlayerModule::getDuration()
+{
+    return this->duration;
+}
+
+int64_t
+JackFilePlayerModule::getPosition()
+{
+    return this->position;
+}
+
+char*
+JackFilePlayerModule::formatTime(int64_t position)
+{
+    int64_t duration = position + (position <= INT64_MAX - 5000 ? 5000 : 0);
+    int secs  = duration / AV_TIME_BASE;
+    //int us    = duration % AV_TIME_BASE;
+    int mins  = secs / 60;
+    secs %= 60;
+    //int hours = mins / 60;
+    //mins %= 60;
+
+    char* formated_duration = new char[9];
+    sprintf(formated_duration, "%02d:%02d", mins, secs);
+
+    return formated_duration;
+}
+
+void
+JackFilePlayerModule::play(JackFilePlayerCallback callback, void* user_data)
+{
+    if (!this->loaded) return;
+
+    this->callback = callback;
+    this->user_data = user_data;
     pthread_create(&thread_id, NULL, JackFilePlayerModule::playerThreadCallback, this);
 }
 
 void*
 JackFilePlayerModule::playerThread()
 {
-    /*
-    int out_channels;
-    int out_samples;
-    int sample_rate;
-    int max_buffer_size;
-    AVFormatContext* fmt_ctx;
-    */
-
     // find audio stream in format context
     size_t stream = 0;
     for (; stream < fmt_ctx->nb_streams; stream++) {
@@ -219,11 +244,10 @@ JackFilePlayerModule::playerThread()
     pthread_setcanceltype (PTHREAD_CANCEL_ASYNCHRONOUS, NULL) ;
     pthread_mutex_lock(&disk_thread_lock);
 
-    //jack_ringbuffer_data_t vec[2];
+    int64_t track_samples = 0;
 
     // read packet from input audio file
     while (av_read_frame(fmt_ctx, &packet) >= 0) {
-        std::cerr << "[playerThread] begin frame " << std::endl;
         // skip non-audio packets
         if (packet.stream_index != (int)stream) {
             continue;
@@ -241,7 +265,6 @@ JackFilePlayerModule::playerThread()
         }
 
         // convert input frame to output buffer
-        //int got_samples = swr_convert(swr_ctx, &buffer, out_samples, (const uint8_t **)frame->data, frame->nb_samples);
         int got_samples = swr_convert(swr_ctx, (uint8_t**)&buffer, out_samples, (const uint8_t **)frame->data, frame->nb_samples);
         if (got_samples < 0) {
             std::cerr << "Error: swr_convert()" << std::endl;
@@ -249,103 +272,18 @@ JackFilePlayerModule::playerThread()
         }
 
         while (got_samples > 0) {
-            //int buffer_size = av_samples_get_buffer_size(NULL, out_channels, got_samples, AV_SAMPLE_FMT_FLT, 1);
-            //jack_ringbuffer_get_write_vector(ringbuf, vec);
-            //int buf_avail0 = vec[0].len;
-            //int buf_avail1 = vec[1].len;
-            //int buf_avail = buf_avail0 + buf_avail1;
-            int buf_avail = ringbuf->w_buf_avail();
-            std::cerr << "[playerThread] got_samples: " << got_samples << std::endl;
-            //std::cerr << "[playerThread] buffer_size: " << buffer_size << std::endl;
-            std::cerr << "[playerThread] buf_avail  : " << buf_avail << std::endl;
-            //std::cerr << "[playerThread] buf_avail0 : " << buf_avail0 << std::endl;
-            //std::cerr << "[playerThread] buf_avail1 : " << buf_avail1 << std::endl;
 
-            //while ((buf_avail0 + buf_avail1) < buffer_size)
+            track_samples += got_samples;
+
+            int buf_avail = ringbuf->w_buf_avail();
+
             while (buf_avail < got_samples * 2)
             {
-                std::cerr << "[playerThread] No space left on ring buffer, pausing." << std::endl;
                 pthread_cond_wait(&data_ready, &disk_thread_lock);
-                std::cerr << "[playerThread] Waking up." << std::endl;
-                //jack_ringbuffer_get_write_vector(ringbuf, vec);
-                //buf_avail0 = vec[0].len;
-                //buf_avail1 = vec[1].len;
-                //buf_avail = buf_avail0 + buf_avail1;
                 buf_avail = ringbuf->w_buf_avail();
-                std::cerr << "[playerThread] buf_avail  : " << buf_avail << std::endl;
-                //std::cerr << "[playerThread] buf_avail0 : " << buf_avail0 << std::endl;
-                //std::cerr << "[playerThread] buf_avail1 : " << buf_avail1 << std::endl;
             }
-            /*
-            std::cerr << "[playerThread] Resuming." << std::endl;
-
-            if (buf_avail0 >= buffer_size)
-            {
-                std::cerr << "[playerThread] Filling vec[0] only with " << buffer_size << " bytes." << std::endl;
-                memcpy(vec[0].buf, buffer, buffer_size);
-            }
-            else
-            {
-                std::cerr << "[playerThread] Filling vec[0] with " << buf_avail0 << " bytes." << std::endl;
-                memcpy(vec[0].buf, buffer, buf_avail0);
-                std::cerr << "[playerThread] Filling vec[1] with " << buf_avail1 << " bytes." << std::endl;
-                memcpy(vec[1].buf, buffer + buf_avail0, buffer_size - buf_avail0);
-            }
-            std::cerr << "[playerThread] Advancing ringbuffer write pos." << std::endl;
-            jack_ringbuffer_write_advance(ringbuf, buffer_size);
-            */
             ringbuf->write(buffer, got_samples * 2);
-/*
-            if (buf_avail0 < (size_t) buffer_size)
-            {
-                fprintf(stderr, "------------------------------\n");
-                memcpy((float*)vec[0].buf, buffer, buf_avail);
-                float* a = (float*)buffer;
-                float* b = (float*)vec[0].buf;
-                for (int i = 0; i < (int)buf_avail; i+=8)
-                {
-                    fprintf(stderr, "%06d : %5.2f (%5.2f) - %5.2f (%5.2f)\n", offset, *b, *a, *(b + 1), *(a + 1));
-                    offset += 1;
-                    a += 2;
-                    b += 2;
-                }
-                fprintf(stderr, "- - - - - - - - - - - - - - - \n");
-                memcpy((float*)vec[1].buf, buffer + buf_avail, buffer_size - buf_avail);
-                b = (float*)vec[1].buf;
-                for (int j = 0; j < (int)(buffer_size - buf_avail); j++)
-                {
-                    fprintf(stderr, "%06d : %5.2f (%5.2f) - %5.2f (%5.2f)\n", offset, *b, *a, *(b + 1), *(a + 1));
-                    offset += 1;
-                    a += 2;
-                    b += 2;
-                }
-                fprintf(stderr, "------------------------------\n");
-            }
-            else
-            {
-                fprintf(stderr, "==============================\n");
-                memcpy((float*)vec[0].buf, buffer, buffer_size);
-                float* a = (float*)buffer;
-                float* b = (float*)vec[0].buf;
-                for (int i = 0; i < (int)buffer_size; i+=8)
-                {
-                    fprintf(stderr, "%06d : %5.2f (%5.2f) - %5.2f (%5.2f)\n", offset, *b, *a, *(b + 1), *(a + 1));
-                    offset += 1;
-                    a += 2;
-                    b += 2;
-                }
-                fprintf(stderr, "==============================\n");
-            }
-*/
 
-            /*
-            float* b = (float*)buffer;
-            for (int i = 0; i < got_samples; i += 1)
-            {
-                fprintf(stderr, "%06d : %5.2f - %5.2f\n", offset, *(b + 2 * i), *(b + 2 * i + 1));
-                offset += 1;
-            }
-            */
             // process samples buffered inside swr context
             got_samples = swr_convert(swr_ctx, (uint8_t**)&buffer, out_samples, NULL, 0);
             if (got_samples < 0) {
@@ -357,9 +295,16 @@ JackFilePlayerModule::playerThread()
         // free packet created by decoder
         av_free_packet(&packet);
 
-        std::cerr << "[playerThread] end frame " << std::endl;
         can_process = true;
-        pthread_cond_wait(&data_ready, &disk_thread_lock);        
+
+        position = AV_TIME_BASE * track_samples / this->sample_rate;
+
+        if (this->callback)
+        {
+            //this->callback(track_position, this->user_data);
+        }
+
+        pthread_cond_wait(&data_ready, &disk_thread_lock);
     }
 
     playing = false;
