@@ -29,12 +29,9 @@ class JackModule {
     private:
         const char* name;
         JackClient* client;
-        bool        activated;
 
     public:
-        [[deprecated]]
         JackPorts*  input_ports;
-        [[deprecated]]
         JackPorts*  output_ports;
 
     public:
@@ -42,17 +39,11 @@ class JackModule {
         void connectTo(JackModule* module);
         JackPorts* getInputPorts();
         JackPorts* getOutputPorts();
+        virtual void process(jack_nframes_t nframes) = 0;
+        void connectTo(JackPorts* input_ports);
         jack_default_audio_sample_t** getInputPortsBuffers(jack_nframes_t nframes);
         jack_default_audio_sample_t** getOutputPortsBuffers(jack_nframes_t nframes);
         jack_client_t* getJackClient();
-        void activate();
-
-    public:
-        virtual void process(jack_nframes_t nframes);
-
-    /* Keep that */
-    public:
-        void connectTo(JackPorts* input_ports);
 
 };
 

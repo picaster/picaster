@@ -26,6 +26,10 @@
 #include <sstream>
 #include <string>
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "JackClient.h"
 #include "JackModule.h"
 #include "JackRecorderModule.h"
@@ -152,10 +156,9 @@ JackClient::startJack()
         char const* params[20];
         std::stringstream cmdline;
         cmdline << jackd_path << " -d" << driver_name;
-        if (!strcmp(driver_name, "alsa"))
-        {
-            cmdline << " -n" << periods_per_buffer << " -Chw:" << input_device << " -Phw:" << output_device;
-        }
+#ifndef USE_DUMMY_DRIVER
+        cmdline << " -n" << periods_per_buffer << " -Chw:" << input_device << " -Phw:" << output_device;
+#endif
         cmdline << " -p" << frames_per_period << " -r" << sample_rate;
         char* c = strdup(cmdline.str().c_str());
         char* b = c;

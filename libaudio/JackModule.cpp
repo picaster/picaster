@@ -64,30 +64,8 @@ JackModule::getOutputPortsBuffers(jack_nframes_t nframes)
     return output_ports->getBuffers(nframes);
 }
 
-void
-JackModule::process(jack_nframes_t nframes)
-{
-    if (activated)
-    {
-        jack_default_audio_sample_t** input_buffers = getInputPortsBuffers(nframes);
-        jack_default_audio_sample_t** output_buffers = getOutputPortsBuffers(nframes);
-
-        for (jack_nframes_t frame = 0; frame < nframes; frame++)
-        {
-            output_buffers[0][frame] = input_buffers[0][frame];
-            output_buffers[1][frame] = input_buffers[1][frame];
-        }
-    }
-}
-
 jack_client_t*
 JackModule::getJackClient()
 {
     return client->getClient();
-}
-
-void
-JackModule::activate()
-{
-    activated = true;
 }

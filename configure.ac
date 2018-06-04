@@ -15,6 +15,10 @@ dnl PKG_CHECK_MODULES([GSTREAMER], [gstreamer-1.0])
 dnl PKG_CHECK_MODULES([TAGLIB], [taglib_c])
 PKG_CHECK_MODULES([SNDFILE], [sndfile])
 PKG_CHECK_MODULES([FLAC], [flac])
+PKG_CHECK_MODULES([LIBAVUTIL], [libavutil])
+PKG_CHECK_MODULES([LIBAVFORMAT], [libavformat])
+PKG_CHECK_MODULES([LIBAVCODEC], [libavcodec])
+PKG_CHECK_MODULES([LIBSWRESAMPLE], [libswresample])
 
 AC_ARG_WITH([dummy-driver],
   [AS_HELP_STRING([--with-dummy-driver],

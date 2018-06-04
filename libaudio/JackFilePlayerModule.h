@@ -15,23 +15,42 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __JACK_FADER_MODULE_H_INCLUDED
-#define __JACK_FADER_MODULE_H_INCLUDED
+#ifndef __JACK_FILE_PLAYER_MODULE_H_INCLUDED
+#define __JACK_FILE_PLAYER_MODULE_H_INCLUDED
+
+#include <pthread.h>
+
+extern "C" {
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+#include <libswresample/swresample.h>
+}
 
 #include "JackModule.h"
 
-class JackFaderModule : public JackModule
+class JackFilePlayerModule : public JackModule
 {
+    private:
+        int out_channels;
+        int out_samples;
+        int sample_rate;
+        int max_buffer_size;
+        AVFormatContext* fmt_ctx;
+        bool playing;
+        bool can_process;
+        pthread_t thread_id;
+        pthread_mutex_t disk_thread_lock = PTHREAD_MUTEX_INITIALIZER;
+        pthread_cond_t data_ready = PTHREAD_COND_INITIALIZER;
+        jack_ringbuffer_t *ringbuf;
 
     private:
-        float slider_value;
-        float db_value;
-        float amplification;
+        static void* playerThreadCallback(void* arg);
 
     public:
-        JackFaderModule(const char* name, JackClient* client);
+        JackFilePlayerModule(char const* name, JackClient* client);
         void process(jack_nframes_t nframes);
-        void setSliderValue(float slider_value);
+        void playFile(char const* file_path);
+        void* playerThread();
 };
 
 #endif

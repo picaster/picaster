@@ -15,11 +15,36 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <iostream>
+#include <math.h>
+
 #include "JackFaderModule.h"
 
 JackFaderModule::JackFaderModule(const char* name, JackClient* client) : JackModule(name, client)
 {
     input_ports = client->createInputPorts(name);
     output_ports = client->createOutputPorts(name);
+    setSliderValue(0.89917899646); /* -3 dBFS by default */
     client->registerModule(this);
+}
+
+void
+JackFaderModule::process(jack_nframes_t nframes)
+{
+    jack_default_audio_sample_t** input_buffers = getInputPortsBuffers(nframes);
+    jack_default_audio_sample_t** output_buffers = getOutputPortsBuffers(nframes);
+
+    for (jack_nframes_t frame = 0; frame < nframes; frame++)
+    {
+        output_buffers[0][frame] = amplification * input_buffers[0][frame];
+        output_buffers[1][frame] = amplification * input_buffers[1][frame];
+    }
+}
+
+void
+JackFaderModule::setSliderValue(float slider_value)
+{
+    this->slider_value = slider_value; 
+    db_value = 65 * log10(slider_value);
+    amplification = pow(10, db_value / 20.0f);
 }
