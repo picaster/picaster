@@ -1,0 +1,11 @@
+.greenchecked:checked {
+    background: darkgreen;
+    color: white;
+}
+
+.redchecked:checked,
+.button_playing {
+    background: darkred;
+    color: white;
+}
+

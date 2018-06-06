@@ -23,93 +23,33 @@
 #include "config.h"
 #endif
 
-#include "JackClient.h"
-#include "JackRecorderModule.h"
-#include "JackFaderModule.h"
-#include "JackFilePlayerModule.h"
-#include "ShoutcastStreamerModule.h"
-
-bool finished = false;
-
-static void
-playerCallback(int64_t position, void* user_data)
-{
-    JackFilePlayerModule* deck = (JackFilePlayerModule*)user_data;
-    char* formated_position = deck->formatTime(position);
-    std::cerr << "Tick : " << position << " (" << formated_position << ")" << std::endl;
-    delete formated_position;
-}
+#include "context.h"
+#include "ui.h"
 
 int
 main(int argc, char** argv)
 {
     JackClient* jack_client = JackClient::getInstance("PiCaster");
 
-    jack_client->setJackdPath("/usr/bin/jackd");
-    jack_client->setDriver("alsa");
-    jack_client->setSampleRate("48000");
-    jack_client->setFramesPerPeriod("512");
-    jack_client->setPeriodsPerBuffer("3");
-    jack_client->setInputDevice("CODEC");
-    jack_client->setOutputDevice("CODEC");
-    jack_client->startJack();
+    context.recorder = new JackRecorderModule("recorder", jack_client);
+    context.streamer = new ShoutcastStreamerModule("streamer", jack_client);
+    context.master_fader = new JackFaderModule("master_fader", jack_client);
+    context.dj_fader = new JackFaderModule("dj_fader", jack_client);
+    context.deck_a = new JackFilePlayerModule("deck_a", jack_client);
+    context.deck_b = new JackFilePlayerModule("deck_b", jack_client);
+    context.decks_fader = new JackFaderModule("decks_fader", jack_client);
+    context.fx = new JackFilePlayerModule("fx", jack_client);
+    context.fx_fader = new JackFaderModule("fx_fader", jack_client);
 
-    JackRecorderModule* recorder = new JackRecorderModule("recorder", jack_client);
-    ShoutcastStreamerModule* streamer = new ShoutcastStreamerModule("streamer", jack_client);
-    JackFaderModule* master_fader = new JackFaderModule("master_fader", jack_client);
-    JackModule* dj_fader = new JackFaderModule("dj_fader", jack_client);
-    JackFilePlayerModule* deck_a = new JackFilePlayerModule("deck_a", jack_client);
-    JackFilePlayerModule* deck_b = new JackFilePlayerModule("deck_b", jack_client);
-    JackModule* decks_fader = new JackFaderModule("decks_fader", jack_client);
-    JackPorts* fx = jack_client->createOutputPorts("fx");
-    JackModule* fx_fader = new JackFaderModule("fx_fader", jack_client);
+    /* Init GTK */
+    gtk_init(&argc, &argv);
 
-    JackPorts* playback_ports = jack_client->getPlaybackPorts();
-    JackPorts* capture_ports = jack_client->getCapturePorts();
-
-    master_fader->setSliderValue(1.0); /* 0 dBFS */
-    master_fader->connectTo(playback_ports);
-    master_fader->connectTo(recorder);
-    master_fader->connectTo(streamer);
-
-    capture_ports->connectTo(dj_fader);
-    dj_fader->connectTo(master_fader);
-
-    deck_a->connectTo(decks_fader);
-    deck_b->connectTo(decks_fader);
-    decks_fader->connectTo(master_fader);
-
-    fx->connectTo(fx_fader);
-    fx_fader->connectTo(master_fader);
-
-    recorder->startRecording("/tmp/picaster.flac");
-    //deck_a->load("/home/yannick/Téléchargements/Kwizat_Haterach_-_Le_bon_moment.flac");
-    //deck_a->playFile("/data/Musique/picaster/stereo_square_4hz_0.8.flac");
-    //deck_a->playFile("/home/yannick/Musique/demo.flac");
-    //deck_a->load("/data/Musique/349863__jtnewlin13__leather-jacket-wooshes.wav");
-    deck_a->load("/home/yannick/Musique/JekK_-_Strong.mp3");
-
-    int64_t duration = deck_a->getDuration();
-    char* formated_duration = deck_a->formatTime(duration);
-    std::cerr << "Duration : " << duration << " (" << formated_duration << ")" << std::endl;
-    delete formated_duration;
-
-    streamer->connect("stream.euterpia-radio.fr", 8902, "GslE7x2k");
-
-    deck_a->play(playerCallback, deck_a);
-
-    while (deck_a->isPlaying())
-    {
-        usleep(500000);
-        int64_t position = deck_a->getPosition();
-        char* formated_position = deck_a->formatTime(position);
-        std::cerr << "Tick : " << position << " (" << formated_position << ")" << std::endl;
-        delete formated_position;
-   }
-
-    recorder->stopRecording();
+    /* Create application */
+    GtkApplication* app = gtk_application_new("ch.frenchguy.picaster", G_APPLICATION_FLAGS_NONE);
+    g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
     
-    jack_client->stopJack();
+    /* Run application */
+    int status = g_application_run(G_APPLICATION(app), argc, argv);
 
-    return 0;
+    return status;
 }

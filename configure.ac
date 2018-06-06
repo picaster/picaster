@@ -8,8 +8,8 @@ AC_CONFIG_MACRO_DIRS([m4])
 
 AC_CHECK_HEADERS([stdio.h])
 
-dnl PKG_CHECK_MODULES([GTK], [gtk+-3.0])
-dnl PKG_CHECK_MODULES([ALSA], [alsa])
+PKG_CHECK_MODULES([GTK], [gtk+-3.0])
+PKG_CHECK_MODULES([ALSA], [alsa])
 PKG_CHECK_MODULES([JACK2], [jack > 1.9])
 dnl PKG_CHECK_MODULES([GSTREAMER], [gstreamer-1.0])
 dnl PKG_CHECK_MODULES([TAGLIB], [taglib_c])

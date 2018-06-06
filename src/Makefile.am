@@ -1,9 +1,24 @@
 AM_CPPFLAGS = -I$(top_srcdir)/libaudio
 
-bin_PROGRAMS = picaster
+bin_PROGRAMS = picaster libaudiodemo
 
-picaster_SOURCES = picaster.cpp
+libaudiodemo_SOURCES = libaudiodemo.cpp
 
-picaster_CXXFLAGS = -DDATADIR=\"$(datadir)\" -rdynamic -std=gnu++14 -Wall -Werror -Wno-error=deprecated-declarations
+libaudiodemo_CXXFLAGS = -DDATADIR=\"$(datadir)\" -rdynamic -std=gnu++14 -Wall -Werror -Wno-error=deprecated-declarations
 
-picaster_LDADD = ../libaudio/libaudio.la
+libaudiodemo_LDADD = ../libaudio/libaudio.la
+
+picaster_SOURCES  = context.cpp context.h
+picaster_SOURCES += device_list.cpp device_list.h
+picaster_SOURCES += jack.cpp jack.h
+picaster_SOURCES += picaster.cpp
+picaster_SOURCES += ui.cpp ui.h
+picaster_SOURCES += AppSettingsManager.cpp AppSettingsManager.h
+
+picaster_CXXFLAGS  = -DDATADIR=\"$(datadir)\" -rdynamic -std=gnu++14 -Wall -Werror -Wno-error=deprecated-declarations
+picaster_CXXFLAGS += @ALSA_CFLAGS@
+picaster_CXXFLAGS += @GTK_CFLAGS@
+
+picaster_LDADD  = ../libaudio/libaudio.la
+picaster_LDADD += @ALSA_LIBS@
+picaster_LDADD += @GTK_LIBS@
