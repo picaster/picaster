@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include <math.h>
+#include <string.h>
 
 #include "JackFaderModule.h"
 
@@ -25,6 +26,7 @@ JackFaderModule::JackFaderModule(const char* name, JackClient* client) : JackMod
     input_ports = client->createInputPorts(name);
     output_ports = client->createOutputPorts(name);
     setSliderValue(0.89917899646); /* -3 dBFS by default */
+    enabled = true;
     client->registerModule(this);
 }
 
@@ -36,8 +38,17 @@ JackFaderModule::process(jack_nframes_t nframes)
 
     for (jack_nframes_t frame = 0; frame < nframes; frame++)
     {
-        output_buffers[0][frame] = amplification * input_buffers[0][frame];
-        output_buffers[1][frame] = amplification * input_buffers[1][frame];
+        float a = enabled ? amplification : 0;
+        if (this->enabled)
+        {
+            output_buffers[0][frame] = a * input_buffers[0][frame];
+            output_buffers[1][frame] = a * input_buffers[1][frame];
+        }
+        else
+        {
+            output_buffers[0][frame] = 0;
+            output_buffers[1][frame] = 0;
+        }
     }
 }
 
@@ -47,4 +58,10 @@ JackFaderModule::setSliderValue(float slider_value)
     this->slider_value = slider_value; 
     db_value = 65 * log10(slider_value);
     amplification = pow(10, db_value / 20.0f);
+}
+
+void
+JackFaderModule::enable(bool enabled)
+{
+    this->enabled = enabled;
 }

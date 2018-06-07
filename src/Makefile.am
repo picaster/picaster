@@ -11,6 +11,7 @@ libaudiodemo_LDADD = ../libaudio/libaudio.la
 picaster_SOURCES  = context.cpp context.h
 picaster_SOURCES += device_list.cpp device_list.h
 picaster_SOURCES += dialog.cpp dialog.h
+picaster_SOURCES += dj.cpp dj.h
 picaster_SOURCES += jack.cpp jack.h
 picaster_SOURCES += picaster.cpp
 picaster_SOURCES += track_fx_button.cpp track_fx_button.h

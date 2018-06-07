@@ -44,6 +44,7 @@ class JackModule {
         jack_default_audio_sample_t** getInputPortsBuffers(jack_nframes_t nframes);
         jack_default_audio_sample_t** getOutputPortsBuffers(jack_nframes_t nframes);
         jack_client_t* getJackClient();
+        const char* getName();
 
 };
 

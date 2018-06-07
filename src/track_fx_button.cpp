@@ -20,6 +20,7 @@
 
 #include "context.h"
 #include "track_fx_button.h"
+#include "JackFilePlayerModule.h"
 
 static void
 on_button_released_event(GtkWidget *widget, GdkEvent *event, gpointer user_data)
@@ -109,21 +110,38 @@ on_button_released_event(GtkWidget *widget, GdkEvent *event, gpointer user_data)
     }
 }
 
+void
+on_button_clicked(GtkButton* button, gpointer user_data)
+{
+    ButtonData* button_data = (ButtonData*)g_object_get_data(G_OBJECT(button), "button_data");
+    if (button_data->file_path != NULL)
+    {
+        context.deck_a->load(button_data->file_path);
+        context.deck_a->play(NULL, NULL);
+    }
+}
+
 extern "C" {
 
-gboolean
-on_trk_button_release_event(GtkWidget *widget, GdkEvent *event, gpointer user_data)
-{
-    on_button_released_event(widget, event, user_data);
-    return FALSE;
-}
+    gboolean
+    on_trk_button_release_event(GtkWidget *widget, GdkEvent *event, gpointer user_data)
+    {
+        on_button_released_event(widget, event, user_data);
+        return FALSE;
+    }
 
-gboolean
-on_fx_button_release_event(GtkWidget *widget, GdkEvent *event, gpointer user_data)
-{
-    on_button_released_event(widget, event, user_data);
-    return FALSE;
-}
+    gboolean
+    on_fx_button_release_event(GtkWidget *widget, GdkEvent *event, gpointer user_data)
+    {
+        on_button_released_event(widget, event, user_data);
+        return FALSE;
+    }
+
+    void
+    on_trk_button_clicked(GtkButton* button, gpointer user_data)
+    {
+        on_button_clicked(button, user_data);
+    }
 
 }
 

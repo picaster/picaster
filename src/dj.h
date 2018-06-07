@@ -15,25 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __JACK_FADER_MODULE_H_INCLUDED
-#define __JACK_FADER_MODULE_H_INCLUDED
-
-#include "JackModule.h"
-
-class JackFaderModule : public JackModule
-{
-
-    private:
-        float slider_value;
-        float db_value;
-        float amplification;
-        bool enabled;
-
-    public:
-        JackFaderModule(const char* name, JackClient* client);
-        void process(jack_nframes_t nframes);
-        void setSliderValue(float slider_value);
-        void enable(bool enabled);
-};
+#ifndef __DJ_H_INCLUDED
+#define __DJ_H_INCLUDED
 
 #endif

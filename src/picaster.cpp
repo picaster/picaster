@@ -31,15 +31,37 @@ main(int argc, char** argv)
 {
     context.jack_client = JackClient::getInstance("PiCaster");
 
-    context.recorder = new JackRecorderModule("recorder", context.jack_client);
-    context.streamer = new ShoutcastStreamerModule("streamer", context.jack_client);
-    context.master_fader = new JackFaderModule("master_fader", context.jack_client);
-    context.dj_fader = new JackFaderModule("dj_fader", context.jack_client);
-    context.deck_a = new JackFilePlayerModule("deck_a", context.jack_client);
-    context.deck_b = new JackFilePlayerModule("deck_b", context.jack_client);
-    context.decks_fader = new JackFaderModule("decks_fader", context.jack_client);
-    context.fx = new JackFilePlayerModule("fx", context.jack_client);
-    context.fx_fader = new JackFaderModule("fx_fader", context.jack_client);
+    if (context.jack_client->isConnected())
+    {
+        context.recorder = new JackRecorderModule("recorder", context.jack_client);
+        context.streamer = new ShoutcastStreamerModule("streamer", context.jack_client);
+        context.master_fader = new JackFaderModule("master_fader", context.jack_client);
+        context.dj_fader = new JackFaderModule("dj_fader", context.jack_client);
+        context.deck_a = new JackFilePlayerModule("deck_a", context.jack_client);
+        context.deck_b = new JackFilePlayerModule("deck_b", context.jack_client);
+        context.decks_fader = new JackFaderModule("decks_fader", context.jack_client);
+        context.fx = new JackFilePlayerModule("fx", context.jack_client);
+        context.fx_fader = new JackFaderModule("fx_fader", context.jack_client);
+
+        JackPorts* playback_ports = context.jack_client->getPlaybackPorts();
+        JackPorts* capture_ports = context.jack_client->getCapturePorts();
+
+        context.master_fader->setSliderValue(1.0); /* 0 dBFS */
+        context.master_fader->connectTo(playback_ports);
+        context.master_fader->connectTo(context.recorder);
+        context.master_fader->connectTo(context.streamer);
+
+        capture_ports->connectTo(context.dj_fader);
+        context.dj_fader->enable(false);
+        context.dj_fader->connectTo(context.master_fader);
+
+        context.deck_a->connectTo(context.decks_fader);
+        context.deck_b->connectTo(context.decks_fader);
+        context.decks_fader->connectTo(context.master_fader);
+
+        context.fx->connectTo(context.fx_fader);
+        context.fx_fader->connectTo(context.master_fader);
+    }
 
     /* Init GTK */
     gtk_init(&argc, &argv);

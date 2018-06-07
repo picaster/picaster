@@ -15,25 +15,19 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __JACK_FADER_MODULE_H_INCLUDED
-#define __JACK_FADER_MODULE_H_INCLUDED
+#include <gtk/gtk.h>
+#include <iostream>
 
-#include "JackModule.h"
+#include "context.h"
+#include "dj.h"
 
-class JackFaderModule : public JackModule
+extern "C"
 {
+    void
+    on_microphone_toggle_button_toggled(GtkToggleButton* toggle_button, gpointer user_data)
+    {
+        std::cerr << "enable: " << gtk_toggle_button_get_active(toggle_button) << std::endl;
+        context.dj_fader->enable(gtk_toggle_button_get_active(toggle_button));
+    }
 
-    private:
-        float slider_value;
-        float db_value;
-        float amplification;
-        bool enabled;
-
-    public:
-        JackFaderModule(const char* name, JackClient* client);
-        void process(jack_nframes_t nframes);
-        void setSliderValue(float slider_value);
-        void enable(bool enabled);
-};
-
-#endif
+}

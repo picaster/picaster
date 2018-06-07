@@ -69,3 +69,9 @@ JackModule::getJackClient()
 {
     return client->getClient();
 }
+
+const char*
+JackModule::getName()
+{
+    return this->name;
+}
