@@ -20,6 +20,7 @@
 #include "context.h"
 #include "ui.h"
 #include "device_list.h"
+#include "jack.h"
 
 static void
 load_gui()
@@ -47,6 +48,13 @@ activate(GtkApplication* app, gpointer user_data)
 {
     load_gui();
     init_device_lists();
+    init_jack_settings();
+
+    if (context.jack_client->isConnected())
+    {
+        GtkWidget* jack_box = GTK_WIDGET(gtk_builder_get_object(context.builder, "jack_box"));
+        gtk_widget_set_sensitive(jack_box, false);
+    }
 
     gtk_builder_connect_signals(context.builder, NULL);
 

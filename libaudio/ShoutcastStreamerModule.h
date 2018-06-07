@@ -44,12 +44,23 @@ enum {
     RECV_TIMEOUT = 1000
 };
 
+#define RB_SIZE (1 << 16)
+
 class ShoutcastStreamerModule : public JackModule
 {
     private:
+        const size_t sample_size = sizeof(jack_default_audio_sample_t);
+
+    private:
         bool connected;
-        bool streaming;
         int stream_socket;
+        pthread_t          thread_id;
+        pthread_mutex_t    mutex = PTHREAD_MUTEX_INITIALIZER;
+        pthread_cond_t     data_ready = PTHREAD_COND_INITIALIZER;
+        jack_ringbuffer_t* ringbuf;
+
+    private:
+        static void* streamThreadCallback(void* arg);
 
     private:
         int sock_connect(char const* addr, short port, int timeout_ms);
@@ -65,7 +76,8 @@ class ShoutcastStreamerModule : public JackModule
         ShoutcastStreamerModule(char const* name, JackClient* client);
         void process(jack_nframes_t nframes);
         int connect(char const* server_name, short port, char const* password);
-        void disconnect(void);
+        void disconnect();
+        void* streamThread();
 };
 
 #endif

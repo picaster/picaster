@@ -29,17 +29,17 @@
 int
 main(int argc, char** argv)
 {
-    JackClient* jack_client = JackClient::getInstance("PiCaster");
+    context.jack_client = JackClient::getInstance("PiCaster");
 
-    context.recorder = new JackRecorderModule("recorder", jack_client);
-    context.streamer = new ShoutcastStreamerModule("streamer", jack_client);
-    context.master_fader = new JackFaderModule("master_fader", jack_client);
-    context.dj_fader = new JackFaderModule("dj_fader", jack_client);
-    context.deck_a = new JackFilePlayerModule("deck_a", jack_client);
-    context.deck_b = new JackFilePlayerModule("deck_b", jack_client);
-    context.decks_fader = new JackFaderModule("decks_fader", jack_client);
-    context.fx = new JackFilePlayerModule("fx", jack_client);
-    context.fx_fader = new JackFaderModule("fx_fader", jack_client);
+    context.recorder = new JackRecorderModule("recorder", context.jack_client);
+    context.streamer = new ShoutcastStreamerModule("streamer", context.jack_client);
+    context.master_fader = new JackFaderModule("master_fader", context.jack_client);
+    context.dj_fader = new JackFaderModule("dj_fader", context.jack_client);
+    context.deck_a = new JackFilePlayerModule("deck_a", context.jack_client);
+    context.deck_b = new JackFilePlayerModule("deck_b", context.jack_client);
+    context.decks_fader = new JackFaderModule("decks_fader", context.jack_client);
+    context.fx = new JackFilePlayerModule("fx", context.jack_client);
+    context.fx_fader = new JackFaderModule("fx_fader", context.jack_client);
 
     /* Init GTK */
     gtk_init(&argc, &argv);

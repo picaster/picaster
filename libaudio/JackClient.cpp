@@ -251,7 +251,6 @@ JackClient::JackClient(const char* client_name)
     startJackClient(client_name, true);
 }
 
-
 bool
 JackClient::startJackClient(const char* client_name, bool detached)
 {
@@ -306,4 +305,10 @@ JackClient::process(jack_nframes_t nframes)
         modules[i]->process(nframes);
     }
     return 0;
+}
+
+bool
+JackClient::isConnected()
+{
+    return client != NULL;
 }

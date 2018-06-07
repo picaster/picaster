@@ -18,4 +18,6 @@
 #ifndef __JACK_H_INCLUDED
 #define __JACK_H_INCLUDED
 
+void init_jack_settings();
+
 #endif

@@ -85,7 +85,8 @@ class JackClient {
         jack_client_t* getClient();
         void stopJack();
         void registerModule(JackModule* module);
-
+        bool isConnected();
+        
     public:
         static JackClient* getInstance(const char* client_name);
 };

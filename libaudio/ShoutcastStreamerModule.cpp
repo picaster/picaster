@@ -34,19 +34,41 @@
 
 #include "ShoutcastStreamerModule.h"
 
+void*
+ShoutcastStreamerModule::streamThreadCallback(void* arg)
+{
+    ShoutcastStreamerModule* module = (ShoutcastStreamerModule*)arg;
+    return module->streamThread();
+}
+
 ShoutcastStreamerModule::ShoutcastStreamerModule(const char* name, JackClient* client) : JackModule(name, client)
 {
     input_ports = client->createInputPorts(name);
-    streaming = false;
+    connected = false;
+    ringbuf = jack_ringbuffer_create(RB_SIZE);
     client->registerModule(this);
 }
 
 void
 ShoutcastStreamerModule::process(jack_nframes_t nframes)
-{
-    if (streaming)
+{/*
+    if (connected)
     {
-    }
+        jack_default_audio_sample_t** input_ports = getInputPortsBuffers(nframes);
+        for (jack_nframes_t frame = 0; frame < nframes; frame++)
+        {
+            for (int chn = 0; chn < 2; chn++)
+            {
+                jack_ringbuffer_write(ringbuf, (const char*)(input_buffers[chn] + frame), sample_size);
+            }
+        }
+
+        if (pthread_mutex_trylock(&mutex) == 0)
+        {
+            pthread_cond_signal(&data_ready);
+            pthread_mutex_unlock(&mutex);
+        }
+    }*/
 }
 
 int
@@ -156,6 +178,7 @@ ShoutcastStreamerModule::connect(char const* server_name, short port, char const
     }
 
     connected = 1;
+    pthread_create(&thread_id, NULL, ShoutcastStreamerModule::streamThreadCallback, this);
 
     //timer_init(&stream_timer, 1);       //starts the "online" timer
 
@@ -163,9 +186,51 @@ ShoutcastStreamerModule::connect(char const* server_name, short port, char const
 }
 
 void 
-ShoutcastStreamerModule::disconnect(void)
+ShoutcastStreamerModule::disconnect()
 {
+    connected = 0;
     sock_close(&stream_socket);
+}
+
+void*
+ShoutcastStreamerModule::streamThread()
+{/*
+    size_t bytes_per_frame = 2 * sample_size;
+    void *framebuf = malloc(bytes_per_frame);
+
+    // find the MP2 encoder
+    AVCodec* codec = avcodec_find_encoder(CODEC_ID_MP3);
+    if (!codec) {
+        std::cerr << "codec not found" << std:endl;
+        exit(1);
+    }
+
+    AVCodecContext* c = avcodec_alloc_context();
+    // put sample parameters
+    c->bit_rate = 96
+    c->sample_rate = 44100;
+    c->channels = 2;
+
+    // open it
+    if (avcodec_open(c, codec) < 0) {
+        std::cerr << "could not open codec" << std:endl;
+        exit(1);
+    }
+
+    // the codec gives us the frame size, in samples
+    int frame_size = c->frame_size;
+    short* samples = malloc(frame_size * 2 * c->channels);
+
+
+    while (connected)
+    {
+        while (jack_ringbuffer_read_space(rb) >= bytes_per_frame)
+        {
+
+        }
+    }
+*/
+    return NULL;
 }
 
 void

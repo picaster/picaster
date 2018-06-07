@@ -16,6 +16,7 @@
 */
 
 #include "jack.h"
+#include "context.h"
 
 #include "AppSettingsManager.h"
 
@@ -41,4 +42,14 @@ on_start_jack_toggle_button_toggled(GtkToggleButton* toggle_button, gpointer use
 
 }
 
+}
+
+void
+init_jack_settings()
+{
+    gchar* jackd_path = AppSettingsManager::getString("jack", "jackd_path_entry", "/usr/bin/jackd");
+    gtk_entry_set_text(GTK_ENTRY(gtk_builder_get_object(context.builder, "jackd_path_entry")), jackd_path);
+
+    gchar* sample_rate = AppSettingsManager::getString("jack", "sample_rate", "44100");
+    gtk_combo_box_set_active_id(GTK_COMBO_BOX(gtk_builder_get_object(context.builder, "jack_samplerate_combobox_text")), sample_rate);    
 }

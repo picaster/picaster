@@ -29,6 +29,7 @@
 class Context {
 
     public:
+        JackClient* jack_client;
         JackRecorderModule* recorder;
         ShoutcastStreamerModule* streamer;
         JackFaderModule* master_fader;
