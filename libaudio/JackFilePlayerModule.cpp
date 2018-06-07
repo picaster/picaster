@@ -62,8 +62,6 @@ JackFilePlayerModule::JackFilePlayerModule(char const* name, JackClient* client)
 void
 JackFilePlayerModule::process(jack_nframes_t nframes)
 {
-    if (!playing) return;
-
     jack_default_audio_sample_t buf[2];
     
     jack_default_audio_sample_t** output_buffers = getOutputPortsBuffers(nframes);
@@ -71,24 +69,32 @@ JackFilePlayerModule::process(jack_nframes_t nframes)
     int total_read_count = 0;
     for (int i = 0; i < (int)nframes; i++)
     {
-        int r_avail = ringbuf->r_buf_avail();
-        if (r_avail < 0)
+        if (playing)
         {
-            std::cerr << "[process] PANIC : ring buffer overread" << std::endl;
-            exit(1);
-        }
+            int r_avail = ringbuf->r_buf_avail();
+            if (r_avail < 0)
+            {
+                std::cerr << "[process] PANIC : ring buffer overread" << std::endl;
+                exit(1);
+            }
 
-        if (r_avail < 2)
-        {
-            output_buffers[0][i] = 0;
-            output_buffers[1][i] = 0;
+            if (r_avail < 2)
+            {
+                output_buffers[0][i] = 0;
+                output_buffers[1][i] = 0;
+            }
+            else
+            {
+                int read_count = ringbuf->read(buf, 2);
+                total_read_count += read_count;
+                output_buffers[0][i] = buf[0];
+                output_buffers[1][i] = buf[1];
+            }
         }
         else
         {
-            int read_count = ringbuf->read(buf, 2);
-            total_read_count += read_count;
-            output_buffers[0][i] = buf[0];
-            output_buffers[1][i] = buf[1];
+            output_buffers[0][i] = 0;
+            output_buffers[1][i] = 0;
         }
     }
 
@@ -152,13 +158,11 @@ JackFilePlayerModule::formatTime(int64_t position)
 }
 
 void
-JackFilePlayerModule::play(JackFilePlayerCallback callback, void* user_data)
+JackFilePlayerModule::play()
 {
     if (!this->loaded) return;
 
     this->stop_requested = false;
-    this->callback = callback;
-    this->user_data = user_data;
     playing = true;
     pthread_create(&thread_id, NULL, JackFilePlayerModule::playerThreadCallback, this);
 }
@@ -293,11 +297,6 @@ JackFilePlayerModule::playerThread()
 
         position = AV_TIME_BASE * track_samples / this->sample_rate;
 
-        if (this->callback)
-        {
-            //this->callback(track_position, this->user_data);
-        }
-
         pthread_cond_wait(&data_ready, &disk_thread_lock);
     }
 
@@ -312,6 +311,8 @@ JackFilePlayerModule::playerThread()
 
     avcodec_close(codec_ctx);
     avformat_close_input(&fmt_ctx);
+
+    ringbuf->reset();
 
     return NULL;   
 }

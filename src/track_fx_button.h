@@ -25,6 +25,7 @@ class ButtonData {
         GtkProgressBar* progress_bar;
         GtkLabel* duration_label;
         gchar* file_path;
+        int length;
         JackFilePlayerModule* deck;
 };
 

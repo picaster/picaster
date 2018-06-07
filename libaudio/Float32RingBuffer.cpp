@@ -24,14 +24,7 @@ Float32RingBuffer::Float32RingBuffer(int capacity)
 {
     this->capacity = capacity;
     this->buffer = (float*)calloc(capacity, sizeof(float));
-
-    this->r_ptr = this->buffer;
-    this->r_avail = 0;
-    this->r_buffer_avail = this->capacity;
-
-    this->w_ptr = this->buffer;
-    this->w_avail = this->capacity;
-    this->w_buffer_avail = this->capacity;
+    this->reset();
 }
 
 int
@@ -67,16 +60,6 @@ Float32RingBuffer::read(float* buffer, int count)
     else
     {
         this->_read(buffer, count);
-        /*
-        memcpy(buffer, this->r_ptr, count * sizeof(float));
-        this->r_ptr += count;
-        this->r_buffer_avail -= count;
-        if (this->r_buffer_avail == 0)
-        {
-            this->r_ptr = this->buffer;
-            this->r_buffer_avail = this->capacity;
-        }
-        */
     }
     this->r_avail -= count;
     this->w_avail += count;
@@ -119,16 +102,6 @@ Float32RingBuffer::write(float* source, int count)
     else
     {
         this->_write(source, count);
-        /*
-        memcpy(this->w_ptr, source, count * sizeof(float));
-        this->w_ptr += count;
-        this->w_buffer_avail -= count;
-        if (this->w_buffer_avail == 0)
-        {
-            this->w_ptr = this->buffer;
-            this->w_buffer_avail = this->capacity;
-        }
-        */
     }
     this->w_avail -= count;
     this->r_avail += count;
@@ -136,4 +109,16 @@ Float32RingBuffer::write(float* source, int count)
     pthread_mutex_unlock(&mutex);
 
     return count;
+}
+
+void
+Float32RingBuffer::reset()
+{
+    this->r_ptr = this->buffer;
+    this->r_avail = 0;
+    this->r_buffer_avail = this->capacity;
+
+    this->w_ptr = this->buffer;
+    this->w_avail = this->capacity;
+    this->w_buffer_avail = this->capacity;
 }

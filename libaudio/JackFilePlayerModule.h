@@ -30,8 +30,6 @@ extern "C" {
 
 #include "Float32RingBuffer.h"
 
-typedef void (*JackFilePlayerCallback)(int64_t position, void* user_data);
-
 class JackFilePlayerModule : public JackModule
 {
     private:
@@ -45,8 +43,6 @@ class JackFilePlayerModule : public JackModule
         pthread_mutex_t disk_thread_lock = PTHREAD_MUTEX_INITIALIZER;
         pthread_cond_t data_ready = PTHREAD_COND_INITIALIZER;
         Float32RingBuffer* ringbuf;
-        JackFilePlayerCallback callback;
-        void* user_data;
         bool loaded;
         int64_t duration;
         int64_t position;
@@ -59,7 +55,7 @@ class JackFilePlayerModule : public JackModule
         JackFilePlayerModule(char const* name, JackClient* client);
         void process(jack_nframes_t nframes);
         void load(char const* file_path);
-        void play(JackFilePlayerCallback callback, void* user_data);
+        void play();
         void stop();
         void* playerThread();
         int64_t getDuration();

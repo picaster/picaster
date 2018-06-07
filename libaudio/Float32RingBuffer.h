@@ -48,6 +48,8 @@ class Float32RingBuffer {
 
         int w_buf_avail();
         int write(float* source, int count);        
+
+        void reset();
 };
 
 #endif

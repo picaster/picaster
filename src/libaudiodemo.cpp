@@ -31,15 +31,6 @@
 
 bool finished = false;
 
-static void
-playerCallback(int64_t position, void* user_data)
-{
-    JackFilePlayerModule* deck = (JackFilePlayerModule*)user_data;
-    char* formated_position = deck->formatTime(position);
-    std::cerr << "Tick : " << position << " (" << formated_position << ")" << std::endl;
-    delete formated_position;
-}
-
 int
 main(int argc, char** argv)
 {
@@ -96,7 +87,7 @@ main(int argc, char** argv)
 
     streamer->connect("stream.euterpia-radio.fr", 8902, "GslE7x2k");
 
-    deck_a->play(playerCallback, deck_a);
+    deck_a->play();
 
     while (deck_a->isPlaying())
     {
