@@ -25,6 +25,7 @@ class ButtonData {
         GtkProgressBar* progress_bar;
         GtkLabel* duration_label;
         gchar* file_path;
+        JackFilePlayerModule* deck;
 };
 
 void init_track_and_fx_buttons();

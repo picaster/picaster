@@ -50,6 +50,7 @@ class JackFilePlayerModule : public JackModule
         bool loaded;
         int64_t duration;
         int64_t position;
+        bool stop_requested;
 
     private:
         static void* playerThreadCallback(void* arg);
@@ -59,6 +60,7 @@ class JackFilePlayerModule : public JackModule
         void process(jack_nframes_t nframes);
         void load(char const* file_path);
         void play(JackFilePlayerCallback callback, void* user_data);
+        void stop();
         void* playerThread();
         int64_t getDuration();
         int64_t getPosition();

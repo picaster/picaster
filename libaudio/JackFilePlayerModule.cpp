@@ -62,6 +62,8 @@ JackFilePlayerModule::JackFilePlayerModule(char const* name, JackClient* client)
 void
 JackFilePlayerModule::process(jack_nframes_t nframes)
 {
+    if (!playing) return;
+
     jack_default_audio_sample_t buf[2];
     
     jack_default_audio_sample_t** output_buffers = getOutputPortsBuffers(nframes);
@@ -154,6 +156,7 @@ JackFilePlayerModule::play(JackFilePlayerCallback callback, void* user_data)
 {
     if (!this->loaded) return;
 
+    this->stop_requested = false;
     this->callback = callback;
     this->user_data = user_data;
     playing = true;
@@ -240,7 +243,7 @@ JackFilePlayerModule::playerThread()
     int64_t track_samples = 0;
 
     // read packet from input audio file
-    while (av_read_frame(fmt_ctx, &packet) >= 0) {
+    while (!stop_requested && av_read_frame(fmt_ctx, &packet) >= 0) {
         // skip non-audio packets
         if (packet.stream_index != (int)stream) {
             continue;
@@ -299,6 +302,7 @@ JackFilePlayerModule::playerThread()
     }
 
     playing = false;
+    stop_requested = false;
     pthread_mutex_unlock(&disk_thread_lock);
     
     av_free(buffer);
@@ -316,4 +320,10 @@ bool
 JackFilePlayerModule::isPlaying()
 {
     return this->playing;
+}
+
+void
+JackFilePlayerModule::stop()
+{
+    this->stop_requested = true;
 }

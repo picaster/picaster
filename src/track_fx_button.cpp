@@ -111,11 +111,28 @@ on_button_released_event(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 }
 
 void
-on_button_clicked(GtkButton* button, gpointer user_data)
+on_button_clicked(GtkButton* button, JackFilePlayerModule* (*start_audio_callback)(GtkButton* button, const char* file_path), void (*stop_audio_callback)(JackFilePlayerModule* deck), gpointer user_data)
 {
+    if (!context.jack_client->isConnected()) return;
+
     ButtonData* button_data = (ButtonData*)g_object_get_data(G_OBJECT(button), "button_data");
     if (button_data->file_path != NULL)
     {
+        GtkStyleContext* style_context = gtk_widget_get_style_context(GTK_WIDGET(button));
+        if (button_data->deck == NULL)
+        {
+            button_data->deck = start_audio_callback(button, button_data->file_path);
+            if (button_data->deck != NULL)
+            {
+                gtk_style_context_add_class(style_context, "button_playing");
+            }
+        }
+        else
+        {
+            stop_audio_callback(button_data->deck);
+            button_data->deck = NULL;
+            gtk_style_context_remove_class(style_context, "button_playing");
+        }
         context.deck_a->load(button_data->file_path);
         context.deck_a->play(NULL, NULL);
     }
@@ -140,7 +157,16 @@ extern "C" {
     void
     on_trk_button_clicked(GtkButton* button, gpointer user_data)
     {
-        on_button_clicked(button, user_data);
+        on_button_clicked(button, [](GtkButton* button, const char* file_path) -> JackFilePlayerModule* {
+            if (context.deck_a->isPlaying() && context.deck_b->isPlaying()) return NULL;
+            JackFilePlayerModule* deck = context.deck_a;
+            if (deck->isPlaying()) deck = context.deck_b;
+            deck->load(file_path);
+            deck->play(NULL, NULL);
+            return deck;
+        }, [](JackFilePlayerModule* deck) {
+            deck->stop();
+        }, user_data);
     }
 
 }
