@@ -21,6 +21,11 @@
 #include "ui.h"
 #include "device_list.h"
 #include "jack.h"
+#include "track_fx_button.h"
+
+#ifndef DATADIR
+#define DATADIR "/tmp"
+#endif
 
 static void
 load_gui()
@@ -49,6 +54,7 @@ activate(GtkApplication* app, gpointer user_data)
     load_gui();
     init_device_lists();
     init_jack_settings();
+    init_track_and_fx_buttons();
 
     if (context.jack_client->isConnected())
     {
@@ -64,4 +70,3 @@ activate(GtkApplication* app, gpointer user_data)
     gtk_window_set_application(GTK_WINDOW(window), app);
     gtk_widget_show_all(window);
 }
-
