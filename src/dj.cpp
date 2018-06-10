@@ -15,41 +15,19 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __CONTEXT_H_INCLUDED
-#define __CONTEXT_H_INCLUDED
-
 #include <gtk/gtk.h>
+#include <iostream>
 
-#include "JackClient.h"
-#include "JackRecorderModule.h"
-#include "JackFaderModule.h"
-#include "JackFilePlayerModule.h"
-#include "ShoutcastStreamerModule.h"
+#include "context.h"
+#include "dj.h"
 
-class Context {
+extern "C"
+{
+    void
+    on_microphone_toggle_button_toggled(GtkToggleButton* toggle_button, gpointer user_data)
+    {
+        std::cerr << "enable: " << gtk_toggle_button_get_active(toggle_button) << std::endl;
+        context.dj_fader->enable(gtk_toggle_button_get_active(toggle_button));
+    }
 
-    public:
-        JackClient* jack_client;
-
-        JackFilePlayerModule* deck_a;
-        JackFilePlayerModule* deck_b;
-        JackFilePlayerModule* fx;
-
-        JackFaderModule* recorder_fader;
-        JackFaderModule* dj_fader;
-        JackFaderModule* decks_fader;
-        JackFaderModule* fx_fader;
-        JackFaderModule* master_fader;
-
-        JackRecorderModule* recorder;
-
-        ShoutcastStreamerModule* streamer;
-
-        GtkBuilder* builder;
-
-        pid_t jackd_pid;
-};
-
-extern Context context;
-
-#endif
+}

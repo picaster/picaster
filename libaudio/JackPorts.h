@@ -15,41 +15,31 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __CONTEXT_H_INCLUDED
-#define __CONTEXT_H_INCLUDED
+#ifndef __JACK_PORTS_H_INCLUDED
+#define __JACK_PORTS_H_INCLUDED
 
-#include <gtk/gtk.h>
+#include <jack/jack.h>
 
-#include "JackClient.h"
-#include "JackRecorderModule.h"
-#include "JackFaderModule.h"
-#include "JackFilePlayerModule.h"
-#include "ShoutcastStreamerModule.h"
+class JackModule;
 
-class Context {
-
-    public:
-        JackClient* jack_client;
-
-        JackFilePlayerModule* deck_a;
-        JackFilePlayerModule* deck_b;
-        JackFilePlayerModule* fx;
-
-        JackFaderModule* recorder_fader;
-        JackFaderModule* dj_fader;
-        JackFaderModule* decks_fader;
-        JackFaderModule* fx_fader;
-        JackFaderModule* master_fader;
-
-        JackRecorderModule* recorder;
-
-        ShoutcastStreamerModule* streamer;
-
-        GtkBuilder* builder;
-
-        pid_t jackd_pid;
+enum JackPortType {
+    INPUT_PORT, OUTPUT_PORT
 };
 
-extern Context context;
+class JackPorts {
+
+    private:
+        jack_client_t* client;
+        jack_port_t*   port1;
+        jack_port_t*   port2;
+        JackPortType   type;
+        jack_default_audio_sample_t** buffers;
+        
+    public:
+        JackPorts(jack_client_t* client, jack_port_t* port1, jack_port_t* port2, JackPortType type);
+        void connectTo(JackPorts* dest);
+        void connectTo(JackModule* module);
+        jack_default_audio_sample_t** getBuffers(jack_nframes_t nframes);
+};
 
 #endif

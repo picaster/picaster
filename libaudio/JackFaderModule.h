@@ -15,41 +15,25 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __CONTEXT_H_INCLUDED
-#define __CONTEXT_H_INCLUDED
+#ifndef __JACK_FADER_MODULE_H_INCLUDED
+#define __JACK_FADER_MODULE_H_INCLUDED
 
-#include <gtk/gtk.h>
+#include "JackModule.h"
 
-#include "JackClient.h"
-#include "JackRecorderModule.h"
-#include "JackFaderModule.h"
-#include "JackFilePlayerModule.h"
-#include "ShoutcastStreamerModule.h"
+class JackFaderModule : public JackModule
+{
 
-class Context {
+    private:
+        double slider_value;
+        float db_value;
+        float amplification;
+        bool enabled;
 
     public:
-        JackClient* jack_client;
-
-        JackFilePlayerModule* deck_a;
-        JackFilePlayerModule* deck_b;
-        JackFilePlayerModule* fx;
-
-        JackFaderModule* recorder_fader;
-        JackFaderModule* dj_fader;
-        JackFaderModule* decks_fader;
-        JackFaderModule* fx_fader;
-        JackFaderModule* master_fader;
-
-        JackRecorderModule* recorder;
-
-        ShoutcastStreamerModule* streamer;
-
-        GtkBuilder* builder;
-
-        pid_t jackd_pid;
+        JackFaderModule(const char* name, JackClient* client);
+        void process(jack_nframes_t nframes);
+        void setSliderValue(double slider_value);
+        void enable(bool enabled);
 };
-
-extern Context context;
 
 #endif

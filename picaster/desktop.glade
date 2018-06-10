@@ -22,26 +22,34 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <!-- interface-license-type gplv3 -->
+  <object class="GtkAccelGroup" id="accelgroup1"/>
   <object class="GtkAdjustment" id="dj_volume_adjustment">
-    <property name="lower">-30</property>
-    <property name="upper">100</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
+    <property name="lower">-1.2</property>
+    <property name="value">-1</property>
+    <property name="step_increment">0.01</property>
+    <property name="page_increment">0.10000000000000001</property>
     <signal name="value-changed" handler="on_dj_volume_adjustment_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="fx_volume_adjustment">
-    <property name="lower">-30</property>
-    <property name="upper">100</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
+    <property name="lower">-1.2</property>
+    <property name="value">-1</property>
+    <property name="step_increment">0.01</property>
+    <property name="page_increment">0.10000000000000001</property>
     <signal name="value-changed" handler="on_fx_volume_adjustment_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="master_volume_adjustment">
-    <property name="lower">-30</property>
-    <property name="upper">100</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
+    <property name="lower">-1.2</property>
+    <property name="value">-1</property>
+    <property name="step_increment">0.01</property>
+    <property name="page_increment">0.10000000000000001</property>
     <signal name="value-changed" handler="on_master_volume_adjustment_value_changed" swapped="no"/>
+  </object>
+  <object class="GtkAdjustment" id="track_volume_adjustment">
+    <property name="lower">-1.2</property>
+    <property name="value">-1</property>
+    <property name="step_increment">0.01</property>
+    <property name="page_increment">0.10000000000000001</property>
+    <signal name="value-changed" handler="on_track_volume_adjustment_value_changed" swapped="no"/>
   </object>
   <object class="GtkWindow" id="mainwindow">
     <property name="name">mainwindow</property>
@@ -49,7 +57,11 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
     <property name="height_request">420</property>
     <property name="can_focus">False</property>
     <property name="border_width">4</property>
+    <accel-groups>
+      <group name="accelgroup1"/>
+    </accel-groups>
     <signal name="destroy" handler="on_mainwindow_destroy" swapped="no"/>
+    <signal name="key-press-event" handler="on_mainwindow_key_press_event" swapped="no"/>
     <child>
       <object class="GtkBox" id="main_box">
         <property name="visible">True</property>
@@ -115,6 +127,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                       </object>
                     </child>
+                    <accelerator key="1" signal="clicked"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -168,6 +181,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                       </object>
                     </child>
+                    <accelerator key="2" signal="clicked"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -234,6 +248,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                       </object>
                     </child>
+                    <accelerator key="3" signal="clicked"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -287,6 +302,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                       </object>
                     </child>
+                    <accelerator key="4" signal="clicked"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -353,6 +369,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                       </object>
                     </child>
+                    <accelerator key="5" signal="clicked"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -406,6 +423,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                       </object>
                     </child>
+                    <accelerator key="6" signal="clicked"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -472,6 +490,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                       </object>
                     </child>
+                    <accelerator key="7" signal="clicked"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -525,6 +544,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                         </child>
                       </object>
                     </child>
+                    <accelerator key="8" signal="clicked"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -610,6 +630,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                             </child>
                           </object>
                         </child>
+                        <accelerator key="1" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -663,6 +684,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                             </child>
                           </object>
                         </child>
+                        <accelerator key="2" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -716,6 +738,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                             </child>
                           </object>
                         </child>
+                        <accelerator key="3" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -783,6 +806,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                             </child>
                           </object>
                         </child>
+                        <accelerator key="4" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -836,6 +860,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                             </child>
                           </object>
                         </child>
+                        <accelerator key="5" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -889,6 +914,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                             </child>
                           </object>
                         </child>
+                        <accelerator key="6" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -926,7 +952,27 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                 <property name="name">microphone_box</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
+                <property name="spacing">4</property>
+                <child>
+                  <object class="GtkToggleButton" id="rec_toggle_button">
+                    <property name="label" translatable="yes">REC</property>
+                    <property name="name">rec_toggle_button</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="yalign">0.52999997138977051</property>
+                    <signal name="toggled" handler="on_rec_toggle_button_toggled" swapped="no"/>
+                    <accelerator key="r" signal="clicked"/>
+                    <style>
+                      <class name="redchecked"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
                 <child>
                   <object class="GtkToggleButton" id="microphone_toggle_button">
                     <property name="label" translatable="yes">Mic</property>
@@ -937,6 +983,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                     <property name="xalign">0.4699999988079071</property>
                     <property name="yalign">0.54000002145767212</property>
                     <signal name="toggled" handler="on_microphone_toggle_button_toggled" swapped="no"/>
+                    <accelerator key="m" signal="clicked"/>
                     <style>
                       <class name="redchecked"/>
                     </style>
@@ -944,7 +991,23 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
-                    <property name="position">0</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="str_toggle_button">
+                    <property name="label" translatable="yes">STR</property>
+                    <property name="name">str_toggle_button</property>
+                    <property name="visible">True</property>
+                    <property name="sensitive">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="toggled" handler="on_str_toggle_button_toggled" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>
@@ -1010,7 +1073,6 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                     <property name="can_focus">False</property>
                     <property name="tooltip_text" translatable="yes">Effects volume</property>
                     <property name="label" translatable="yes">DJ</property>
-                    <signal name="button-release-event" handler="on_volume_label_button_release_event" object="dj_volume_adjustment" swapped="no"/>
                   </object>
                 </child>
               </object>
@@ -1028,7 +1090,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
           </packing>
         </child>
         <child>
-          <object class="GtkSeparator" id="separator7">
+          <object class="GtkSeparator" id="separator10">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
@@ -1037,6 +1099,71 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="track_volume_box">
+            <property name="name">track_volume_box</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">4</property>
+            <child>
+              <object class="GtkScale" id="track_volune_scale">
+                <property name="name">track_volune_scale</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Tracks volume</property>
+                <property name="orientation">vertical</property>
+                <property name="adjustment">track_volume_adjustment</property>
+                <property name="show_fill_level">True</property>
+                <property name="draw_value">False</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEventBox" id="track_volume_label_eventbox">
+                <property name="name">track_volume_label_eventbox</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <signal name="button-press-event" handler="on_volume_label_button_press_event" object="track_volume_adjustment" swapped="no"/>
+                <child>
+                  <object class="GtkLabel" id="track_volume_label">
+                    <property name="name">track_volume_label</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="tooltip_text" translatable="yes">Tracks volume</property>
+                    <property name="label" translatable="yes">TR</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator" id="separator7">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
           </packing>
         </child>
         <child>
@@ -1089,7 +1216,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">4</property>
+            <property name="position">6</property>
           </packing>
         </child>
         <child>
@@ -1101,7 +1228,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">5</property>
+            <property name="position">7</property>
           </packing>
         </child>
         <child>
@@ -1154,7 +1281,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">6</property>
+            <property name="position">8</property>
           </packing>
         </child>
         <child>
@@ -1166,7 +1293,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">7</property>
+            <property name="position">9</property>
           </packing>
         </child>
         <child>
@@ -1358,6 +1485,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
                             <property name="use_underline">True</property>
                             <property name="yalign">0.4699999988079071</property>
                             <signal name="toggled" handler="on_start_jack_toggle_button_toggled" swapped="no"/>
+                            <accelerator key="j" signal="clicked"/>
                             <style>
                               <class name="greenchecked"/>
                             </style>
@@ -1401,7 +1529,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">8</property>
+            <property name="position">10</property>
           </packing>
         </child>
         <child>
@@ -1413,7 +1541,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">9</property>
+            <property name="position">11</property>
           </packing>
         </child>
         <child>
@@ -1569,7 +1697,7 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">10</property>
+            <property name="position">12</property>
           </packing>
         </child>
       </object>

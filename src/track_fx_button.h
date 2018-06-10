@@ -15,41 +15,20 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __CONTEXT_H_INCLUDED
-#define __CONTEXT_H_INCLUDED
+#ifndef __TRACK_FX_BUTTON_H_INCLUDED
+#define __TRACK_FX_BUTTON_H_INCLUDED
 
-#include <gtk/gtk.h>
-
-#include "JackClient.h"
-#include "JackRecorderModule.h"
-#include "JackFaderModule.h"
-#include "JackFilePlayerModule.h"
-#include "ShoutcastStreamerModule.h"
-
-class Context {
-
+class ButtonData {
     public:
-        JackClient* jack_client;
-
-        JackFilePlayerModule* deck_a;
-        JackFilePlayerModule* deck_b;
-        JackFilePlayerModule* fx;
-
-        JackFaderModule* recorder_fader;
-        JackFaderModule* dj_fader;
-        JackFaderModule* decks_fader;
-        JackFaderModule* fx_fader;
-        JackFaderModule* master_fader;
-
-        JackRecorderModule* recorder;
-
-        ShoutcastStreamerModule* streamer;
-
-        GtkBuilder* builder;
-
-        pid_t jackd_pid;
+        const gchar* button_name;
+        GtkLabel* label;
+        GtkProgressBar* progress_bar;
+        GtkLabel* duration_label;
+        gchar* file_path;
+        int length;
+        JackFilePlayerModule* deck;
 };
 
-extern Context context;
+void init_track_and_fx_buttons();
 
 #endif

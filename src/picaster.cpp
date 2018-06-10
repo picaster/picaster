@@ -15,41 +15,37 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __CONTEXT_H_INCLUDED
-#define __CONTEXT_H_INCLUDED
+#include <unistd.h>
+#include <iostream>
+#include <assert.h>
 
-#include <gtk/gtk.h>
-
-#include "JackClient.h"
-#include "JackRecorderModule.h"
-#include "JackFaderModule.h"
-#include "JackFilePlayerModule.h"
-#include "ShoutcastStreamerModule.h"
-
-class Context {
-
-    public:
-        JackClient* jack_client;
-
-        JackFilePlayerModule* deck_a;
-        JackFilePlayerModule* deck_b;
-        JackFilePlayerModule* fx;
-
-        JackFaderModule* recorder_fader;
-        JackFaderModule* dj_fader;
-        JackFaderModule* decks_fader;
-        JackFaderModule* fx_fader;
-        JackFaderModule* master_fader;
-
-        JackRecorderModule* recorder;
-
-        ShoutcastStreamerModule* streamer;
-
-        GtkBuilder* builder;
-
-        pid_t jackd_pid;
-};
-
-extern Context context;
-
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
+
+#include "context.h"
+#include "ui.h"
+#include "jack.h"
+
+int
+main(int argc, char** argv)
+{
+    context.jack_client = JackClient::getInstance("PiCaster");
+
+    if (context.jack_client->isConnected())
+    {
+        init_jack_modules();
+    }
+
+    /* Init GTK */
+    gtk_init(&argc, &argv);
+
+    /* Create application */
+    GtkApplication* app = gtk_application_new("ch.frenchguy.picaster", G_APPLICATION_FLAGS_NONE);
+    g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
+
+    /* Run application */
+    int status = g_application_run(G_APPLICATION(app), argc, argv);
+
+    return status;
+}

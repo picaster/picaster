@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=PiCaster Desktop
+Comment=Podcast recording and streaming application.
+Exec=picaster
+Terminal=0
+Type=Application
+Categories=AudioVideo;AudioEditing;Gtk;

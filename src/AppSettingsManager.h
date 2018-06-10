@@ -15,41 +15,19 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __CONTEXT_H_INCLUDED
-#define __CONTEXT_H_INCLUDED
+#ifndef __APP_SETTINGS_MANAGER_H_INCLUDED
+#define __APP_SETTINGS_MANAGER_H_INCLUDED
 
 #include <gtk/gtk.h>
 
-#include "JackClient.h"
-#include "JackRecorderModule.h"
-#include "JackFaderModule.h"
-#include "JackFilePlayerModule.h"
-#include "ShoutcastStreamerModule.h"
-
-class Context {
+class AppSettingsManager
+{
+    private:
+        static gboolean getKeyFile(GKeyFile** key_file, gchar** full_path);
 
     public:
-        JackClient* jack_client;
-
-        JackFilePlayerModule* deck_a;
-        JackFilePlayerModule* deck_b;
-        JackFilePlayerModule* fx;
-
-        JackFaderModule* recorder_fader;
-        JackFaderModule* dj_fader;
-        JackFaderModule* decks_fader;
-        JackFaderModule* fx_fader;
-        JackFaderModule* master_fader;
-
-        JackRecorderModule* recorder;
-
-        ShoutcastStreamerModule* streamer;
-
-        GtkBuilder* builder;
-
-        pid_t jackd_pid;
+        static gchar* getString(const gchar* section, const gchar* key, const gchar* default_value);
+        static void saveString(const gchar* section, const gchar* key, const gchar* value);
 };
-
-extern Context context;
 
 #endif

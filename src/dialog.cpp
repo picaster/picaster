@@ -15,41 +15,23 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __CONTEXT_H_INCLUDED
-#define __CONTEXT_H_INCLUDED
-
 #include <gtk/gtk.h>
 
-#include "JackClient.h"
-#include "JackRecorderModule.h"
-#include "JackFaderModule.h"
-#include "JackFilePlayerModule.h"
-#include "ShoutcastStreamerModule.h"
+#include "dialog.h"
 
-class Context {
+extern "C"
+{
 
-    public:
-        JackClient* jack_client;
+void
+on_yes_no_dialog_no_button_clicked(GtkButton* button, GtkDialog* dialog)
+{
+    gtk_dialog_response(dialog, GTK_RESPONSE_NO);
+}
 
-        JackFilePlayerModule* deck_a;
-        JackFilePlayerModule* deck_b;
-        JackFilePlayerModule* fx;
+void
+on_yes_no_dialog_yes_button_clicked(GtkButton* button, GtkDialog* dialog)
+{
+    gtk_dialog_response(dialog, GTK_RESPONSE_YES);
+}
 
-        JackFaderModule* recorder_fader;
-        JackFaderModule* dj_fader;
-        JackFaderModule* decks_fader;
-        JackFaderModule* fx_fader;
-        JackFaderModule* master_fader;
-
-        JackRecorderModule* recorder;
-
-        ShoutcastStreamerModule* streamer;
-
-        GtkBuilder* builder;
-
-        pid_t jackd_pid;
-};
-
-extern Context context;
-
-#endif
+}

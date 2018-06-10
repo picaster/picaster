@@ -15,41 +15,38 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __CONTEXT_H_INCLUDED
-#define __CONTEXT_H_INCLUDED
+#ifndef __JACK_RECORDER_MODULE_H_INCLUDED
+#define __JACK_RECORDER_MODULE_H_INCLUDED
 
-#include <gtk/gtk.h>
+#include <sndfile.h>
+#include <jack/jack.h>
+#include <jack/ringbuffer.h>
 
+#include "JackModule.h"
 #include "JackClient.h"
-#include "JackRecorderModule.h"
-#include "JackFaderModule.h"
-#include "JackFilePlayerModule.h"
-#include "ShoutcastStreamerModule.h"
 
-class Context {
+class JackRecorderModule : public JackModule
+{
+    private:
+        const size_t sample_size = sizeof(jack_default_audio_sample_t);
+
+    private:
+        bool               recording;
+        pthread_t          capture_thread_id;
+        SNDFILE*           capture_sf;
+        pthread_mutex_t    disk_thread_lock = PTHREAD_MUTEX_INITIALIZER;
+        pthread_cond_t     data_ready = PTHREAD_COND_INITIALIZER;
+        jack_ringbuffer_t* rb;
+
+    private:
+        static void* captureThreadCallback(void* arg);
 
     public:
-        JackClient* jack_client;
-
-        JackFilePlayerModule* deck_a;
-        JackFilePlayerModule* deck_b;
-        JackFilePlayerModule* fx;
-
-        JackFaderModule* recorder_fader;
-        JackFaderModule* dj_fader;
-        JackFaderModule* decks_fader;
-        JackFaderModule* fx_fader;
-        JackFaderModule* master_fader;
-
-        JackRecorderModule* recorder;
-
-        ShoutcastStreamerModule* streamer;
-
-        GtkBuilder* builder;
-
-        pid_t jackd_pid;
+        JackRecorderModule(const char* name, JackClient* client);
+        void process(jack_nframes_t nframes);
+        bool startRecording(const char* filepath);
+        void* captureThread();
+        bool stopRecording();
 };
-
-extern Context context;
 
 #endif

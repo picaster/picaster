@@ -15,41 +15,41 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __CONTEXT_H_INCLUDED
-#define __CONTEXT_H_INCLUDED
+#ifndef __FLOAT_32_RING_BUFFER_H_INCLUDED
+#define __FLOAT_32_RING_BUFFER_H_INCLUDED
 
-#include <gtk/gtk.h>
+#include <pthread.h>
 
-#include "JackClient.h"
-#include "JackRecorderModule.h"
-#include "JackFaderModule.h"
-#include "JackFilePlayerModule.h"
-#include "ShoutcastStreamerModule.h"
+class Float32RingBuffer {
 
-class Context {
+    private:
+        float* buffer;
+        int capacity;
 
+        float* r_ptr;
+        int r_avail;
+        int r_buffer_avail;
+
+        float* w_ptr;
+        int w_avail;
+        int w_buffer_avail;
+
+        pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+    private:
+        void _read(float* dest, int count);
+        void _write(float* source, int count);
+    
     public:
-        JackClient* jack_client;
+        Float32RingBuffer(int capacity);
 
-        JackFilePlayerModule* deck_a;
-        JackFilePlayerModule* deck_b;
-        JackFilePlayerModule* fx;
+        int r_buf_avail();
+        int read(float* dest, int count);
 
-        JackFaderModule* recorder_fader;
-        JackFaderModule* dj_fader;
-        JackFaderModule* decks_fader;
-        JackFaderModule* fx_fader;
-        JackFaderModule* master_fader;
+        int w_buf_avail();
+        int write(float* source, int count);        
 
-        JackRecorderModule* recorder;
-
-        ShoutcastStreamerModule* streamer;
-
-        GtkBuilder* builder;
-
-        pid_t jackd_pid;
+        void reset();
 };
-
-extern Context context;
 
 #endif
