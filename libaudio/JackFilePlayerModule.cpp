@@ -143,7 +143,7 @@ JackFilePlayerModule::formatTime(int64_t position)
     //int hours = mins / 60;
     //mins %= 60;
 
-    char* formated_duration = new char[9];
+    char* formated_duration = new char[19];
     sprintf(formated_duration, "%02d:%02d", mins, secs);
 
     return formated_duration;
