@@ -29,10 +29,27 @@ picaster_LDADD += @ALSA_LIBS@
 picaster_LDADD += @GTK_LIBS@
 picaster_LDADD += @TAGLIB_LIBS@
 
-valademo_SOURCES   = vala_main.vala
+valademo_SOURCES   = PiCaster.vala
+valademo_SOURCES  += BaseMusicButton.vala
+valademo_SOURCES  += FxButton.vala
+valademo_SOURCES  += TrackButton.vala
+valademo_SOURCES  += MicButton.vala
+valademo_SOURCES  += Utils.vala
+valademo_SOURCES  += ButtonBox.vala
+valademo_SOURCES  += Fader.vala
+valademo_SOURCES  += FaderBox.vala
+valademo_SOURCES  += MainPage.vala
+valademo_SOURCES  += ControlBox.vala
+valademo_SOURCES  += StartJackButton.vala
+valademo_SOURCES  += StartStreamerButton.vala
+valademo_SOURCES  += StartRecorderButton.vala
+
 valademo_VALAFLAGS = --pkg gtk+-3.0
+
 valademo_CPPFLAGS  = @GTK_CFLAGS@
+valademo_CPPFLAGS += @GLIB_CFLAGS@
 
-valademo_LDADD  = ../libaudio/libaudio.la
+
+valademo_LDADD  = ../libaudio/libaudio.la -lm
 valademo_LDADD += @GTK_LIBS@
-
+valademo_LDADD += @GLIB_LIBS@
