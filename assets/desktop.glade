@@ -61,7 +61,6 @@ along with .  If not, see <http://www.gnu.org/licenses/>.
       <group name="accelgroup1"/>
     </accel-groups>
     <signal name="destroy" handler="on_mainwindow_destroy" swapped="no"/>
-    <signal name="key-press-event" handler="on_mainwindow_key_press_event" swapped="no"/>
     <child>
       <object class="GtkBox" id="main_box">
         <property name="visible">True</property>

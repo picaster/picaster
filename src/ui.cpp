@@ -109,16 +109,4 @@ extern "C"
             context.recorder->stopRecording();
         }
     }
-
-    gboolean
-    on_mainwindow_key_press_event(GtkWidget *widget, GdkEvent *event, gpointer user_data)
-    {
-        GdkEventKey* event_key = (GdkEventKey*)event;
-        std::cerr << "keyval : " << event_key->keyval << std::endl;
-        if (event_key->keyval == 114) // "r"
-        {
-            on_rec_toggle_button_toggled(GTK_TOGGLE_BUTTON(gtk_builder_get_object(context.builder, "rec_toggle_button")));
-        }
-        return false;
-    }                                                                                                                               
 }
