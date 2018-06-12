@@ -1,0 +1,5 @@
+class BaseMusicButton : Gtk.ToggleButton
+{
+
+}
+
