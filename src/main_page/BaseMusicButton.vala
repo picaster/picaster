@@ -1,8 +1,10 @@
+extern void exit(int exit_code);
+
 class BaseMusicButton : Gtk.ToggleButton
 {
     protected Gtk.Box box;
     
-    private Gtk.Label label;
+    private Gtk.Label name_label;
     private Gtk.Label progress_label;
     private string file = null;
 
@@ -11,8 +13,9 @@ class BaseMusicButton : Gtk.ToggleButton
         this.box = new Gtk.Box(Gtk.Orientation.VERTICAL, 4);
         this.add(box);
 
-        this.label = new Gtk.Label(text);
-        this.box.pack_start(this.label);
+        this.name_label = new Gtk.Label(text);
+        this.name_label.ellipsize = Pango.EllipsizeMode.START;
+        this.box.pack_start(this.name_label);
 
         this.progress_label = new Gtk.Label("00:00");
         this.box.pack_end(this.progress_label);
@@ -31,12 +34,10 @@ class BaseMusicButton : Gtk.ToggleButton
     {
         if (file == null)
         {
-            stderr.printf("Not loaded\n");
             return true;
         }
         else
         {
-            stderr.printf("Loaded\n");
             return false;
         }
     }
@@ -49,10 +50,19 @@ class BaseMusicButton : Gtk.ToggleButton
             {
                 var dialog = new Common.FileChooser();
                 if (dialog.run() == Gtk.ResponseType.ACCEPT) {
-                    this.file = dialog.get_selection();
+                    this.file = dialog.get_filename();
                     var taglib_file = new TagLib.File(this.file);
-                    var audioproperties = taglib_file.audioproperties;
-                    int length = audioproperties.length;
+                    if (taglib_file == null)
+                    {
+                        stderr.printf("taglib_file is null\n");
+                        exit(-1);
+                    }
+                    if (!taglib_file.is_valid())
+                    {
+                        stderr.printf("taglib_file is not valid\n");
+                        exit(-1);
+                    }
+                    int length = taglib_file.audioproperties.length;
                     int seconds = length % 60;
                     int minutes = (length - seconds) / 60;
                     var ssec = seconds.to_string("%02d");
@@ -60,12 +70,22 @@ class BaseMusicButton : Gtk.ToggleButton
                     string duration = @"$smin:$ssec";
                     this.progress_label.set_text(duration);
 
-                    /*var tag = taglib_file.tag;
-                    string title = tag.title;
-                    string artist = tag.artist;
-                    var track_info = @"$artist - $title";*/
+                    string title = taglib_file.tag.title;
+                    string artist = taglib_file.tag.artist;
+                    if ((title == "") || (artist == ""))
+                    {
+                        this.name_label.set_text(this.file);
+                    }
+                    else
+                    {
+                        var track_info = @"$artist - $title";
+                        this.name_label.set_text(track_info);
+                    }
                 }
                 dialog.close();
+            }
+            else
+            {
             }
         }
         return false;

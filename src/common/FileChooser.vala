@@ -27,12 +27,6 @@ namespace Common
             return base.run();
         }
 
-        public string get_selection()
-        {
-            SList<string> uris = get_uris();
-            return uris.nth_data(0);
-        }
-
         public new void close()
         {
             Common.FileChooser.current_folder = this.get_current_folder();
