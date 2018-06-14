@@ -43,6 +43,7 @@ valademo_SOURCES  += main_page/StartStreamerButton.vala
 valademo_SOURCES  += main_page/StartRecorderButton.vala
 valademo_SOURCES  += common/Fader.vala
 valademo_SOURCES  += common/FileChooser.vala
+valademo_SOURCES  += common/Settings.vala
 valademo_SOURCES  += common/Utils.vala
 
 valademo_VALAFLAGS = --pkg gtk+-3.0 --pkg taglib_c

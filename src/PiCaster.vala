@@ -18,10 +18,9 @@ namespace PiCaster {
             PiCaster.App.main_window = new Gtk.ApplicationWindow(this);
             PiCaster.App.main_window.title = "PiCaster Desktop";
             PiCaster.App.main_window.add_accel_group(App.accel_group);
-            /*
-            main_window.default_height = 300;
-            main_window.default_width = 300;
-            */
+            PiCaster.App.main_window.set_default_size(600, 460);
+            PiCaster.App.main_window.set_size_request(600, 460);
+            PiCaster.App.main_window.set_resizable(false);
     
             var notebook = new Gtk.Notebook();
             PiCaster.App.main_window.add(notebook);
@@ -30,13 +29,17 @@ namespace PiCaster {
             notebook.append_page(new Gtk.Box(Gtk.Orientation.HORIZONTAL, 4), new Gtk.Label("Jack settings"));
             notebook.append_page(new Gtk.Box(Gtk.Orientation.HORIZONTAL, 4), new Gtk.Label("Stream settings"));
             notebook.append_page(new Gtk.Box(Gtk.Orientation.HORIZONTAL, 4), new Gtk.Label("Mumble settings"));
-    
+
             PiCaster.App.main_window.show_all();
         }
     
         public static int main(string[] args) {
             var app = new App();
-            return app.run(args);
+            var status = app.run(args);
+            int width, height;
+            PiCaster.App.main_window.get_size(out width, out height);
+            stderr.printf("%d, %d\n", width, height);
+            return status;
         }
     }
 }

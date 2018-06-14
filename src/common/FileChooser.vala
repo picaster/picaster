@@ -16,6 +16,7 @@ namespace Common
             Gtk.FileFilter filter = new Gtk.FileFilter();
             filter.add_mime_type("audio/*");
             this.set_filter(filter);
+            current_folder = Common.Settings.get_string("track", "current_folder", GLib.Environment.get_home_dir());
         }
 
         public new int run()
@@ -30,6 +31,7 @@ namespace Common
         public new void close()
         {
             Common.FileChooser.current_folder = this.get_current_folder();
+            Common.Settings.save_string("track", "current_folder", Common.FileChooser.current_folder);
             base.close();
         }
     }

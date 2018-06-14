@@ -5,6 +5,7 @@ class ButtonBox : Common.VerticalBox
         for (var row = 0; row < 4; row++)
         {
             var row_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 4);
+            row_box.set_homogeneous(true);
             this.pack_start(row_box);
             for (var col = 0; col < 2; col++)
             {
@@ -20,6 +21,7 @@ class ButtonBox : Common.VerticalBox
         for (var row = 0; row < 2; row++)
         {
             var row_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 4);
+            row_box.set_homogeneous(true);
             this.pack_start(row_box);
             for (var col = 0; col < 3; col++)
             {
