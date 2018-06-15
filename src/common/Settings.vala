@@ -8,7 +8,7 @@ namespace Common
 
         public static void save_string(string section, string key, string value)
         {
-            KeyFile file = Settings.get_file();
+            unowned KeyFile file = Settings.get_file();
             file.set_string(section, key, value);
             try
             {
@@ -22,7 +22,7 @@ namespace Common
 
         public static string get_string(string section, string key, string default_value)
         {
-            KeyFile file = Settings.get_file();
+            unowned KeyFile file = Settings.get_file();
             try
             {
                 var value = file.get_string(section, key);
@@ -36,7 +36,7 @@ namespace Common
 
         public static void delete_key(string section, string key)
         {
-            KeyFile file = Settings.get_file();
+            unowned KeyFile file = Settings.get_file();
             try
             {
                 file.remove_key(section, key);
@@ -52,7 +52,7 @@ namespace Common
             }
         }
 
-        private static KeyFile get_file()
+        private static unowned KeyFile get_file()
         {
             if (Settings.file == null)
             {
@@ -71,7 +71,7 @@ namespace Common
                 }
             }
 
-            return file;
+            return Settings.file;
         }
     }
 }

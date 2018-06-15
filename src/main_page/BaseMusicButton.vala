@@ -9,6 +9,8 @@ class BaseMusicButton : Gtk.ToggleButton
     private Gtk.Label progress_label;
     private string file = null;
 
+    private bool jack_started;
+
     public BaseMusicButton(string name)
     {
         this.box = new Gtk.Box(Gtk.Orientation.VERTICAL, 4);
@@ -35,11 +37,31 @@ class BaseMusicButton : Gtk.ToggleButton
         this.button_release_event.connect(this.button_released);
         this.button_press_event.connect(this.button_pressed);
         this.toggled.connect(this.button_toggled);
+
+        this.jack_started = false;
+        PiCaster.App.bus.jack_started.connect(() => jack_started = true);
+        PiCaster.App.bus.jack_stopped.connect(() => jack_started = false);
+
+        accel.connect(() => {
+            if (file != null && jack_started)
+            {
+                this.set_active(!this.get_active());
+            }
+        });
     }
 
     private void button_toggled()
     {
-        stderr.printf("Toggled\n");
+        if (get_active())
+        {
+            PiCaster.App.bus.lock_jack();
+            stderr.printf("Playing\n");
+        }
+        else
+        {
+            PiCaster.App.bus.unlock_jack();
+            stderr.printf("Stopping\n");
+        }
     }
 
     private bool button_pressed(Gdk.EventButton event)
@@ -129,4 +151,7 @@ class BaseMusicButton : Gtk.ToggleButton
         }
         return false;
     }
+
+    [Signal (action=true)]
+    public signal void accel();
 }
