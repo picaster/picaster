@@ -8,6 +8,7 @@ libaudio_la_SOURCES += JackModule.cpp JackModule.h
 libaudio_la_SOURCES += JackPorts.cpp JackPorts.h
 libaudio_la_SOURCES += JackRecorderModule.cpp JackRecorderModule.h
 libaudio_la_SOURCES += ShoutcastStreamerModule.cpp ShoutcastStreamerModule.h
+libaudio_la_SOURCES += libaudio_c.cpp
 
 libaudio_la_CXXFLAGS  = -std=gnu++14 -Wall -Werror -Wno-error=deprecated-declarations
 libaudio_la_CXXFLAGS += @JACK2_CFLAGS@
