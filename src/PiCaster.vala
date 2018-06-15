@@ -1,9 +1,10 @@
 namespace PiCaster { 
     
-    class App : Gtk.Application
+    public class App : Gtk.Application
     {
         public static Gtk.AccelGroup accel_group = new Gtk.AccelGroup();
         public static Gtk.ApplicationWindow main_window = null;
+        public static Common.Bus bus = null;
 
         public App()
         {
@@ -11,6 +12,10 @@ namespace PiCaster {
                 application_id: "ch.frenchguy.PiCaster",
                 flags: ApplicationFlags.FLAGS_NONE
             );
+            if (bus == null)
+            {
+                bus = new Common.Bus();
+            }
         }
     
         protected override void activate()
@@ -32,7 +37,7 @@ namespace PiCaster {
 
             PiCaster.App.main_window.show_all();
         }
-    
+
         public static int main(string[] args) {
             var app = new App();
             var status = app.run(args);

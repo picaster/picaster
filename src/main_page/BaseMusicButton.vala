@@ -19,8 +19,6 @@ class BaseMusicButton : Gtk.ToggleButton
         var info = Common.Settings.get_string("track", @"$name.info", this.name);
         var duration = Common.Settings.get_string("track", @"$name.duration", "00:00");
 
-        stderr.printf("%s : %s\n", this.name, this.file);
-
         if (this.file == "")
         {
             this.file = null;
@@ -36,10 +34,10 @@ class BaseMusicButton : Gtk.ToggleButton
 
         this.button_release_event.connect(this.button_released);
         this.button_press_event.connect(this.button_pressed);
-        this.toggled.connect(this.toggledd);
+        this.toggled.connect(this.button_toggled);
     }
 
-    private void toggledd()
+    private void button_toggled()
     {
         stderr.printf("Toggled\n");
     }
