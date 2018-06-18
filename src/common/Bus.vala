@@ -39,5 +39,9 @@ namespace Common
         public signal void start_recorder();
         public signal void stop_recorder();
     
+        public signal void dj_fader_changed(double value);
+        public signal void track_fader_changed(double value);
+        public signal void fx_fader_changed(double value);
+        public signal void master_fader_changed(double value);
     }
 }

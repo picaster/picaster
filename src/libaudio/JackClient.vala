@@ -123,13 +123,16 @@ namespace LibAudio
 
         public void init_modules()
         {
+            JackPorts playback_ports = this.get_playback_ports();
+
             var recorder = new JackRecorderModule("recorder", this);
             this.register_module(recorder);
 
             var master_fader = new JackFaderModule("master_fader", this);
             this.register_module(master_fader);
-            master_fader.set_slider_value(0.89917899646); /* -3 dBFS */
+            master_fader.connect_to_ports(playback_ports);
             master_fader.connect_to_module(recorder);
+            PiCaster.App.bus.master_fader_changed.connect(master_fader.set_slider_value);
 
             var sine_wave_generator = new JackSineWaveGeneratorModule("sine_wave_generator", this);
             this.register_module(sine_wave_generator);
@@ -137,13 +140,11 @@ namespace LibAudio
 
             var dj_fader = new JackFaderModule("dj_fader", this);
             this.register_module(dj_fader);
-
-            JackPorts playback_ports = this.get_playback_ports();
-            JackPorts capture_ports = this.get_capture_ports();
-
-            capture_ports.connect_to_module(dj_fader);
             dj_fader.connect_to_module(master_fader);
-            master_fader.connect_to_ports(playback_ports);
+            PiCaster.App.bus.dj_fader_changed.connect(dj_fader.set_slider_value);
+
+            JackPorts capture_ports = this.get_capture_ports();
+            capture_ports.connect_to_module(dj_fader);
         }
 
         public JackPorts create_input_ports(string name)

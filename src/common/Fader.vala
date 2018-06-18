@@ -17,11 +17,17 @@
 
 namespace Common
 {
+    public delegate void FaderChanged(double value);
+
     class Fader : VerticalBox
     {
-        public Fader(string name, double gain)
+        private Gtk.Scale scale;
+
+        public Fader(string name, double gain, FaderChanged fader_changed_callback)
         {
-            var scale = new Gtk.Scale.with_range(Gtk.Orientation.VERTICAL, 0.0, 1.2, 0.05);
+            this.name = name;
+
+            scale = new Gtk.Scale.with_range(Gtk.Orientation.VERTICAL, 0.0, 1.2, 0.05);
             scale.set_inverted(true);
             scale.set_draw_value(false);
             scale.add_mark(1.11212562118, Gtk.PositionType.LEFT, "+3");
@@ -37,12 +43,24 @@ namespace Common
             scale.add_mark(0.10000000000, Gtk.PositionType.LEFT, "-65");
             double value = GLib.Math.pow(10, gain / 65.0);
             scale.set_value(value);
+            scale.value_changed.connect(() => {
+                fader_changed_callback(scale.get_value());
+            });
             this.pack_start(scale);
 
             var event_box = new Gtk.EventBox();
             this.pack_end(event_box, false);
             var label = new Gtk.Label(name);
             event_box.add(label);
+            set_sensitive(false);
+
+            PiCaster.App.bus.jack_started.connect(() => set_sensitive(true));
+            PiCaster.App.bus.jack_stopped.connect(() => set_sensitive(false));
+        }
+
+        public void set_value(double value)
+        {
+            scale.set_value(value);
         }
     }
 }

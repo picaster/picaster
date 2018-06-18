@@ -19,13 +19,38 @@ class FaderBox : Common.HorizontalBox
 {
     public FaderBox()
     {
-        this.pack_start(new Common.Fader("DJ", 0.0));
+        var dj_fader = new Common.Fader("DJ", 0.0, (value) => {
+            Common.Settings.save_string("faders", "dj", @"$value");
+            PiCaster.App.bus.dj_fader_changed(value);
+        });
+        dj_fader.set_value(double.parse(Common.Settings.get_string("faders", "dj", "1.0"))); /* 0 dBFS */
+        this.pack_start(dj_fader);
+
         this.pack_start(new Gtk.Separator(Gtk.Orientation.VERTICAL));
-        this.pack_start(new Common.Fader("TR", 0.0));
+
+        var track_fader = new Common.Fader("TR", 0.0, (value) => {
+            Common.Settings.save_string("faders", "track", @"$value");
+            PiCaster.App.bus.track_fader_changed(value);
+        });
+        track_fader.set_value(double.parse(Common.Settings.get_string("faders", "track", "1.0"))); /* 0 dBFS */
+        this.pack_start(track_fader);
+
         this.pack_start(new Gtk.Separator(Gtk.Orientation.VERTICAL));
-        this.pack_start(new Common.Fader("FX", 0.0));
+
+        var fx_fader = new Common.Fader("FX", 0.0, (value) => {
+            Common.Settings.save_string("faders", "fx", @"$value");
+            PiCaster.App.bus.fx_fader_changed(value);
+        });
+        fx_fader.set_value(double.parse(Common.Settings.get_string("faders", "fx", "1.0"))); /* 0 dBFS */
+        this.pack_start(fx_fader);
+
         this.pack_start(new Gtk.Separator(Gtk.Orientation.VERTICAL));
-        this.pack_start(new Common.Fader("MA", -3.0));
+
+        var master_fader = new Common.Fader("MA", -3.0, (value) => {
+            Common.Settings.save_string("faders", "master", @"$value");
+            PiCaster.App.bus.master_fader_changed(value);
+        });
+        master_fader.set_value(double.parse(Common.Settings.get_string("faders", "master", "0.89917899646"))); /* -3 dBFS */
+        this.pack_start(master_fader);
     }
 }
-
