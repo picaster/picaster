@@ -41,7 +41,8 @@ namespace PiCaster
 
             // driver
             var driver_combobox = new Gtk.ComboBoxText();
-            driver_combobox.append("alsa", "alsa");
+            driver_combobox.append("alsa", "ALSA");
+            driver_combobox.append("dummy", "Dummy driver");
             driver_combobox.active_id = Common.Settings.get_string("jack", "driver", "alsa");
             driver_combobox.changed.connect(() => {
                 Common.Settings.save_string("jack", "driver", driver_combobox.active_id);
@@ -85,7 +86,6 @@ namespace PiCaster
                     string card_id = card_info.get_id();
                     input_device_combobox.append(card_id, card_name);
                     output_device_combobox.append(card_id, card_name);
-                    stderr.printf("card_name: %s, card_id: %s\n", card_name,card_id);
                 }
 
                 card_num += 1;

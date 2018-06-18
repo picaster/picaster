@@ -47,12 +47,15 @@ namespace LibAudio
                 string[] params = {
                     jackd_path,
                     "-d" + driver_name,
-                    "-n" + periods_per_buffer,
                     "-Chw:" + input_device,
                     "-Phw:" + output_device,
                     "-p" + frames_per_period,
                     "-r" + sample_rate,
                 };
+                if (driver_name != "dummy")
+                {
+                    params += "-n" + periods_per_buffer;
+                }
                 
                 // Fork jackd
                 int server_pid = Posix.fork();
