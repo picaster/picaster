@@ -15,43 +15,27 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-public class StartJackButton : Gtk.ToggleButton
-{
-    private int lock_count;
-
-    public StartJackButton()
+namespace LibAudio
+{ 
+    public class JackRecorderModule : JackModule
     {
-        Object(
-            label: "Jack"
-        );
+        private bool recording;
+        private Jack.Ringbuffer rb;
 
-        this.add_accelerator("clicked", PiCaster.App.accel_group, Gdk.Key.j, 0, Gtk.AccelFlags.VISIBLE);
-        this.toggled.connect(this.button_toggled);
+        private size_t sample_size = sizeof(Jack.DefaultAudioSample);
 
-        lock_count = 0;
-        
-        PiCaster.App.bus.lock_jack.connect(() => {
-            lock_count++;
-            set_sensitive(false);
-        });
-
-        PiCaster.App.bus.unlock_jack.connect(() => {
-            if (lock_count > 0) lock_count--;
-            if (lock_count == 0) set_sensitive(true);
-        });
-    }
-
-    private void button_toggled()
-    {
-        if (this.get_active())
+        public JackRecorderModule(string name, JackClient jack_client)
         {
-            PiCaster.App.bus.jack_started();
-            PiCaster.App.jack_client.start();
+            base(name, jack_client);
+            input_ports = jack_client.create_input_ports(name);
+            recording = false;
+            rb = Jack.Ringbuffer.create(2 * sample_size * 8192);
+            jack_client.register_module(this);
         }
-        else
+
+        public override void process(Jack.NFrames nframes)
         {
-            PiCaster.App.bus.jack_stopped();
-            PiCaster.App.jack_client.stop();
+            
         }
     }
 }

@@ -15,43 +15,27 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-public class StartJackButton : Gtk.ToggleButton
-{
-    private int lock_count;
-
-    public StartJackButton()
+namespace LibAudio
+{ 
+    public class JackFaderModule : JackModule
     {
-        Object(
-            label: "Jack"
-        );
-
-        this.add_accelerator("clicked", PiCaster.App.accel_group, Gdk.Key.j, 0, Gtk.AccelFlags.VISIBLE);
-        this.toggled.connect(this.button_toggled);
-
-        lock_count = 0;
-        
-        PiCaster.App.bus.lock_jack.connect(() => {
-            lock_count++;
-            set_sensitive(false);
-        });
-
-        PiCaster.App.bus.unlock_jack.connect(() => {
-            if (lock_count > 0) lock_count--;
-            if (lock_count == 0) set_sensitive(true);
-        });
-    }
-
-    private void button_toggled()
-    {
-        if (this.get_active())
+        public JackFaderModule(string name, JackClient jack_client)
         {
-            PiCaster.App.bus.jack_started();
-            PiCaster.App.jack_client.start();
+            base(name, jack_client);
+            input_ports = jack_client.create_input_ports(name);
+            output_ports = jack_client.create_output_ports(name);
+            jack_client.register_module(this);
         }
-        else
+
+        public override void process(Jack.NFrames nframes)
         {
-            PiCaster.App.bus.jack_stopped();
-            PiCaster.App.jack_client.stop();
+            var input_buffers = this.get_input_ports_buffers(nframes);
+            var output_buffers = this.get_output_ports_buffers(nframes);
+            for (Jack.NFrames frame = 0; frame < nframes; frame++)
+            {
+                output_buffers[0][frame] = input_buffers[0][frame];
+                output_buffers[1][frame] = input_buffers[1][frame];
+            }
         }
     }
 }

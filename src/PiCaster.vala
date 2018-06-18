@@ -22,6 +22,7 @@ namespace PiCaster {
         public static Gtk.AccelGroup accel_group = new Gtk.AccelGroup();
         public static Gtk.ApplicationWindow main_window = null;
         public static Common.Bus bus = null;
+        public static LibAudio.JackClient jack_client = null;
 
         public App()
         {
@@ -29,9 +30,15 @@ namespace PiCaster {
                 application_id: "ch.frenchguy.PiCaster",
                 flags: ApplicationFlags.FLAGS_NONE
             );
+            
             if (bus == null)
             {
                 bus = new Common.Bus();
+            }
+
+            if (jack_client == null)
+            {
+                jack_client = new LibAudio.JackClient();
             }
         }
     
@@ -48,7 +55,7 @@ namespace PiCaster {
             PiCaster.App.main_window.add(notebook);
     
             notebook.append_page(new PiCaster.MainPage(), new Gtk.Label("Main"));
-            notebook.append_page(new Gtk.Box(Gtk.Orientation.HORIZONTAL, 4), new Gtk.Label("Jack settings"));
+            notebook.append_page(new PiCaster.JackSettingsPage(), new Gtk.Label("Jack settings"));
             notebook.append_page(new Gtk.Box(Gtk.Orientation.HORIZONTAL, 4), new Gtk.Label("Stream settings"));
             notebook.append_page(new Gtk.Box(Gtk.Orientation.HORIZONTAL, 4), new Gtk.Label("Mumble settings"));
 
@@ -60,7 +67,7 @@ namespace PiCaster {
             var status = app.run(args);
             int width, height;
             PiCaster.App.main_window.get_size(out width, out height);
-            stderr.printf("%d, %d\n", width, height);
+            PiCaster.App.jack_client.stop();
             return status;
         }
     }
