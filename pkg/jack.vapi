@@ -45,6 +45,8 @@ namespace Jack
         public unowned Jack.Port port_register(string port_name, string port_type, ulong flags, ulong buffer_size);
         public unowned Jack.Port port_by_name(string port_name);
         public int connect(string source_port, string destination_port);
+        [CCode (cname = "jack_get_sample_rate")]
+        public Jack.NFrames get_samplerate();
     }
 
     public unowned string port_name(Jack.Port port);

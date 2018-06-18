@@ -19,12 +19,16 @@ namespace LibAudio
 { 
     public class JackFaderModule : JackModule
     {
+        private double slider_value;
+        private double db_value;
+        private double amplification;
+
         public JackFaderModule(string name, JackClient jack_client)
         {
             base(name, jack_client);
             input_ports = jack_client.create_input_ports(name);
             output_ports = jack_client.create_output_ports(name);
-            jack_client.register_module(this);
+            this.amplification = 1.0f;
         }
 
         public override void process(Jack.NFrames nframes)
@@ -33,9 +37,16 @@ namespace LibAudio
             var output_buffers = this.get_output_ports_buffers(nframes);
             for (Jack.NFrames frame = 0; frame < nframes; frame++)
             {
-                output_buffers[0][frame] = input_buffers[0][frame];
-                output_buffers[1][frame] = input_buffers[1][frame];
+                output_buffers[0][frame] = (float)(this.amplification * input_buffers[0][frame]);
+                output_buffers[1][frame] = (float)(this.amplification * input_buffers[1][frame]);
             }
+        }
+
+        public void set_slider_value(double slider_value)
+        {
+            this.slider_value = slider_value;
+            this.db_value = 65 * Math.log10(slider_value);
+            this.amplification = Math.pow(10, db_value / 20.0f);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace LibAudio
     public abstract class JackModule
     {
         private string name;
-        private JackClient jack_client;
+        protected JackClient jack_client;
 
         public JackPorts input_ports;
         public JackPorts output_ports;

@@ -25,9 +25,10 @@ picaster_SOURCES  += libaudio/JackFaderModule.vala
 picaster_SOURCES  += libaudio/JackModule.vala
 picaster_SOURCES  += libaudio/JackPorts.vala
 picaster_SOURCES  += libaudio/JackRecorderModule.vala
+picaster_SOURCES  += libaudio/JackSineWaveGeneratorModule.vala
 picaster_SOURCES  += cplusplus.cpp
 
-picaster_VALAFLAGS = --vapidir=$(top_srcdir)/pkg --pkg gtk+-3.0 --pkg taglib_c --pkg posix --pkg jack --pkg alsa
+picaster_VALAFLAGS = --vapidir=$(top_srcdir)/pkg --pkg gtk+-3.0 --pkg taglib_c --pkg posix --pkg jack --pkg alsa --pkg sndfile
 
 picaster_CPPFLAGS  = @GTK_CFLAGS@
 picaster_CPPFLAGS += @GLIB_CFLAGS@

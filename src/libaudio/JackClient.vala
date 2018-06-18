@@ -29,6 +29,11 @@ namespace LibAudio
         {
         }
 
+        public unowned Jack.Client get_client()
+        {
+            return this.client;
+        }
+
         public void start()
         {
             if (this.client != null) return;
@@ -119,8 +124,19 @@ namespace LibAudio
         public void init_modules()
         {
             var recorder = new JackRecorderModule("recorder", this);
+            this.register_module(recorder);
+
             var master_fader = new JackFaderModule("master_fader", this);
+            this.register_module(master_fader);
+            master_fader.set_slider_value(0.89917899646); /* -3 dBFS */
+            master_fader.connect_to_module(recorder);
+
+            var sine_wave_generator = new JackSineWaveGeneratorModule("sine_wave_generator", this);
+            this.register_module(sine_wave_generator);
+            sine_wave_generator.connect_to_module(master_fader);
+
             var dj_fader = new JackFaderModule("dj_fader", this);
+            this.register_module(dj_fader);
 
             JackPorts playback_ports = this.get_playback_ports();
             JackPorts capture_ports = this.get_capture_ports();
@@ -128,7 +144,6 @@ namespace LibAudio
             capture_ports.connect_to_module(dj_fader);
             dj_fader.connect_to_module(master_fader);
             master_fader.connect_to_ports(playback_ports);
-
         }
 
         public JackPorts create_input_ports(string name)

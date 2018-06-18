@@ -24,18 +24,55 @@ namespace LibAudio
 
         private size_t sample_size = sizeof(Jack.DefaultAudioSample);
 
+        private Sndfile.File capture_sf;
+
         public JackRecorderModule(string name, JackClient jack_client)
         {
             base(name, jack_client);
             input_ports = jack_client.create_input_ports(name);
             recording = false;
             rb = Jack.Ringbuffer.create(2 * sample_size * 8192);
-            jack_client.register_module(this);
+            PiCaster.App.bus.start_recorder.connect(() =>
+            {
+                this.start_recording("/tmp/picaster.flac");
+            });
+            PiCaster.App.bus.stop_recorder.connect(() =>
+            {
+                this.stop_recording();
+            });
+        }
+
+        private void start_recording(string filepath)
+        {
+            Sndfile.Info sf_info = Sndfile.Info();
+            sf_info.samplerate = this.jack_client.get_client().get_samplerate();
+            sf_info.format = Sndfile.Format.FLAC | Sndfile.Format.PCM_24;
+            sf_info.channels = 2;
+            if ((capture_sf = new Sndfile.File(filepath, Sndfile.Mode.WRITE, ref sf_info)) == null)
+            {
+                stderr.printf("Error opening output file\n");
+                exit(1);
+            }
+            this.recording = true;
+        }
+
+        private void stop_recording()
+        {
+            this.recording = false;
+            capture_sf.write_sync();
+            capture_sf.close();
         }
 
         public override void process(Jack.NFrames nframes)
         {
-            
+            if (this.recording)
+            {
+                var input_buffers = this.get_input_ports_buffers(nframes);
+                for (Jack.NFrames frame = 0; frame < nframes; frame++)
+                {
+                    capture_sf.writef_float({input_buffers[0][frame], input_buffers[1][frame]}, 1);
+                }
+            }
         }
     }
 }

@@ -35,6 +35,9 @@ namespace Common
     
         public signal void lock_track_button();
         public signal void unlock_track_button();
+
+        public signal void start_recorder();
+        public signal void stop_recorder();
     
     }
 }
