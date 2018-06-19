@@ -132,16 +132,14 @@ namespace LibAudio
             this.register_module(master_fader);
             master_fader.connect_to_ports(playback_ports);
             master_fader.connect_to_module(recorder);
+            master_fader.set_active(true);
             PiCaster.App.bus.master_fader_changed.connect(master_fader.set_slider_value);
-
-            var sine_wave_generator = new JackSineWaveGeneratorModule("sine_wave_generator", this);
-            this.register_module(sine_wave_generator);
-            sine_wave_generator.connect_to_module(master_fader);
 
             var dj_fader = new JackFaderModule("dj_fader", this);
             this.register_module(dj_fader);
             dj_fader.connect_to_module(master_fader);
             PiCaster.App.bus.dj_fader_changed.connect(dj_fader.set_slider_value);
+            PiCaster.App.bus.mic_button_active.connect(dj_fader.set_active);
 
             JackPorts capture_ports = this.get_capture_ports();
             capture_ports.connect_to_module(dj_fader);

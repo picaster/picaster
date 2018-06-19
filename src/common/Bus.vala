@@ -43,5 +43,7 @@ namespace Common
         public signal void track_fader_changed(double value);
         public signal void fx_fader_changed(double value);
         public signal void master_fader_changed(double value);
+
+        public signal void mic_button_active(bool active);
     }
 }

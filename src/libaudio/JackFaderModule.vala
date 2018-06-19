@@ -22,6 +22,7 @@ namespace LibAudio
         private double slider_value;
         private double db_value;
         private double amplification;
+        private bool active;
 
         public JackFaderModule(string name, JackClient jack_client)
         {
@@ -29,6 +30,7 @@ namespace LibAudio
             input_ports = jack_client.create_input_ports(name);
             output_ports = jack_client.create_output_ports(name);
             this.amplification = 1.0f;
+            this.active = false;
         }
 
         public override void process(Jack.NFrames nframes)
@@ -37,8 +39,13 @@ namespace LibAudio
             var output_buffers = this.get_output_ports_buffers(nframes);
             for (Jack.NFrames frame = 0; frame < nframes; frame++)
             {
-                output_buffers[0][frame] = (float)(this.amplification * input_buffers[0][frame]);
-                output_buffers[1][frame] = (float)(this.amplification * input_buffers[1][frame]);
+                double amp = this.amplification;
+                if (!this.active)
+                {
+                    amp = 0.0d;
+                }
+                output_buffers[0][frame] = (float)(amp * input_buffers[0][frame]);
+                output_buffers[1][frame] = (float)(amp * input_buffers[1][frame]);
             }
         }
 
@@ -47,6 +54,12 @@ namespace LibAudio
             this.slider_value = slider_value;
             this.db_value = 65 * Math.log10(slider_value);
             this.amplification = Math.pow(10, db_value / 20.0f);
+        }
+
+        public void set_active(bool active)
+        {
+            stderr.printf(@"set_active: $active\n");
+            this.active = active;
         }
     }
 }

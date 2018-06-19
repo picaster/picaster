@@ -30,8 +30,16 @@ class MicButton : Gtk.ToggleButton
         PiCaster.App.bus.jack_stopped.connect(() => set_sensitive(false));
 
         toggled.connect(() => {
-            if (get_active()) PiCaster.App.bus.lock_jack();
-            else PiCaster.App.bus.unlock_jack();
+            if (get_active())
+            {
+                PiCaster.App.bus.lock_jack();
+                PiCaster.App.bus.mic_button_active(true);
+            }
+            else
+            {
+                PiCaster.App.bus.unlock_jack();
+                PiCaster.App.bus.mic_button_active(false);
+            }
         });
     }
 }
