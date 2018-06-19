@@ -21,6 +21,7 @@ namespace LibAudio
     {
         private bool recording;
         private Jack.Ringbuffer rb;
+        private RecorderThread recorder_thread;
 
         private size_t sample_size = sizeof(Jack.DefaultAudioSample);
 
@@ -53,11 +54,14 @@ namespace LibAudio
                 stderr.printf("Error opening output file\n");
                 exit(1);
             }
+            this.recorder_thread = new RecorderThread();
+            new Thread<int>("recorder_thread", recorder_thread.run);
             this.recording = true;
         }
 
         private void stop_recording()
         {
+            this.recorder_thread.stop = true;
             this.recording = false;
             capture_sf.write_sync();
             capture_sf.close();
@@ -73,6 +77,27 @@ namespace LibAudio
                     capture_sf.writef_float({input_buffers[0][frame], input_buffers[1][frame]}, 1);
                 }
             }
+        }
+    }
+
+    protected class RecorderThread : Object
+    {
+        public bool stop;
+        private int count = 0;
+        protected RecorderThread()
+        {
+            this.stop = false;
+        }
+
+        public int run()
+        {
+            while (!stop)
+            {
+                stdout.printf ("%s: %i\n", "recorder_thread", this.count);
+                this.count++;
+                Thread.usleep (Random.int_range (0, 200000));
+            }
+            return 0;
         }
     }
 }
