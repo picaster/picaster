@@ -16,23 +16,67 @@
 */
 
 namespace LibAudio
-{ 
+{
+    /*
+    public class RingBuf
+    {
+        private const int size = 2 * 8192;
+        private float[] buffer;
+        private int head;
+        private int tail;
+        public int length { get; private set; }
+
+        public RingBuf()
+        {
+            buffer = new float[size];
+            head = 0;
+            tail = 0;
+        }
+
+        public void write(float f)
+        {
+            buffer[tail] = f;
+            tail += 1;
+            length += 1;
+            if (tail >= size)
+            {
+                tail = 0;
+            }
+        }
+
+        public float read()
+        {
+            float f = buffer[head];
+            head += 1;
+            length -= 1;
+            if (head >= size)
+            {
+                head = 0;
+            }
+            return f;
+        }
+    }
+    */
+
     public class JackRecorderModule : JackModule
     {
         private bool recording;
-        private Jack.Ringbuffer rb;
-        private RecorderThread recorder_thread;
-
-        private size_t sample_size = sizeof(Jack.DefaultAudioSample);
-
         private Sndfile.File capture_sf;
+        /*
+        private RingBuf ring_buf;
+        private GLib.Mutex disk_thread_lock = GLib.Mutex();
+        private GLib.Cond data_ready = GLib.Cond();
+        private Thread<int> recorder_thread;
+        */
 
         public JackRecorderModule(string name, JackClient jack_client)
         {
             base(name, jack_client);
             input_ports = jack_client.create_input_ports(name);
             recording = false;
-            rb = Jack.Ringbuffer.create(2 * sample_size * 8192);
+            /*
+            ring_buf = new RingBuf();
+            */
             PiCaster.App.bus.start_recorder.connect(() =>
             {
                 this.start_recording("/tmp/picaster.flac");
@@ -54,15 +98,45 @@ namespace LibAudio
                 stderr.printf("Error opening output file\n");
                 exit(1);
             }
-            this.recorder_thread = new RecorderThread();
-            new Thread<int>("recorder_thread", recorder_thread.run);
             this.recording = true;
+            /*
+            this.recorder_thread = new Thread<int>("recorder_thread", this.run);
+            */
         }
+
+        /*
+        private int run()
+        {
+            disk_thread_lock.lock();
+            while (recording)
+            {
+                data_ready.wait(disk_thread_lock);
+                while (this.ring_buf.length > 2)
+                {
+                    capture_sf.writef_float({this.ring_buf.read(), this.ring_buf.read()}, 1);
+                }
+            }
+            stderr.printf("run: not recording, unlocking disk_thread_lock\n");
+            disk_thread_lock.unlock();
+            stderr.printf("run: unlocked disk_thread_lock, returning\n");
+            return 0;
+        }
+        */
 
         private void stop_recording()
         {
-            this.recorder_thread.stop = true;
             this.recording = false;
+            /*
+            stderr.printf("stop_recording: locking disk_thread_lock\n");
+            disk_thread_lock.@lock();
+            stderr.printf("stop_recording: signaling data_ready\n");
+            data_ready.@signal();
+            stderr.printf("stop_recording: unlocking disk_thread_lock\n");
+            disk_thread_lock.unlock();
+            stderr.printf("stop_recording: waiting for recorder_thread to finish\n");
+            this.recorder_thread.join();
+            stderr.printf("stop_recording: recorder_thread has finished\n");
+            */
             capture_sf.write_sync();
             capture_sf.close();
         }
@@ -75,29 +149,21 @@ namespace LibAudio
                 for (Jack.NFrames frame = 0; frame < nframes; frame++)
                 {
                     capture_sf.writef_float({input_buffers[0][frame], input_buffers[1][frame]}, 1);
+                    /*
+                    for (int chn = 0; chn < 2; chn++)
+                    {
+                        this.ring_buf.write(input_buffers[chn][frame]);
+                    }
+                    */
                 }
+                /*
+                if (disk_thread_lock.trylock())
+                {
+                    data_ready.@signal();
+                    disk_thread_lock.unlock();
+                }
+                */
             }
-        }
-    }
-
-    protected class RecorderThread : Object
-    {
-        public bool stop;
-        private int count = 0;
-        protected RecorderThread()
-        {
-            this.stop = false;
-        }
-
-        public int run()
-        {
-            while (!stop)
-            {
-                stdout.printf ("%s: %i\n", "recorder_thread", this.count);
-                this.count++;
-                Thread.usleep (Random.int_range (0, 200000));
-            }
-            return 0;
         }
     }
 }
