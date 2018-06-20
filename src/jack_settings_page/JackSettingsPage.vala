@@ -17,20 +17,10 @@
 
 namespace PiCaster
 { 
-    public class JackSettingsPage : Gtk.Grid
+    public class JackSettingsPage : Common.SettingsPage
     {
-        private int row;
-
         public JackSettingsPage()
         {
-            this.column_spacing = 4;
-            this.row_spacing = 4;
-            this.margin_top = 4;
-            this.margin_bottom = 4;
-            this.margin_start = 4;
-            this.margin_end = 4;
-            this.row = 0;
-
             // jackd
             var jackd_path_entry = new Gtk.Entry();
             jackd_path_entry.text = Common.Settings.get_string("jack", "jackd_path_entry", "/usr/bin/jackd");
@@ -128,16 +118,6 @@ namespace PiCaster
                 Common.Settings.save_string("jack", "periods_per_buffer", @"$(spin.value)");
             });
             this.add_field("Periods per buffer", spin);
-
-        }
-
-        private void add_field(string label_text, Gtk.Widget field)
-        {
-            var label = new Gtk.Label(label_text + " :");
-            label.justify = Gtk.Justification.RIGHT;
-            this.attach(label, 0, this.row);
-            this.attach(field, 1, this.row);
-            this.row += 1;
         }
     }
 }

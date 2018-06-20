@@ -56,6 +56,7 @@ namespace PiCaster {
     
             notebook.append_page(new PiCaster.MainPage(), new Gtk.Label("Main"));
             notebook.append_page(new PiCaster.JackSettingsPage(), new Gtk.Label("Jack settings"));
+            notebook.append_page(new PiCaster.RecorderSettingsPage(), new Gtk.Label("Recorder settings"));
             notebook.append_page(new Gtk.Box(Gtk.Orientation.HORIZONTAL, 4), new Gtk.Label("Stream settings"));
             notebook.append_page(new Gtk.Box(Gtk.Orientation.HORIZONTAL, 4), new Gtk.Label("Mumble settings"));
 

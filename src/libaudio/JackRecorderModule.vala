@@ -79,7 +79,9 @@ namespace LibAudio
             */
             PiCaster.App.bus.start_recorder.connect(() =>
             {
-                this.start_recording("/tmp/picaster.flac");
+                var now = Time.local(time_t());
+                var output_filename = Common.Settings.get_string("recorder", "output_directory", Environment.get_home_dir()) + "/picaster-" + now.format("%Y-%m-%d-%H-%M-%S" + ".flac");
+                this.start_recording(output_filename);
             });
             PiCaster.App.bus.stop_recorder.connect(() =>
             {
