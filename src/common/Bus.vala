@@ -45,5 +45,8 @@ namespace Common
         public signal void master_fader_changed(double value);
 
         public signal void mic_button_active(bool active);
+
+        public signal int play_track(string filename);
+        public signal void stop_track(int player_index);
     }
 }

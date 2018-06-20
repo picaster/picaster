@@ -175,6 +175,11 @@ public abstract class BaseMusicButton : Gtk.Box
         return false;
     }
 
+    public string get_file()
+    {
+        return this.file;
+    }
+
     [Signal (action=true)]
     public signal void accel();
 

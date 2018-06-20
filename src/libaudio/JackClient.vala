@@ -149,11 +149,25 @@ namespace LibAudio
 
             var deck_a = new JackFilePlayerModule("deck_a", this);
             this.register_module(deck_a);
+            deck_a.index = 0;
             deck_a.connect_to_module(track_fader);
 
             var deck_b = new JackFilePlayerModule("deck_b", this);
             this.register_module(deck_b);
+            deck_a.index = 1;
             deck_b.connect_to_module(track_fader);
+
+            JackFilePlayerModule[] decks = {deck_a, deck_b};
+
+            PiCaster.App.bus.play_track.connect((filename) => {
+                var deck = deck_a.is_playing() ? deck_b : deck_a;
+                deck.play(filename);
+                return deck.index;
+            });
+            PiCaster.App.bus.stop_track.connect((player_index) => {
+                var deck = decks[player_index];
+                deck.stop();
+            });
 
             JackPorts capture_ports = this.get_capture_ports();
             capture_ports.connect_to_module(dj_fader);

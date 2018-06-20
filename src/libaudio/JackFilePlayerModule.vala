@@ -19,6 +19,8 @@ namespace LibAudio
 { 
     public class JackFilePlayerModule : JackModule
     {
+        public int index;
+
         public JackFilePlayerModule(string name, JackClient jack_client)
         {
             base(name, jack_client);
@@ -26,6 +28,21 @@ namespace LibAudio
 
         public override void process(Jack.NFrames nframes)
         {
+        }
+
+        public bool is_playing()
+        {
+            return false;
+        }
+
+        public void play(string filename)
+        {
+
+        }
+
+        public void stop()
+        {
+            
         }
     }
 }

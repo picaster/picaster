@@ -19,6 +19,7 @@ public class TrackButton : BaseMusicButton
 {
     private int index;
     private static int count;
+    private int player_index;
 
     public TrackButton(int index)
     {
@@ -54,10 +55,12 @@ public class TrackButton : BaseMusicButton
         {
             PiCaster.App.bus.lock_track_button();
         }
+        this.player_index = PiCaster.App.bus.play_track(this.get_file());
     }
 
     protected override void stop()
     {
+        PiCaster.App.bus.stop_track(this.player_index);
         TrackButton.count -= 1;
         if (TrackButton.count < 2)
         {
