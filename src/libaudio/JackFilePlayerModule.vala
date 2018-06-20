@@ -20,10 +20,17 @@ namespace LibAudio
     public class JackFilePlayerModule : JackModule
     {
         public int index;
+        private bool playing;
+        AVFormat.Context fmt_ctx;
+        int duration;
 
         public JackFilePlayerModule(string name, JackClient jack_client)
         {
             base(name, jack_client);
+            this.playing = false;
+
+            AVFormat.register_all();
+            this.fmt_ctx = new AVFormat.Context();
         }
 
         public override void process(Jack.NFrames nframes)
@@ -32,17 +39,34 @@ namespace LibAudio
 
         public bool is_playing()
         {
-            return false;
+            return this.playing;
         }
 
         public void play(string filename)
         {
+            stderr.printf("filename : %s\n", filename);
+            if (AVFormat.open_input(ref this.fmt_ctx, filename, null, null) == 0)
+            {
+                stderr.printf("Error : AVFormat.open_input()\n");
+                //exit(1);
+            }
 
+            if (this.fmt_ctx.find_stream_info(null) < 0)
+            {
+                stderr.printf("Error : AVFormat.find_stream()\n");
+                //exit(1);
+            }
+
+            this.duration = this.fmt_ctx.duration;
+
+            this.fmt_ctx.dump_format(0, filename, 0);
+
+            this.playing = true;
         }
 
         public void stop()
         {
-            
+            this.playing = false;
         }
     }
 }

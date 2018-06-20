@@ -31,7 +31,7 @@ picaster_SOURCES  += main_page/StartRecorderButton.vala
 picaster_SOURCES  += recorder_settings_page/RecorderSettingsPage.vala
 #picaster_SOURCES  += cplusplus.cpp
 
-picaster_VALAFLAGS = --target-glib 2.32 --vapidir=$(top_srcdir)/pkg --pkg gtk+-3.0 --pkg taglib_c --pkg posix --pkg jack --pkg alsa --pkg sndfile
+picaster_VALAFLAGS = --target-glib 2.32 --vapidir=$(top_srcdir)/pkg --pkg gtk+-3.0 --pkg taglib_c --pkg posix --pkg jack --pkg alsa --pkg sndfile --pkg ffmpeg
 
 picaster_CPPFLAGS  = @GTK_CFLAGS@
 picaster_CPPFLAGS += @GLIB_CFLAGS@
