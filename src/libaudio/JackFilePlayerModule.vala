@@ -22,7 +22,7 @@ namespace LibAudio
         public int index;
         private bool playing;
         AVFormat.Context fmt_ctx;
-        int duration;
+        int64 duration;
 
         public JackFilePlayerModule(string name, JackClient jack_client)
         {
@@ -60,6 +60,19 @@ namespace LibAudio
             this.duration = this.fmt_ctx.duration;
 
             this.fmt_ctx.dump_format(0, filename, 0);
+
+            // find audio stream in format context
+            size_t stream = 0;
+            for (; stream < fmt_ctx.nb_streams; stream++) {
+                if (fmt_ctx.streams[stream].codec.codec_type == AVFormat.MediaType.AUDIO) {
+                    break;
+                }
+            }
+
+            if (stream == fmt_ctx.nb_streams) {
+                stderr.printf("Error: no audio stream found\n");
+                //exit(1);
+            }
 
             this.playing = true;
         }

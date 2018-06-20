@@ -26,8 +26,10 @@ namespace AVFormat
     [Compact]
     public class Context
     {
-        [IntegerType (rank = 9)]
-        public int duration;
+        public int64 duration;
+        public uint nb_streams;
+        [CCode (array_length = false)]
+        public AVFormat.Stream[] streams;
 
         [CCode (cname = "avformat_alloc_context")]
         public Context();
@@ -37,6 +39,31 @@ namespace AVFormat
         public void dump_format(int index, string url, int is_output);
     }
 
+    [CCode (cname = "AVStream")]
+    [Compact]
+    public class Stream
+    {
+        public CodecContext codec;
+    }
+
+    [CCode (cname = "AVCodecContext")]
+    [Compact]
+    public class CodecContext
+    {
+        public MediaType codec_type;
+    }
+
+    [CCode (cname = "enum AVMediaType", cprefix = "AVMEDIA_TYPE_")]
+    public enum MediaType
+    {
+        UNKNOWN,
+        VIDEO,
+        AUDIO,
+        DATA,
+        SUBTITLE,
+        ATTACHMENT,
+        NB,
+    }
 }
 
 [CCode (cheader_filename = "libavcodec/avcodec.h")]
