@@ -12,6 +12,7 @@ picaster_SOURCES  += common/Utils.vala
 picaster_SOURCES  += jack_settings_page/JackSettingsPage.vala
 picaster_SOURCES  += libaudio/JackClient.vala
 picaster_SOURCES  += libaudio/JackFaderModule.vala
+picaster_SOURCES  += libaudio/JackFilePlayerModule.vala
 picaster_SOURCES  += libaudio/JackModule.vala
 picaster_SOURCES  += libaudio/JackPorts.vala
 picaster_SOURCES  += libaudio/JackRecorderModule.vala

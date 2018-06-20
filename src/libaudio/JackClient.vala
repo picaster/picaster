@@ -141,6 +141,20 @@ namespace LibAudio
             PiCaster.App.bus.dj_fader_changed.connect(dj_fader.set_slider_value);
             PiCaster.App.bus.mic_button_active.connect(dj_fader.set_active);
 
+            var track_fader = new JackFaderModule("track_fader", this);
+            this.register_module(track_fader);
+            track_fader.connect_to_module(master_fader);
+            track_fader.set_active(true);
+            PiCaster.App.bus.track_fader_changed.connect(track_fader.set_slider_value);
+
+            var deck_a = new JackFilePlayerModule("deck_a", this);
+            this.register_module(deck_a);
+            deck_a.connect_to_module(track_fader);
+
+            var deck_b = new JackFilePlayerModule("deck_b", this);
+            this.register_module(deck_b);
+            deck_b.connect_to_module(track_fader);
+
             JackPorts capture_ports = this.get_capture_ports();
             capture_ports.connect_to_module(dj_fader);
         }

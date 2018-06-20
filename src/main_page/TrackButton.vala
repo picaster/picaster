@@ -50,7 +50,7 @@ public class TrackButton : BaseMusicButton
     protected override void play()
     {
         TrackButton.count += 1;
-        if (TrackButton.count == 2)
+        if (TrackButton.count > 1)
         {
             PiCaster.App.bus.lock_track_button();
         }
@@ -59,7 +59,7 @@ public class TrackButton : BaseMusicButton
     protected override void stop()
     {
         TrackButton.count -= 1;
-        if (TrackButton.count == 1)
+        if (TrackButton.count < 2)
         {
             PiCaster.App.bus.unlock_track_button();
         }
