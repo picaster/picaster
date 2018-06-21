@@ -74,6 +74,25 @@ namespace LibAudio
                 //exit(1);
             }
 
+            unowned AVFormat.CodecContext codec_ctx = fmt_ctx.streams[stream].codec;
+            if (codec_ctx.channel_layout == 0)
+            {
+                if (codec_ctx.channels == 1)
+                {
+                    codec_ctx.channel_layout = AVFormat.ChannelLayout.MONO;
+                }
+                else
+                {
+                    codec_ctx.channel_layout = AVFormat.ChannelLayout.STEREO;
+                }
+            }
+
+            FFMpeg.Codec codec = FFMpeg.Codec.find_decoder(codec_ctx.codec_id);
+            if (codec == null) {
+                stderr.printf("Error: avcodec_find_decoder()\n");
+                //exit(1);
+            }
+        
             this.playing = true;
         }
 

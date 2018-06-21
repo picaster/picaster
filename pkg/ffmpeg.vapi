@@ -1,3 +1,4 @@
+[CCode (cheader_filename = "libavcodec/avcodec.h")]
 namespace FFMpeg
 {
     [CCode (cname = "AVInputFormat")]
@@ -10,6 +11,19 @@ namespace FFMpeg
     [Compact]
     public class Dictionary {
         
+    }
+
+    [CCode (cname = "AVCodec", cprefix = "avcodec_", free_function = "")]
+    [Compact]
+    public class Codec
+    {
+        public static FFMpeg.Codec find_decoder(CodecID id);
+    }
+
+    [CCode (cname = "enum AVCodecID", cprefix = "AVMEDIA_TYPE_")]
+    public enum CodecID
+    {
+        AV_CODEC_ID_NONE
     }
 }
 
@@ -51,6 +65,9 @@ namespace AVFormat
     public class CodecContext
     {
         public MediaType codec_type;
+        public uint64 channel_layout;
+        public int channels;
+        public FFMpeg.CodecID codec_id;
     }
 
     [CCode (cname = "enum AVMediaType", cprefix = "AVMEDIA_TYPE_")]
@@ -64,12 +81,12 @@ namespace AVFormat
         ATTACHMENT,
         NB,
     }
-}
 
-[CCode (cheader_filename = "libavcodec/avcodec.h")]
-namespace AVCodec
-{
-
+    [CCode (cname = "int", cprefix = "AV_CH_LAYOUT_", has_type_id = false)]
+    public enum ChannelLayout {
+        MONO,
+        STEREO
+    }
 }
 
 [CCode (cheader_filename = "libswresample/swresample.h")]
