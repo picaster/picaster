@@ -10,15 +10,3 @@ before_install:
 script:
 - qmake PiCasterQt.pro
 - make
-after_success:
-- openssl aes-256-cbc -K $encrypted_e4a4a7968508_key -iv $encrypted_e4a4a7968508_iv
-  -in .snapcraft/travis_snapcraft.cfg -out .snapcraft/snapcraft.cfg -d
-services:
-- docker
-deploy:
-  'on':
-    branch: master
-  provider: script
-  script: docker run -v $(pwd):$(pwd) -t snapcore/snapcraft sh -c "apt update -qq
-    && cd $(pwd) && snapcraft && snapcraft push *.snap --release edge"
-  skip_cleanup: true
