@@ -4,12 +4,12 @@ summary: PiCaster, the podcast recorder, in a snap.
 description: PiCaster is a podcast recording and streaming application, easy to use for beginners, but with enough functionality to suit the needs of intermediate or experienced podcasters.
 grade: devel
 confinement: devmode
+base: core18
 
 apps:
   picaster:
-    command: qt5-launch picaster
-    plugs:
-      - home
+    command: desktop-launch $SNAP/opt/picaster/bin/picaster
+    plugs: [home, unity7, network, network-bind, pulseaudio, gsettings, x11, desktop, desktop-legacy, opengl, removable-media, wayland]
 
 parts:
   picaster:
@@ -26,5 +26,5 @@ parts:
       - libasound2
       - libjack-jackd2-0
       - libtag1v5-vanilla
-    after: [qt5conf]
+    after: [desktop-qt5]
 

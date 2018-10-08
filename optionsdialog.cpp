@@ -13,7 +13,7 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
     ui(new Ui::OptionsDialog)
 {
     ui->setupUi(this);
-
+/*
     QString sName;
     QString sCurName;
     int iCurCard = -1;
@@ -90,6 +90,7 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
         }
         snd_ctl_close(handle);
     }
+    */
 }
 
 OptionsDialog::~OptionsDialog()
