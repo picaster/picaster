@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Type=Application
+Name=PiCaster
+GenericName=PiCaster
+Exec=picaster
+Terminal=false
+Categories=Audio;
+Comment=A podcast recording and streaming application, easy to use for beginners, but with enough functionality to suit the needs of intermediate or experienced podcasters.
