@@ -1,0 +1,31 @@
+name: picaster
+version: '0.2-git'
+summary: PiCaster, the podcast recorder, in a snap.
+description: PiCaster is a podcast recording and streaming application, easy to use for beginners, but with enough functionality to suit the needs of intermediate or experienced podcasters.
+grade: stable
+confinement: strict
+
+apps:
+  picaster:
+    command: qt5-launch picaster
+    plugs:
+      - home
+
+parts:
+  picaster:
+    plugin: qmake
+    source: ./
+    build-packages:
+      - qtbase5-dev
+      - libtag1-dev
+      - libasound2-dev
+      - libjack-jackd2-dev
+    stage-packages:
+      # Here for the plugin
+      - libqt5gui5
+      - libqt5widgets5
+      - libasound2
+      - libjack-jackd2-0
+      - libtag1v5-vanilla
+    after: [qt5conf]
+
