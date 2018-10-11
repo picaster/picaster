@@ -13,3 +13,7 @@ parts/
 prime/
 stage/
 snap/.snapcraft/
+debian/
+debian
+picaster
+ui_*
