@@ -1,3 +1,9 @@
+picaster (0.4.3-1) xenial; urgency=low
+
+  * Fixed debian packaging for Xenial
+
+ -- Yannick Mauray <yannick.mauray@gmail.com>  Thu, 11 Oct 2018 10:34:00 +0200
+
 picaster (0.4.2-1) xenial; urgency=low
 
   * Snap packaging added to master branch
