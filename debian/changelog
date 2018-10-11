@@ -1,4 +1,4 @@
-picaster (0.4.2-1) unstable; urgency=low
+picaster (0.4.2-1) xenial; urgency=low
 
   * Snap packaging added to master branch
   
