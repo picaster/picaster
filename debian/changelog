@@ -1,3 +1,9 @@
+picaster (0.4-1) unstable; urgency=low
+
+  * Snap packaging added to master branch
+  
+ -- Yannick Mauray <yannick.mauray@gmail.com>  Thu, 11 Oct 2018 08:25:00 +0200
+ 
 picaster (0.3.1-1) unstable; urgency=low
 
   * Updated rules and control files
