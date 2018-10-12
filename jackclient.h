@@ -22,6 +22,8 @@ private:
 
 public:
     JackClient(const char* const application_name);
+    ~JackClient();
+    void close();
     int process_callback(jack_nframes_t nframes);
     JackPort* register_port(QString name, JackPortFlags jack_port_flags);
     JackPort* get_system_port(QString name);

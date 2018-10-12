@@ -23,6 +23,19 @@ JackClient::JackClient(const char* const application_name)
     jack_activate(client);
 }
 
+JackClient::~JackClient()
+{
+    if (client != nullptr)
+        this->close();
+}
+
+void
+JackClient::close()
+{
+    jack_client_close(client);
+    client = nullptr;
+}
+
 int
 JackClient::process_callback(jack_nframes_t nframes)
 {

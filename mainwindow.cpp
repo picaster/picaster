@@ -87,13 +87,13 @@ void MainWindow::init()
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(exitActionTriggered()));
     connect(ui->actionOptions, SIGNAL(triggered()), this, SLOT(optionsActionTriggered()));
 
-    jack_client = new JackClient("PiCasterQt");
-    mic_fader_module = new JackFaderModule("mic", jack_client);
-    mic_fader_module->mute();
-    jack_client->process();
+    /*
+    */
 
+    /*
     ui->jackButton->toggle();
     jackButtonClicked();
+    */
 }
 
 void MainWindow::setButtonText(QPushButton* button, MediaFile* mediaFile)
@@ -245,12 +245,18 @@ MainWindow::jackButtonClicked()
         ui->micButton->setEnabled(true);
         ui->recordButton->setEnabled(true);
         ui->streamButton->setEnabled(true);
+        jack_client = new JackClient("PiCasterQt");
+        mic_fader_module = new JackFaderModule("mic", jack_client);
+        mic_fader_module->mute();
+        jack_client->process();
     }
     else
     {
         ui->micButton->setEnabled(false);
         ui->recordButton->setEnabled(false);
         ui->streamButton->setEnabled(false);
+        jack_client->close();
+        delete jack_client;
     }
 }
 
