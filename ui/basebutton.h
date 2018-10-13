@@ -3,7 +3,7 @@
 
 #include <QPushButton>
 
-#include "../mediafile.h"
+#include "utils/mediafile.h"
 
 class BaseButton : public QPushButton
 {

@@ -8,8 +8,8 @@
 #include <taglib/fileref.h>
 
 #include "trackbutton.h"
-#include "../mediafile.h"
-#include "signalbus.h"
+#include "utils/mediafile.h"
+#include "utils/signalbus.h"
 
 TrackButton::TrackButton(QWidget *parent) : BaseButton(parent)
 {

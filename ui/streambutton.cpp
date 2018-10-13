@@ -1,5 +1,5 @@
-#include "buttons/streambutton.h"
-#include "signalbus.h"
+#include "ui/streambutton.h"
+#include "utils/signalbus.h"
 
 StreamButton::StreamButton(QWidget* parent) : QPushButton(parent)
 {

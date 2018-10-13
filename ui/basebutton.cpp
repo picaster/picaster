@@ -1,5 +1,5 @@
 #include "basebutton.h"
-#include "signalbus.h"
+#include "utils/signalbus.h"
 
 BaseButton::BaseButton(QWidget *parent) : QPushButton(parent)
 {

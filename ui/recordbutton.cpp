@@ -1,5 +1,5 @@
-#include "buttons/recordbutton.h"
-#include "signalbus.h"
+#include "ui/recordbutton.h"
+#include "utils/signalbus.h"
 
 RecordButton::RecordButton(QWidget* parent) : QPushButton(parent)
 {

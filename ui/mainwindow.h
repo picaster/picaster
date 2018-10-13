@@ -4,9 +4,9 @@
 #include <QMainWindow>
 #include <QtWidgets/QPushButton>
 
-#include "mediafile.h"
-#include "optionsdialog.h"
-#include "buttons/trackbutton.h"
+#include "utils/mediafile.h"
+#include "ui/optionsdialog.h"
+#include "ui/trackbutton.h"
 
 class JackClient;
 class JackFaderModule;

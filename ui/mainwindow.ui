@@ -376,7 +376,7 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <widget class="QLevelSlider" name="micLevelSlider">
+          <widget class="LevelSlider" name="micLevelSlider">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -433,7 +433,7 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="QLevelSlider" name="tracksLevelSlider">
+          <widget class="LevelSlider" name="tracksLevelSlider">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -484,7 +484,7 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <widget class="QLevelSlider" name="effectsLevelSlider">
+          <widget class="LevelSlider" name="effectsLevelSlider">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -535,7 +535,7 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
-          <widget class="QLevelSlider" name="masterLevelSlider">
+          <widget class="LevelSlider" name="masterLevelSlider">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -646,34 +646,34 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QLevelSlider</class>
+   <class>LevelSlider</class>
    <extends>QSlider</extends>
-   <header>qlevelslider.h</header>
+   <header>ui/levelslider.h</header>
   </customwidget>
   <customwidget>
    <class>TrackButton</class>
    <extends>QPushButton</extends>
-   <header>buttons/trackbutton.h</header>
+   <header>ui/trackbutton.h</header>
   </customwidget>
   <customwidget>
    <class>JackButton</class>
    <extends>QPushButton</extends>
-   <header>jack/jackbutton.h</header>
+   <header>ui/jackbutton.h</header>
   </customwidget>
   <customwidget>
    <class>MicButton</class>
    <extends>QPushButton</extends>
-   <header>micbutton.h</header>
+   <header>ui/micbutton.h</header>
   </customwidget>
   <customwidget>
    <class>StreamButton</class>
    <extends>QPushButton</extends>
-   <header>buttons/streambutton.h</header>
+   <header>ui/streambutton.h</header>
   </customwidget>
   <customwidget>
    <class>RecordButton</class>
    <extends>QPushButton</extends>
-   <header>buttons/recordbutton.h</header>
+   <header>ui/recordbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

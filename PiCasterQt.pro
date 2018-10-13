@@ -27,42 +27,42 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp \
-    mediafile.cpp \
-    optionsdialog.cpp \
-    qlevelslider.cpp \
-    buttons/basebutton.cpp \
-    buttons/trackbutton.cpp \
+    utils/mediafile.cpp \
+    ui/optionsdialog.cpp \
+    ui/basebutton.cpp \
+    ui/trackbutton.cpp \
     jack/jackclient.cpp \
     jack/jackfadermodule.cpp \
     jack/jackmodule.cpp \
     jack/jackport.cpp \
-    jack/jackbutton.cpp \
-    micbutton.cpp \
-    signalbus.cpp \
-    buttons/streambutton.cpp \
-    buttons/recordbutton.cpp
+    ui/jackbutton.cpp \
+    ui/micbutton.cpp \
+    utils/signalbus.cpp \
+    ui/streambutton.cpp \
+    ui/recordbutton.cpp \
+    ui/mainwindow.cpp \
+    ui/levelslider.cpp
 
 HEADERS += \
-    mainwindow.h \
-    mediafile.h \
-    optionsdialog.h \
-    qlevelslider.h \
-    buttons/basebutton.h \
-    buttons/trackbutton.h \
+    utils/mediafile.h \
+    ui/optionsdialog.h \
+    ui/basebutton.h \
+    ui/trackbutton.h \
     jack/jackclient.h \
     jack/jackfadermodule.h \
     jack/jackmodule.h \
     jack/jackport.h \
-    jack/jackbutton.h \
-    micbutton.h \
-    signalbus.h \
-    buttons/streambutton.h \
-    buttons/recordbutton.h
+    ui/jackbutton.h \
+    ui/micbutton.h \
+    utils/signalbus.h \
+    ui/streambutton.h \
+    ui/recordbutton.h \
+    ui/mainwindow.h \
+    ui/levelslider.h
 
 FORMS += \
-    mainwindow.ui \
-    optionsdialog.ui
+    ui/optionsdialog.ui \
+    ui/mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

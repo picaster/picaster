@@ -4,7 +4,7 @@
 #include "jackclient.h"
 #include "jackport.h"
 #include "jackmodule.h"
-#include "signalbus.h"
+#include "utils/signalbus.h"
 
 static int
 s_process_callback(jack_nframes_t nframes, void *arg)
