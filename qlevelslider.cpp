@@ -4,9 +4,12 @@
 
 #include <QPainter>
 
+#include "signalbus.h"
+
 QLevelSlider::QLevelSlider(QWidget *parent) : QSlider(parent)
 {
-
+    connect(this, &QLevelSlider::valueChanged, [=](int value) { emit SignalBus::instance->micLevelChanged(value); });
+    connect(SignalBus::instance, &SignalBus::jackStateChanged, [=](bool started){ this->setEnabled(started); });
 }
 
 void

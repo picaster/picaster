@@ -9,6 +9,8 @@ JackButton::JackButton(QWidget* parent) : QPushButton(parent)
     connect(this, &QPushButton::clicked, [=]() { emit SignalBus::instance->jackStateChanged(this->isChecked()); });
 
     connect(SignalBus::instance, &SignalBus::micStateChanged, [=](bool open) { this->lock(open); });
+    connect(SignalBus::instance, &SignalBus::streamStateChanged, [=](bool streaming) { this->lock(streaming); });
+    connect(SignalBus::instance, &SignalBus::recordStateChanged, [=](bool streaming) { this->lock(streaming); });
     connect(SignalBus::instance, &SignalBus::trackStarted, [=]() { this->lock(true); });
     connect(SignalBus::instance, &SignalBus::trackStopped, [=]() { this->lock(false); });
 }

@@ -39,7 +39,9 @@ SOURCES += \
     jack/jackport.cpp \
     jack/jackbutton.cpp \
     micbutton.cpp \
-    signalbus.cpp
+    signalbus.cpp \
+    buttons/streambutton.cpp \
+    buttons/recordbutton.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -54,7 +56,9 @@ HEADERS += \
     jack/jackport.h \
     jack/jackbutton.h \
     micbutton.h \
-    signalbus.h
+    signalbus.h \
+    buttons/streambutton.h \
+    buttons/recordbutton.h
 
 FORMS += \
     mainwindow.ui \

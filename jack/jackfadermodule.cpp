@@ -52,7 +52,7 @@ JackFaderModule::unmute()
 }
 
 void
-JackFaderModule::set_amplification(long double amplification)
+JackFaderModule::setAmplification(long double amplification)
 {
     this->amplification = amplification;
 }
