@@ -13,7 +13,7 @@
 #include "jack/jackclient.h"
 #include "jack/jackfadermodule.h"
 #include "micbutton.h"
-#include "signalbus.h"
+#include "utils/signalbus.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), optionsDialog(new OptionsDialog(this))
 {

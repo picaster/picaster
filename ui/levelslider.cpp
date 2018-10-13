@@ -1,19 +1,19 @@
-#include "qlevelslider.h"
+#include "levelslider.h"
 
 #include <iostream>
 
 #include <QPainter>
 
-#include "signalbus.h"
+#include "utils/signalbus.h"
 
-QLevelSlider::QLevelSlider(QWidget *parent) : QSlider(parent)
+LevelSlider::LevelSlider(QWidget *parent) : QSlider(parent)
 {
-    connect(this, &QLevelSlider::valueChanged, [=](int value) { emit SignalBus::instance->micLevelChanged(value); });
+    connect(this, &LevelSlider::valueChanged, [=](int value) { emit SignalBus::instance->micLevelChanged(value); });
     connect(SignalBus::instance, &SignalBus::jackStateChanged, [=](bool started){ this->setEnabled(started); });
 }
 
 void
-QLevelSlider::paintEvent(QPaintEvent *ev)
+LevelSlider::paintEvent(QPaintEvent *ev)
 {
     QSlider::paintEvent(ev);
     QRect geometry = this->geometry();
@@ -37,7 +37,7 @@ QLevelSlider::paintEvent(QPaintEvent *ev)
 }
 
 void
-QLevelSlider::addMark(long double value, QString label, QRect* geometry, QPainter* painter)
+LevelSlider::addMark(long double value, QString label, QRect* geometry, QPainter* painter)
 {
     long double percentValue = static_cast<long double>(value - bottomValue) / static_cast<long double>(topValue - bottomValue);
     long double invertedPercentValue = 1.0l - percentValue;
@@ -56,7 +56,7 @@ QLevelSlider::addMark(long double value, QString label, QRect* geometry, QPainte
 }
 
 QSize
-QLevelSlider::sizeHint() const
+LevelSlider::sizeHint() const
 {
     QSize size = QSlider::sizeHint();
     size.setWidth(size.width() * 2);

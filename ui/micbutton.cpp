@@ -1,5 +1,5 @@
 #include "micbutton.h"
-#include "signalbus.h"
+#include "utils/signalbus.h"
 
 MicButton::MicButton(QWidget* parent) : QPushButton(parent)
 {

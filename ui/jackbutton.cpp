@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "jack/jackbutton.h"
+#include "ui/jackbutton.h"
 #include "jack/jackclient.h"
-#include "signalbus.h"
+#include "utils/signalbus.h"
 
 JackButton::JackButton(QWidget* parent) : QPushButton(parent)
 {

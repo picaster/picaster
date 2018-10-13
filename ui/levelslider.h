@@ -5,7 +5,7 @@
 #include <QSlider>
 #include <QGroupBox>
 
-class QLevelSlider : public QSlider
+class LevelSlider : public QSlider
 {
 private:
     int top = 7;
@@ -14,7 +14,7 @@ private:
     long double bottomValue = 0;
 
 public:
-    QLevelSlider(QWidget *parent = nullptr);
+    LevelSlider(QWidget *parent = nullptr);
 
 protected:
     void paintEvent(QPaintEvent *);
