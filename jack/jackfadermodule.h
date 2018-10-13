@@ -24,7 +24,7 @@ public:
     void process(const jack_nframes_t nframes) const;
     void mute();
     void unmute();
-    void set_amplification(long double amplification);
+    void setAmplification(long double amplification);
 };
 
 #endif // JACKSLIDERMODULE_H

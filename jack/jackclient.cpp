@@ -1,4 +1,5 @@
 #include <iostream>
+#include <math.h>
 
 #include "jackclient.h"
 #include "jackport.h"
@@ -28,6 +29,8 @@ JackClient::JackClient(const char* const application_name)
     micFaderModule = new JackFaderModule("mic", this);
     micFaderModule->mute();
     connect(SignalBus::instance, &SignalBus::micStateChanged, [=](bool isChecked) { isChecked ? micFaderModule->unmute() : micFaderModule->mute(); });
+    std::cerr << "connecting signal" << std::endl;
+    connect(SignalBus::instance, &SignalBus::micLevelChanged, this, &JackClient::micLevelChanged);
 }
 
 JackClient::~JackClient()
@@ -92,4 +95,12 @@ void
 JackClient::register_module(JackModule* module)
 {
     modules.append(module);
+}
+
+void
+JackClient::micLevelChanged(int value)
+{
+    long double f_value = value / 100.0l;
+    long double db_value = 65 * log10(f_value);
+    micFaderModule->setAmplification(pow(10, db_value / 20.0l));
 }

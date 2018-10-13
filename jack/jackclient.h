@@ -25,6 +25,7 @@ private:
     QList<JackModule*> modules;
     bool can_process = false;
     JackFaderModule* micFaderModule;
+    void micLevelChanged(int value);
 
 public:
     explicit JackClient(const char* const application_name);
