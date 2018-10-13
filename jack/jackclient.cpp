@@ -1,6 +1,9 @@
+#include <iostream>
+
 #include "jackclient.h"
 #include "jackport.h"
 #include "jackmodule.h"
+#include "signalbus.h"
 
 static int
 s_process_callback(jack_nframes_t nframes, void *arg)
@@ -21,10 +24,17 @@ JackClient::JackClient(const char* const application_name)
     }
     jack_set_process_callback(client, s_process_callback, this);
     jack_activate(client);
+
+    micFaderModule = new JackFaderModule("mic", this);
+    micFaderModule->mute();
+    connect(SignalBus::instance, &SignalBus::micStateChanged, [=](bool isChecked) { isChecked ? micFaderModule->unmute() : micFaderModule->mute(); });
 }
 
 JackClient::~JackClient()
 {
+    if (this->micFaderModule != nullptr)
+        delete this->micFaderModule;
+
     if (client != nullptr)
         this->close();
 }
@@ -32,6 +42,10 @@ JackClient::~JackClient()
 void
 JackClient::close()
 {
+    if (this->micFaderModule != nullptr)
+        delete this->micFaderModule;
+    this->micFaderModule = nullptr;
+
     jack_client_close(client);
     client = nullptr;
 }
@@ -63,7 +77,7 @@ JackClient::get_system_port(QString name)
 }
 
 void
-JackClient::connect(JackPort* source, JackPort* destination)
+JackClient::connectPorts(JackPort* source, JackPort* destination)
 {
     jack_connect(client, source->get_port_name(), destination->get_port_name());
 }

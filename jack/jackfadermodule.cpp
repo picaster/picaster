@@ -14,10 +14,10 @@ JackFaderModule::JackFaderModule(QString prefix, JackClient* jack_client) : Jack
     auto capture_1 = jack_client->get_system_port("capture_1");
     auto capture_2 = jack_client->get_system_port("capture_2");
 
-    jack_client->connect(capture_1, mic_in_l);
-    jack_client->connect(capture_2, mic_in_r);
-    jack_client->connect(mic_out_l, playback_1);
-    jack_client->connect(mic_out_r, playback_2);
+    jack_client->connectPorts(capture_1, mic_in_l);
+    jack_client->connectPorts(capture_2, mic_in_r);
+    jack_client->connectPorts(mic_out_l, playback_1);
+    jack_client->connectPorts(mic_out_r, playback_2);
 
     jack_client->register_module(this);
 }

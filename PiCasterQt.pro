@@ -29,23 +29,32 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     mediafile.cpp \
-    qlevelslider.cpp \
     optionsdialog.cpp \
-    jackclient.cpp \
-    jackmodule.cpp \
-    jackfadermodule.cpp \
-    jackport.cpp
+    qlevelslider.cpp \
+    buttons/basebutton.cpp \
+    buttons/trackbutton.cpp \
+    jack/jackclient.cpp \
+    jack/jackfadermodule.cpp \
+    jack/jackmodule.cpp \
+    jack/jackport.cpp \
+    jack/jackbutton.cpp \
+    micbutton.cpp \
+    signalbus.cpp
 
 HEADERS += \
     mainwindow.h \
     mediafile.h \
-    mediafile.h \
-    qlevelslider.h \
     optionsdialog.h \
-    jackclient.h \
-    jackmodule.h \
-    jackfadermodule.h \
-    jackport.h
+    qlevelslider.h \
+    buttons/basebutton.h \
+    buttons/trackbutton.h \
+    jack/jackclient.h \
+    jack/jackfadermodule.h \
+    jack/jackmodule.h \
+    jack/jackport.h \
+    jack/jackbutton.h \
+    micbutton.h \
+    signalbus.h
 
 FORMS += \
     mainwindow.ui \

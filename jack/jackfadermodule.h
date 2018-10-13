@@ -9,6 +9,8 @@ class JackPort;
 
 class JackFaderModule : public JackModule
 {
+    Q_OBJECT
+
 private:
     JackPort* mic_in_l;
     JackPort* mic_in_r;

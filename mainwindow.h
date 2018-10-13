@@ -6,6 +6,7 @@
 
 #include "mediafile.h"
 #include "optionsdialog.h"
+#include "buttons/trackbutton.h"
 
 class JackClient;
 class JackFaderModule;
@@ -20,14 +21,12 @@ class MainWindow : public QMainWindow
 
 private:
     Ui::MainWindow *ui;
-    QPushButton* trackButtons[8];
     QPushButton* jingleButtons[6];
     OptionsDialog* optionsDialog;
 
     int tracksPlaying = 0;
     int jackLocks = 0;
-    JackClient* jack_client;
-    JackFaderModule* mic_fader_module;
+    JackClient* jackClient;
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -41,35 +40,13 @@ private:
     void manageJackButton(QPushButton* button);
 
 private slots:
-    void trackButtonClicked();
+    void jackStateChanged(bool checked);
     void jingleButtonClicked();
-    void micButtonClicked();
-    void jackButtonClicked();
     void recordButtonClicked();
     void streamButtonClicked();
     void micLevelChanged(int value);
     void exitActionTriggered();
     void optionsActionTriggered();
-
-// Private utility methods    
-private:
-    template <typename Func>
-    void forTrackButtons(Func func)
-    {
-        for (int i = 0; i < 8; i++)
-        {
-            func(this->trackButtons[i]);
-        }
-    }
-
-    template <typename Func>
-    void forJingleButtons(Func func)
-    {
-        for (int i = 0; i < 6; i++)
-        {
-            func(this->jingleButtons[i]);
-        }
-    }
 };
 
 #endif // MAINWINDOW_H

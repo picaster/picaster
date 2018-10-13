@@ -10,31 +10,14 @@
 #include <iostream>
 #include <math.h>
 
-#include "jackclient.h"
-#include "jackfadermodule.h"
+#include "jack/jackclient.h"
+#include "jack/jackfadermodule.h"
+#include "micbutton.h"
+#include "signalbus.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    optionsDialog(new OptionsDialog(this))
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), optionsDialog(new OptionsDialog(this))
 {
     ui->setupUi(this);
-
-    trackButtons[0] = ui->trackButton1;
-    trackButtons[1] = ui->trackButton2;
-    trackButtons[2] = ui->trackButton3;
-    trackButtons[3] = ui->trackButton4;
-    trackButtons[4] = ui->trackButton5;
-    trackButtons[5] = ui->trackButton6;
-    trackButtons[6] = ui->trackButton7;
-    trackButtons[7] = ui->trackButton8;
-
-    jingleButtons[0] = ui->jingleButton1;
-    jingleButtons[1] = ui->jingleButton2;
-    jingleButtons[2] = ui->jingleButton3;
-    jingleButtons[3] = ui->jingleButton4;
-    jingleButtons[4] = ui->jingleButton5;
-    jingleButtons[5] = ui->jingleButton6;
 }
 
 void
@@ -60,21 +43,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::init()
 {
-    forTrackButtons([&](QPushButton* button) {
-        button->setText("Empty\n0:00");
-        connect(button, SIGNAL(clicked()), this, SLOT(trackButtonClicked()));
-    });
-
-    forJingleButtons([&](QPushButton* button) {
-        button->setText("Empty\n0:00");
-        connect(button, SIGNAL(clicked()), this, SLOT(jingleButtonClicked()));
-    });
-
-    ui->micButton->setEnabled(false);
-    connect(ui->micButton, SIGNAL(clicked()), this, SLOT(micButtonClicked()));
-
-    ui->jackButton->setEnabled(true);
-    connect(ui->jackButton, SIGNAL(clicked()), this, SLOT(jackButtonClicked()));
+    connect(SignalBus::instance, &SignalBus::jackStateChanged, this, &MainWindow::jackStateChanged);
 
     ui->recordButton->setEnabled(false);
     connect(ui->recordButton, SIGNAL(clicked()), this, SLOT(recordButtonClicked()));
@@ -86,14 +55,6 @@ void MainWindow::init()
 
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(exitActionTriggered()));
     connect(ui->actionOptions, SIGNAL(triggered()), this, SLOT(optionsActionTriggered()));
-
-    /*
-    */
-
-    /*
-    ui->jackButton->toggle();
-    jackButtonClicked();
-    */
 }
 
 void MainWindow::setButtonText(QPushButton* button, MediaFile* mediaFile)
@@ -120,76 +81,12 @@ void MainWindow::trackButtonShiftClicked(QPushButton* button)
     }
 }
 
-void MainWindow::trackButtonClicked()
-{
-    QPushButton* button = dynamic_cast<QPushButton*>(sender());
-    Qt::KeyboardModifiers kn = QGuiApplication::keyboardModifiers();
-
-    if (kn & Qt::KeyboardModifier::ShiftModifier)
-    {
-        if (button->isChecked()) trackButtonShiftClicked(button);
-        else button->toggle();
-    }
-    else
-    {
-        MediaFile* mediaFile = dynamic_cast<MediaFile*>(button->userData(0));
-        if (mediaFile == nullptr) trackButtonShiftClicked(button);
-        else
-        {
-            if (button->isChecked())
-            {
-                if (tracksPlaying == 2) button->toggle();
-                else if (!ui->jackButton->isChecked()) button->toggle();
-                else
-                {
-                    manageJackButton(button);
-                    std::cerr << "Playing track " << mediaFile->filePath().toUtf8().data() << " for " << button->objectName().toUtf8().data() << std::endl;
-                    mediaFile->setPlaying(true);
-                    tracksPlaying += 1;
-                    if (tracksPlaying == 2)
-                    {
-                        forTrackButtons([&](QPushButton* button) {
-                            MediaFile* mediaFile = dynamic_cast<MediaFile*>(button->userData(0));
-                            if ((mediaFile == nullptr) || (!mediaFile->playing())) button->setDisabled(true);
-                        });
-                    }
-                }
-            }
-            else
-            {
-                manageJackButton(button);
-                std::cerr << "Stopping track " << mediaFile->filePath().toUtf8().data() << " for " << button->objectName().toUtf8().data() << std::endl;
-                tracksPlaying -= 1;
-                mediaFile->setPlaying(false);
-                setButtonText(button, mediaFile);
-                if (tracksPlaying == 1)
-                {
-                    forTrackButtons([&](QPushButton* button) {
-                        button->setDisabled(false);
-                    });
-                }
-            }
-        }
-    }
-
-    /*
-    if (kn & Qt::KeyboardModifier::ControlModifier)
-    {
-        std::cerr << "Control clicked " << button->objectName().toUtf8().data() << std::endl;
-    }
-    else
-    {
-        std::cerr << "Clicked " << button->objectName().toUtf8().data() << std::endl;
-    }
-    */
-}
-
 void
 MainWindow::micLevelChanged(int value)
 {
     long double f_value = value / 100.0l;
     long double db_value = 65 * log10(f_value);
-    mic_fader_module->set_amplification(pow(10, db_value / 20.0l));
+    /*micFaderModule->set_amplification(pow(10, db_value / 20.0l));*/
 }
 
 void
@@ -237,36 +134,6 @@ MainWindow::manageJackButton(QPushButton* button)
     }
 }
 
-void
-MainWindow::jackButtonClicked()
-{
-    if (ui->jackButton->isChecked())
-    {
-        ui->micButton->setEnabled(true);
-        ui->recordButton->setEnabled(true);
-        ui->streamButton->setEnabled(true);
-        jack_client = new JackClient("PiCasterQt");
-        mic_fader_module = new JackFaderModule("mic", jack_client);
-        mic_fader_module->mute();
-        jack_client->process();
-    }
-    else
-    {
-        ui->micButton->setEnabled(false);
-        ui->recordButton->setEnabled(false);
-        ui->streamButton->setEnabled(false);
-        jack_client->close();
-        delete jack_client;
-    }
-}
-
-void
-MainWindow::micButtonClicked()
-{
-    manageJackButton(ui->micButton);
-    if (ui->micButton->isChecked()) mic_fader_module->unmute(); else mic_fader_module->mute();
-}
-
 bool
 MainWindow::isMicOpen()
 {
@@ -282,4 +149,19 @@ void
 MainWindow::streamButtonClicked()
 {
     manageJackButton(ui->streamButton);
+}
+
+void
+MainWindow::jackStateChanged(bool checked)
+{
+    if (checked)
+    {
+        jackClient = new JackClient("PiCasterQt");
+        jackClient->process();
+    }
+    else
+    {
+        jackClient->close();
+        delete jackClient;
+    }
 }

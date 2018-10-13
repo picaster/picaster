@@ -161,7 +161,7 @@
           </widget>
          </item>
          <item row="0" column="0">
-          <widget class="QPushButton" name="trackButton1">
+          <widget class="TrackButton" name="trackButton1">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -299,7 +299,7 @@
     <item row="2" column="1">
      <layout class="QHBoxLayout" name="controlsLayout">
       <item>
-       <widget class="QPushButton" name="jackButton">
+       <widget class="JackButton" name="jackButton">
         <property name="text">
          <string>Jack</string>
         </property>
@@ -343,7 +343,10 @@
      </layout>
     </item>
     <item row="2" column="0">
-     <widget class="QPushButton" name="micButton">
+     <widget class="MicButton" name="micButton">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="text">
        <string>Mic</string>
       </property>
@@ -602,7 +605,8 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOptions">
    <property name="icon">
-    <iconset theme="options"/>
+    <iconset theme="options">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Options...</string>
@@ -610,7 +614,8 @@
   </action>
   <action name="actionExit">
    <property name="icon">
-    <iconset theme="exit"/>
+    <iconset theme="exit">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>E&amp;xit</string>
@@ -626,6 +631,21 @@
    <class>QLevelSlider</class>
    <extends>QSlider</extends>
    <header>qlevelslider.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TrackButton</class>
+   <extends>QPushButton</extends>
+   <header>buttons/trackbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>JackButton</class>
+   <extends>QPushButton</extends>
+   <header>jack/jackbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>MicButton</class>
+   <extends>QPushButton</extends>
+   <header>micbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

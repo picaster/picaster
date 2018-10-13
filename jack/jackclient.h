@@ -3,7 +3,10 @@
 
 #include <jack/jack.h>
 
+#include <QObject>
 #include <QList>
+
+#include "jackfadermodule.h"
 
 class JackModule;
 class JackPort;
@@ -13,21 +16,24 @@ enum JackPortType {
     OUTPUT_PORT
 };
 
-class JackClient
+class JackClient : public QObject
 {
+    Q_OBJECT
+
 private:
     jack_client_t* client;
     QList<JackModule*> modules;
     bool can_process = false;
+    JackFaderModule* micFaderModule;
 
 public:
-    JackClient(const char* const application_name);
+    explicit JackClient(const char* const application_name);
     ~JackClient();
     void close();
     int process_callback(jack_nframes_t nframes);
     JackPort* register_port(QString name, JackPortFlags jack_port_flags);
     JackPort* get_system_port(QString name);
-    void connect(JackPort* source, JackPort* destination);
+    void connectPorts(JackPort* source, JackPort* destination);
     void process();
     void register_module(JackModule* module);
 };
