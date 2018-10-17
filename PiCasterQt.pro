@@ -41,7 +41,8 @@ SOURCES += \
     ui/streambutton.cpp \
     ui/recordbutton.cpp \
     ui/mainwindow.cpp \
-    ui/levelslider.cpp
+    ui/levelslider.cpp \
+    utils/mediaplayer.cpp
 
 HEADERS += \
     utils/mediafile.h \
@@ -58,7 +59,8 @@ HEADERS += \
     ui/streambutton.h \
     ui/recordbutton.h \
     ui/mainwindow.h \
-    ui/levelslider.h
+    ui/levelslider.h \
+    utils/mediaplayer.h
 
 FORMS += \
     ui/optionsdialog.ui \
@@ -70,7 +72,7 @@ else: unix:!android: target.path = /usr/bin
 !isEmpty(target.path): INSTALLS += target
 
 unix: CONFIG += link_pkgconfig
-unix: PKGCONFIG += taglib alsa jack
+unix: PKGCONFIG += taglib alsa jack libavformat libavcodec libavresample
 
 win32: LIBS += -L$$PWD/../opt/lib/ -ltag
 

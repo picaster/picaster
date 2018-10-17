@@ -24,6 +24,7 @@ private:
     OptionsDialog* optionsDialog;
 
     JackClient* jackClient;
+    MediaPlayer* mediaPlayer;
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -32,6 +33,8 @@ public:
 
 private:
     void jackStateChanged(bool checked);
+    void trackStarted(MediaFile* mediaFile);
+    void trackStopped(MediaFile* mediaFile);
     void optionsActionTriggered();
 };
 

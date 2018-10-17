@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+#include "mediafile.h"
+
 class SignalBus : public QObject
 {
     Q_OBJECT
@@ -21,8 +23,9 @@ signals:
 
     void streamStateChanged(bool streaming);
     void recordStateChanged(bool recording);
-    void trackStarted();
-    void trackStopped();
+    void trackStarted(MediaFile* mediaFile);
+    void trackStopped(MediaFile* mediaFile);
+    void lockTrackButtons(bool lock);
 };
 
 #endif // SIGNALBUS_H
