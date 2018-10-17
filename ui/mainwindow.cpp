@@ -28,6 +28,9 @@ MainWindow::~MainWindow()
 void MainWindow::init()
 {
     connect(SignalBus::instance, &SignalBus::jackStateChanged, this, &MainWindow::jackStateChanged);
+    connect(SignalBus::instance, &SignalBus::trackStarted, this, &MainWindow::trackStarted);
+    connect(SignalBus::instance, &SignalBus::trackStopped, this, &MainWindow::trackStopped);
+
     connect(ui->actionExit, &QAction::triggered, [](){ QApplication::quit(); });
     connect(ui->actionOptions, &QAction::triggered, this, &MainWindow::optionsActionTriggered);
 }
@@ -39,12 +42,28 @@ MainWindow::jackStateChanged(bool checked)
     {
         jackClient = new JackClient("PiCasterQt");
         jackClient->process();
+        this->mediaPlayer = new MediaPlayer(jackClient->getSampleRate());
     }
     else
     {
+        this->mediaPlayer->stopAll();
+        delete this->mediaPlayer;
+        this->mediaPlayer = nullptr;
         jackClient->close();
         delete jackClient;
     }
+}
+
+void
+MainWindow::trackStarted(MediaFile* mediaFile)
+{
+    std::cerr << "[MainWindow] trackStarted : " << mediaFile->filePath().toStdString() << std::endl;
+}
+
+void
+MainWindow::trackStopped(MediaFile* mediaFile)
+{
+    std::cerr << "[MainWindow] trackStopped : " << mediaFile->filePath().toStdString() << std::endl;
 }
 
 void

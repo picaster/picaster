@@ -11,9 +11,16 @@
 #include "utils/mediafile.h"
 #include "utils/signalbus.h"
 
+int TrackButton::tracksPlaying = 0;
+
 TrackButton::TrackButton(QWidget *parent) : BaseButton(parent)
 {
     connect(this, &QPushButton::clicked, this, &TrackButton::handleClick);
+    connect(SignalBus::instance, &SignalBus::lockTrackButtons, [=](bool lock){
+        std::cerr << "signal received : " << lock << std::endl;
+        std::cerr << this->objectName().toStdString() << " : " << this->isChecked() << std::endl;
+        if (this->isChecked() == false) this->setDisabled(lock);
+    });
 }
 
 TrackButton::~TrackButton()
@@ -47,18 +54,12 @@ TrackButton::handleClick()
     else
     {
         /*
-         * Do we have a file assiciated with the button ?
+         * Do we have a file associated with the button ?
          */
         MediaFile* mediaFile = this->getMediaFile();
-        /*
-         * If not, then clicking on an "empty" button is the same as shift-clicking it.
-         */
-        if (mediaFile == nullptr) this->handleShiftClick();
+        if (mediaFile == nullptr) this->toggle();
         else
         {
-            /*
-             * We do have a file.
-             */
             if (this->isChecked())
             {
                 /*
@@ -67,25 +68,12 @@ TrackButton::handleClick()
                 if (this->canPlay())
                 {
                     std::cerr << "Playing track " << mediaFile->filePath().toUtf8().data() << " for " << this->objectName().toUtf8().data() << std::endl;
-                    emit SignalBus::instance->trackStarted();
-                /*
-                if (tracksPlaying == 2) button->toggle();
-                else if (!ui->jackButton->isChecked()) button->toggle();
-                else
-                {
-                    manageJackButton(button);
-                    std::cerr << "Playing track " << mediaFile->filePath().toUtf8().data() << " for " << button->objectName().toUtf8().data() << std::endl;
-                    mediaFile->setPlaying(true);
-                    tracksPlaying += 1;
-                    if (tracksPlaying == 2)
+                    emit SignalBus::instance->trackStarted(mediaFile);
+                    TrackButton::tracksPlaying += 1;
+                    if (TrackButton::tracksPlaying == 2)
                     {
-                        forTrackButtons([&](QPushButton* button) {
-                            MediaFile* mediaFile = dynamic_cast<MediaFile*>(button->userData(0));
-                            if ((mediaFile == nullptr) || (!mediaFile->playing())) button->setDisabled(true);
-                        });
+                        emit SignalBus::instance->lockTrackButtons(true);
                     }
-                }
-                */
                 }
                 else
                 {
@@ -96,23 +84,12 @@ TrackButton::handleClick()
             else
             {
                 std::cerr << "Stopping file" << std::endl;
-                emit SignalBus::instance->trackStopped();
-                /*
-                 * The button is unchecked : let's stop playing the file.
-                 */
-                /*
-                manageJackButton(button);
-                std::cerr << "Stopping track " << mediaFile->filePath().toUtf8().data() << " for " << button->objectName().toUtf8().data() << std::endl;
-                tracksPlaying -= 1;
-                mediaFile->setPlaying(false);
-                setButtonText(button, mediaFile);
-                if (tracksPlaying == 1)
+                emit SignalBus::instance->trackStopped(mediaFile);
+                TrackButton::tracksPlaying -= 1;
+                if (TrackButton::tracksPlaying < 2)
                 {
-                    forTrackButtons([&](QPushButton* button) {
-                        button->setDisabled(false);
-                    });
+                    emit SignalBus::instance->lockTrackButtons(false);
                 }
-                */
             }
         }
     }

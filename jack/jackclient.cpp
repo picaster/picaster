@@ -104,3 +104,9 @@ JackClient::micLevelChanged(int value)
     long double db_value = 65 * log10(f_value);
     micFaderModule->setAmplification(pow(10, db_value / 20.0l));
 }
+
+jack_nframes_t
+JackClient::getSampleRate()
+{
+    return jack_get_sample_rate(client);
+}

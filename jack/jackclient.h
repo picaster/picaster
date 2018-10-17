@@ -37,6 +37,7 @@ public:
     void connectPorts(JackPort* source, JackPort* destination);
     void process();
     void register_module(JackModule* module);
+    jack_nframes_t getSampleRate();
 };
 
 #endif // JACKCLIENT_H
