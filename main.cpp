@@ -5,7 +5,7 @@
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
-#include <libswresample/swresample.h>
+#include <libavresample/avresample.h>
 }
 
 int main(int argc, char *argv[])
