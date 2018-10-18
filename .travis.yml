@@ -9,9 +9,7 @@ before_install:
   - $SH "cat /etc/os-release"
 install:
   - $SH "apt-get update -qq"
-  - $SH "apt-get install -y software-properties-common"
-  - $SH "add-apt-repository --yes ppa:ubuntu-sdk-team/ppa"
-  - $SH "apt-get update -qq"
+  - $SH "apt-get install -y -qq software-properties-common"
   - $SH "apt-get install -y -qq qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev"
   - $SH "apt-get install -y -qq qt5-default qttools5-dev-tools"
   - $SH "apt-get install -y -qq libtag1-dev libasound2-dev libjack-jackd2-dev libavformat-dev libavcodec-dev libavresample-dev"
