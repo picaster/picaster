@@ -2,11 +2,11 @@ sudo: required
 language: cpp
 services:
   - docker
-env: SH="docker exec -t ubuntu-latest bash -c"
+env: SH="docker exec -t ubuntu-latest bash -c "
 before_install:
   - docker run -d --name ubuntu-latest -v $(pwd):/travis -w /travis ubuntu:latest tail -f /dev/null
   - docker ps
-  - cat /etc/os-release
+  - $SH "cat /etc/os-release"
 install:
   - $SH "sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa"
   - $SH "sudo apt-get update -qq"
