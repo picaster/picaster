@@ -6,12 +6,13 @@ env: SH="docker exec -t ubuntu-latest bash -c"
 before_install:
   - docker run -d --name ubuntu-latest -v $(pwd):/travis -w /travis ubuntu:latest tail -f /dev/null
   - docker ps
+  - cat /etc/os-release
 install:
-  - $SH "add-apt-repository --yes ppa:ubuntu-sdk-team/ppa"
-  - $SH "apt-get update -qq"
-  - $SH "apt-get install -y -qq qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev"
-  - $SH "apt-get install -y -qq qt5-default qttools5-dev-tools"
-  - $SH "apt-get install -y -qq libtag1-dev libasound2-dev libjack-jackd2-dev libavformat-dev libavcodec-dev libavresample-dev"
+  - $SH "sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa"
+  - $SH "sudo apt-get update -qq"
+  - $SH "sudo apt-get install -y -qq qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev"
+  - $SH "sudo apt-get install -y -qq qt5-default qttools5-dev-tools"
+  - $SH "sudo apt-get install -y -qq libtag1-dev libasound2-dev libjack-jackd2-dev libavformat-dev libavcodec-dev libavresample-dev"
 script:
   - $SH "qmake PiCasterQt.pro"
   - $SH "make"
