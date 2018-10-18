@@ -1,12 +1,18 @@
 sudo: required
 language: cpp
-dist: trusty
+services:
+  - docker
+env: SH="docker exec -t ubuntu-latest bash -c"
 before_install:
-- sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
-- sudo apt-get update -qq
-- sudo apt-get install -y -qq qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
-- sudo apt-get install -y -qq qt5-default qttools5-dev-tools
-- sudo apt-get install -y -qq libtag1-dev libasound2-dev libjack-jackd2-dev libavformat-dev libavcodec-dev libavresample-dev
+  - docker run -d --name ubuntu-latest -v $(pwd):/travis -w /travis ubuntu:latest tail -f /dev/null
+  - docker ps
+install:
+  - $SH "add-apt-repository --yes ppa:ubuntu-sdk-team/ppa"
+  - $SH "apt-get update -qq"
+  - $SH "apt-get install -y -qq qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev"
+  - $SH "apt-get install -y -qq qt5-default qttools5-dev-tools"
+  - $SH "apt-get install -y -qq libtag1-dev libasound2-dev libjack-jackd2-dev libavformat-dev libavcodec-dev libavresample-dev"
 script:
-- qmake PiCasterQt.pro
-- make
+  - $SH "qmake PiCasterQt.pro"
+  - $SH "make"
+
