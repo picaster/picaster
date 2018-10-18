@@ -8,6 +8,7 @@ before_install:
   - docker ps
   - $SH "cat /etc/os-release"
 install:
+  - $SH "apt install software-properties-common"
   - $SH "add-apt-repository --yes ppa:ubuntu-sdk-team/ppa"
   - $SH "apt-get update -qq"
   - $SH "apt-get install -y -qq qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev"
