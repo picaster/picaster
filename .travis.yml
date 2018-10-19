@@ -2,9 +2,9 @@ sudo: required
 language: cpp
 services:
   - docker
-env: SH="docker exec -t ubuntu-latest bash -c "
+env: SH="docker exec -t ubuntu-xenial bash -c "
 before_install:
-  - docker run -d --name ubuntu-latest -v $(pwd):/travis -w /travis ubuntu:latest tail -f /dev/null
+  - docker run -d --name ubuntu-xenial -v $(pwd):/travis -w /travis ubuntu:xenial tail -f /dev/null
   - docker ps
   - $SH "cat /etc/os-release"
 install:
